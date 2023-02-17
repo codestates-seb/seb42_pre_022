@@ -7,14 +7,18 @@ import Aside from "./Components/Aside";
 
 function App() {
   return (
-    <>
-    <GlobalStyle />
-    <Header />
-    <Nav />
-    <Questions />
-    <Aside />
-    <Footer />
-    </>
+    <div className="app-wrap">
+      <GlobalStyle />
+      <Header />
+      <div className="wrap">
+        <Nav />
+        <div className="content">
+          <Questions />
+          <Aside />
+        </div>
+      </div>
+      <Footer />
+    </div>
   );
 }
 

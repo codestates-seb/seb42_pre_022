@@ -7,6 +7,27 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     font-family: 'Noto Sans', 'Noto Sans KR', sans-serif;
     }
+  .app-wrap {
+    width: 100%;
+    height: 100vh;
+  }
+  .wrap {
+    position: relative;
+    margin: 0 auto;
+    padding-top: 50px;
+    max-width: 1264px;
+    width: 100%;
+    height: calc(100vh - 50px);
+    display: flex;
+    justify-content: space-between;
+  }
+  .content {
+    max-width: 1100px;
+    width: calc(100% - 164px);
+    display: flex;
+    border-left: 1px solid var(--black-100);
+    padding: 24px;
+  }
   :root {
     /* color */
     --white: hsl(0,0%,100%);
