@@ -56,13 +56,14 @@ public class JwtTokenizer {
                 .compact();
     }
 
-    public void verifySignature(String jws, String base64EncodedSecretKey) {
+    public Map<String, Object> verifySignature(String jws, String base64EncodedSecretKey) {
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
 
-        Jwts.parserBuilder()
+        return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
-                .parseClaimsJws(jws);
+                .parseClaimsJws(jws).getBody();
+
     }
 
     public Date getTokenExpiration(int accessTokenExpirationMinutes) {
@@ -80,4 +81,6 @@ public class JwtTokenizer {
 
         return key;
     }
+
+
 }

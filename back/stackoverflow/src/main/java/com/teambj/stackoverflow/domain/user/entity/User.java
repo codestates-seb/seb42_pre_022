@@ -31,4 +31,16 @@ public class User {
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "reputation_id")
+    private Reputation reputation;
+
+//    public void setReputation(Reputation reputation) {
+//        this.reputation = reputation;
+//        if (reputation.getUser() != this) {
+//            reputation.setUser(this);
+//        }
+//    }
+
 }

@@ -1,6 +1,7 @@
 package com.teambj.stackoverflow.domain.user.controller;
 
 import com.teambj.stackoverflow.domain.user.dto.UserDto;
+import com.teambj.stackoverflow.domain.user.entity.Reputation;
 import com.teambj.stackoverflow.domain.user.entity.User;
 import com.teambj.stackoverflow.domain.user.mapper.UserMapper;
 import com.teambj.stackoverflow.domain.user.service.UserService;
@@ -31,8 +32,12 @@ public class UserController {
     public ResponseEntity postUser(@Valid @RequestBody UserDto.Post userPostDto){
 
         User user = userMapper.userPostToUser(userPostDto);
+
+        user.setReputation(new Reputation());
+
         User createdUser = userService.createUser(user);
 
-        return new ResponseEntity<>(createdUser, HttpStatus.OK);
+
+        return new ResponseEntity<>(userMapper.userToUserResponse(createdUser), HttpStatus.OK);
     }
 }

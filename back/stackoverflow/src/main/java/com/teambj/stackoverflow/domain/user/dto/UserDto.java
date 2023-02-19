@@ -1,5 +1,6 @@
 package com.teambj.stackoverflow.domain.user.dto;
 
+import com.teambj.stackoverflow.domain.user.entity.Reputation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -23,5 +24,18 @@ public class UserDto {
         @NotBlank(message = "Password cannot be empty")
         private String password;
 
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class Response{
+        private long userId;
+        private String email;
+        private String displayName;
+        private Reputation reputation;
+
+        public int getReputation() {
+            return reputation.getAmount();
+        }
     }
 }
