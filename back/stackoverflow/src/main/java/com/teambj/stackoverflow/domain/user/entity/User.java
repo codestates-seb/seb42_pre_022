@@ -3,9 +3,12 @@ package com.teambj.stackoverflow.domain.user.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
@@ -26,4 +29,6 @@ public class User {
     @Column(nullable = false)
     private String profileImage = "default";
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles = new ArrayList<>();
 }
