@@ -12,20 +12,23 @@ import { ReactComponent as ExchangeIcon } from "../assets/exchangeIcon.svg";
 import logo from "../assets/sprites.svg"
 
 const Containerheader = styled.header`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  z-index:5050;
+  position: fixed;
+  min-width: 425px;
+  height: 50px;
+  border-top:3px solid var(--orange);
+  background-color: var(--black-025);
+  box-shadow:0 1px 2px hsla(0,0%,0%,0.05), 0 1px 4px hsla(0, 0%, 0%, 0.05), 0 2px 8px hsla(0, 0%, 0%, 0.05);
+  > div {
+    width: 79rem;
+    max-width: 100%;
+    margin: 0 auto;
     display: flex;
-    z-index:5050;
-    position: relative;
     justify-content: center;
     align-items: center;
-    position: fixed;
-    width: 97em;
-    max-width: 100%;
-    min-width: 425px;
-    height: 50px;
-    border-top:3px solid var(--orange);
-    background-color: var(--black-025);
-    box-shadow:0 1px 2px hsla(0,0%,0%,0.05), 0 1px 4px hsla(0, 0%, 0%, 0.05), 0 2px 8px hsla(0, 0%, 0%, 0.05);
-    margin: 0 auto;
     > div, ul {
       display: flex;
       align-items: center;
@@ -54,6 +57,7 @@ const Containerheader = styled.header`
         margin-left: auto;
       }
     }
+  }
 `
 const HeadTabLi = styled.li`
   list-style: none;
@@ -64,7 +68,7 @@ const HeadTabLi = styled.li`
   :hover {
     background-color: var(--black-075);
   }
-`  
+`
 const HeadLogoI = styled.i`
   display: flex;
   align-items: center;
@@ -208,25 +212,27 @@ function Header() {
 
   return (
     <Containerheader login={state}>
-      <ul>
-        <MenubarLi onClick={openMenu} isopen={menu ? 1 : null} nowparams={params && params.slice(-3) === "ask" ? 1 : null}><div><i/></div></MenubarLi>
-        <HeadLogoTabLi><Link to="/"><HeadLogoI url={logo}/></Link></HeadLogoTabLi>
-      </ul>
-      <ul>
-        <HeadTextTabLi>About</HeadTextTabLi>
-        <HeadTextTabLi>Products</HeadTextTabLi>
-        <HeadTextTabLi>For Teams</HeadTextTabLi>
-      </ul>
-      <SearchBoxDiv>
-        <SearchInput type="text" maxLength={240} placeholder="Search..." />
-        <SearchIcon />
-      </SearchBoxDiv>
-      <ul>
-        <HeadLogoTabLi><SearchIcon /></HeadLogoTabLi>
-        {state.login && loginTabList.map((el, i) => <HeadLogoTabLi key={i}>{el}</HeadLogoTabLi>)}
-        <li><BasicBlueButton skyblue={1} to={state.login ? "/" : "/users/login"} onClick={handleClick}>{loginButton}</BasicBlueButton></li>
-        {!state.login && <li><BasicBlueButton to="/users/signup">Sign up</BasicBlueButton></li>}
-      </ul>
+      <div>
+        <ul>
+          <MenubarLi onClick={openMenu} isopen={menu ? 1 : null} nowparams={params && params.slice(-3) === "ask" ? 1 : null}><div><i /></div></MenubarLi>
+          <HeadLogoTabLi><Link to="/"><HeadLogoI url={logo} /></Link></HeadLogoTabLi>
+        </ul>
+        <ul>
+          <HeadTextTabLi>About</HeadTextTabLi>
+          <HeadTextTabLi>Products</HeadTextTabLi>
+          <HeadTextTabLi>For Teams</HeadTextTabLi>
+        </ul>
+        <SearchBoxDiv>
+          <SearchInput type="text" maxLength={240} placeholder="Search..." />
+          <SearchIcon />
+        </SearchBoxDiv>
+        <ul>
+          <HeadLogoTabLi><SearchIcon /></HeadLogoTabLi>
+          {state.login && loginTabList.map((el, i) => <HeadLogoTabLi key={i}>{el}</HeadLogoTabLi>)}
+          <li><BasicBlueButton skyblue={1} to={state.login ? "/" : "/users/login"} onClick={handleClick}>{loginButton}</BasicBlueButton></li>
+          {!state.login && <li><BasicBlueButton to="/users/signup">Sign up</BasicBlueButton></li>}
+        </ul>
+      </div>
     </Containerheader>
   );
 }
