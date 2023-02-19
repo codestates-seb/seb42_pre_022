@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import sprites from '../assets/sprites.svg';
 
 // 반응형 웹 적용 시점 - 980px;
 
@@ -41,11 +42,6 @@ const FooterContainer = styled.div`
   }
   .footer-logo {
     flex: 0 0 64px;
-    .logo-svg {
-      width: 32px;
-      height: 50px;
-      background-image: url(images/sprites.svg);
-    }
     @media only screen and (max-width: 980px) {
     display: none;
     }
@@ -83,12 +79,18 @@ const FooterContainer = styled.div`
     }
 `
 
+const LogoDiv = styled.div`
+  width: 32px;
+  height: 50px;
+  background-image: url(${props => props.url});
+`
+
 function Footer() {
   return (
     <Container>
       <FooterContainer>
         <div className="footer-logo">
-          <div className="logo-svg"></div>
+          <LogoDiv url={sprites}/>
         </div>
         <div className="footer-nav">
           <div className="footer-nav-row">
