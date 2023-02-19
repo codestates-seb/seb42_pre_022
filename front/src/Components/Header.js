@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import { loginActions } from "../Reducers/loginReducer";
 import { BasicBlueButton } from "../Styles/Buttons"
@@ -23,6 +23,7 @@ const Containerheader = styled.header`
   background-color: var(--black-025);
   box-shadow:0 1px 2px hsla(0,0%,0%,0.05), 0 1px 4px hsla(0, 0%, 0%, 0.05), 0 2px 8px hsla(0, 0%, 0%, 0.05);
   > div {
+    height: 100%;
     width: 79rem;
     max-width: 100%;
     margin: 0 auto;
@@ -199,7 +200,7 @@ function Header() {
   const [menu, setMenu] = useState(false)
 
   // TODO /ask로 접근했을 때(askQuestion) 메뉴바 생기는지 확인 
-  let { params } = useParams();
+  let { pathname } = useLocation();
 
   const handleClick = () => {
     dispatch(loginActions.changeLogin())
@@ -214,7 +215,7 @@ function Header() {
     <Containerheader login={state}>
       <div>
         <ul>
-          <MenubarLi onClick={openMenu} isopen={menu ? 1 : null} nowparams={params && params.slice(-3) === "ask" ? 1 : null}><div><i /></div></MenubarLi>
+          <MenubarLi onClick={openMenu} isopen={menu ? 1 : null} nowparams={pathname && pathname.slice(-3) === "ask" ? 1 : null}><div><i /></div></MenubarLi>
           <HeadLogoTabLi><Link to="/"><HeadLogoI url={logo} /></Link></HeadLogoTabLi>
         </ul>
         <ul>
