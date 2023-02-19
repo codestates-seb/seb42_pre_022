@@ -7,10 +7,8 @@ import Aside from "./Components/Aside";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import { Routes, Route } from "react-router-dom";
-import { useSelector } from 'react-redux';
 
 function App() {
-  const state = useSelector(state => state.loginReducer);
 
   return (
     <div className="app-wrap">
