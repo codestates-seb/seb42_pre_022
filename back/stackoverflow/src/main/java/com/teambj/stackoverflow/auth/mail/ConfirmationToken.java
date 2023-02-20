@@ -33,7 +33,6 @@ public class ConfirmationToken {
     @Column
     private Long userId;
 
-    //이메일 인증 토큰 생성
     public static ConfirmationToken createEmailConfirmationToken(Long userId){
         ConfirmationToken confirmationToken = new ConfirmationToken();
         confirmationToken.expirationDate = LocalDateTime.now().plusMinutes(EMAIL_TOKEN_EXPIRATION_TIME_VALUE);

@@ -1,7 +1,6 @@
 package com.teambj.stackoverflow.domain.user.service;
 
 import com.teambj.stackoverflow.auth.CustomAuthorityUtils;
-import com.teambj.stackoverflow.auth.JwtTokenizer;
 import com.teambj.stackoverflow.auth.mail.ConfirmationToken;
 import com.teambj.stackoverflow.auth.mail.ConfirmationTokenService;
 import com.teambj.stackoverflow.domain.user.entity.User;
@@ -19,15 +18,13 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthorityUtils customAuthorityUtils;
     private final ConfirmationTokenService confirmationTokenService;
-    private final JwtTokenizer jwtTokenizer;
 
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CustomAuthorityUtils customAuthorityUtils, ConfirmationTokenService confirmationTokenService, JwtTokenizer jwtTokenizer) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CustomAuthorityUtils customAuthorityUtils, ConfirmationTokenService confirmationTokenService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.customAuthorityUtils = customAuthorityUtils;
         this.confirmationTokenService = confirmationTokenService;
-        this.jwtTokenizer = jwtTokenizer;
     }
 
     public User createUser(User user) {

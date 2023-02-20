@@ -1,6 +1,5 @@
 package com.teambj.stackoverflow.domain.user.controller;
 
-import com.google.gson.Gson;
 import com.teambj.stackoverflow.auth.CustomUserDetailsService;
 import com.teambj.stackoverflow.domain.user.dto.UserDto;
 import com.teambj.stackoverflow.domain.user.entity.Reputation;
@@ -10,12 +9,10 @@ import com.teambj.stackoverflow.domain.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Positive;
 
 @RestController
 @Validated
@@ -24,6 +21,7 @@ public class UserController {
 
     private final UserMapper userMapper;
     private final UserService userService;
+
 
     public UserController(UserMapper userMapper, UserService userService) {
         this.userMapper = userMapper;
@@ -51,7 +49,7 @@ public class UserController {
     }
 
     @PatchMapping()
-    public ResponseEntity patchUser(@Valid @RequestBody UserDto.Patch userPatchDto, @AuthenticationPrincipal CustomUserDetailsService.CustomUserDetails userDetails) {
+    public ResponseEntity patchUser(@Valid @RequestBody UserDto.Patch userPatchDto, @AuthenticationPrincipal CustomUserDetailsService.UserPrincipal userDetails) {
 
         Long userId = userDetails.getUserId();
         User user = userMapper.userPatchToUser(userPatchDto);

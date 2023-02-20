@@ -2,14 +2,12 @@ package com.teambj.stackoverflow.auth;
 
 import com.teambj.stackoverflow.domain.user.entity.User;
 import com.teambj.stackoverflow.domain.user.repository.UserRepository;
-import nonapi.io.github.classgraph.concurrency.AutoCloseableExecutorService;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.nio.file.attribute.UserPrincipal;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -22,6 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public CustomUserDetailsService(UserRepository userRepository, CustomAuthorityUtils customAuthorityUtils) {
         this.userRepository = userRepository;
         this.customAuthorityUtils = customAuthorityUtils;
+
     }
 
     @Override
@@ -30,20 +29,21 @@ public class CustomUserDetailsService implements UserDetailsService {
         Optional<User> optional = userRepository.findByEmail(username);
         User findUser = optional.orElseThrow(() -> new RuntimeException("존재하지 않는 아이디, 비밀번호 입니다."));
 
-        return new CustomUserDetails(findUser);
-//        return UserPrincipal.create(findUser);
-
+        return new UserPrincipal(findUser);
     }
 
-    public class CustomUserDetails extends User implements UserDetails {
+    public class UserPrincipal extends User implements UserDetails {
 
-        CustomUserDetails(User user){
+
+        UserPrincipal(User user){
             setUserId(user.getUserId());
             setEmail(user.getEmail());
             setPassword(user.getPassword());
             setRoles(user.getRoles());
             setEmailVerified(user.getEmailVerified());
         }
+
+
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
             return customAuthorityUtils.createAuthorities(this.getRoles());
@@ -74,5 +74,6 @@ public class CustomUserDetailsService implements UserDetailsService {
             return getEmailVerified();
         }
     }
+
 
 }

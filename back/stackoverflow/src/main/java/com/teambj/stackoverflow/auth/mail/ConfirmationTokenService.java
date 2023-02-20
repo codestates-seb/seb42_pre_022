@@ -17,7 +17,9 @@ public class ConfirmationTokenService {
         this.mailSenderService = mailSenderService;
     }
 
-    //이메일 인증 토큰 생성 및 메일 전송
+    /*
+    이메일 인증 토큰 생성 및 메일 전송
+     */
     public void createEmailConfirmationToken(Long userId, String receiverEmail) {
         ConfirmationToken confirmationToken = ConfirmationToken.createEmailConfirmationToken(userId);
         confirmationTokenRepository.save(confirmationToken);
@@ -27,7 +29,6 @@ public class ConfirmationTokenService {
         mailMessage.setSubject("회원가입 이메일 인증");
         mailMessage.setText("http://localhost:8080/users/confirm-email?token=" + confirmationToken.getId());
         mailSenderService.sendEmail(mailMessage);
-
     }
 
     public ConfirmationToken findByIdAndExpirationDateAfterAndExpired(String confirmationTokenId) {
