@@ -1,5 +1,6 @@
 package com.teambj.stackoverflow.domain.user.entity;
 
+import com.teambj.stackoverflow.audit.Auditable;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

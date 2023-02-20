@@ -35,7 +35,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     }
 
-    private final class CustomUserDetails extends User implements UserDetails {
+    public class CustomUserDetails extends User implements UserDetails {
 
         CustomUserDetails(User user){
             setUserId(user.getUserId());
