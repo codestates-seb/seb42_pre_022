@@ -2,17 +2,17 @@ package com.teambj.stackoverflow.auth.mail;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter
+@Getter @Setter
 @NoArgsConstructor
 public class ConfirmationToken {
 
@@ -28,8 +28,18 @@ public class ConfirmationToken {
     private LocalDateTime expirationDate;
 
     @Column
-    private boolean expired;
+    private Boolean expired;
 
     @Column
-    private String userId;
+    private Long userId;
+
+    //이메일 인증 토큰 생성
+    public static ConfirmationToken createEmailConfirmationToken(Long userId){
+        ConfirmationToken confirmationToken = new ConfirmationToken();
+        confirmationToken.expirationDate = LocalDateTime.now().plusMinutes(EMAIL_TOKEN_EXPIRATION_TIME_VALUE);
+        confirmationToken.userId = userId;
+        confirmationToken.expired = false;
+        return confirmationToken;
+    }
+
 }

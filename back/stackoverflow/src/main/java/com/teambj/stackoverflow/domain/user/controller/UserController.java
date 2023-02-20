@@ -37,9 +37,10 @@ public class UserController {
         return new ResponseEntity<>(userMapper.userToUserResponse(createdUser), HttpStatus.OK);
     }
 
-    @GetMapping("accountVerification/{token}")
-    public ResponseEntity<String> verifyAccount(@PathVariable String token) {
-        userService.verifyAccount(token);
+    @GetMapping("confirm-email")
+    public ResponseEntity verifyAccount(@Valid @RequestParam String token) {
+
+        userService.confirmEmail(token);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

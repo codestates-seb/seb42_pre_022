@@ -1,7 +1,8 @@
 package com.teambj.stackoverflow.domain.user.service;
 
 import com.teambj.stackoverflow.auth.CustomAuthorityUtils;
-import com.teambj.stackoverflow.auth.mail.MailService;
+import com.teambj.stackoverflow.auth.mail.ConfirmationToken;
+import com.teambj.stackoverflow.auth.mail.ConfirmationTokenService;
 import com.teambj.stackoverflow.domain.user.entity.User;
 import com.teambj.stackoverflow.domain.user.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class UserService {
@@ -17,18 +17,17 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthorityUtils customAuthorityUtils;
-    private final VerificationTokenRepository verificationTokenRepository;
-    private final MailContentBuilder mailContentBuilder;
-    private final MailService mailService;
+    private final ConfirmationTokenService confirmationTokenService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CustomAuthorityUtils customAuthorityUtils, MailService mailService) {
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CustomAuthorityUtils customAuthorityUtils, ConfirmationTokenService confirmationTokenService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.customAuthorityUtils = customAuthorityUtils;
-        this.mailService = mailService;
+        this.confirmationTokenService = confirmationTokenService;
     }
 
-    public void createUser(User user) {
+    public User createUser(User user) {
 
         validateDuplicateUser(user.getEmail());
 
@@ -46,31 +45,19 @@ public class UserService {
             userRepository.save(createdUser);
         }
 
-        String token = generateVerificationToken(createdUser);
-        String link = Constants.ACTIVATION_EMAIL + "/" + token;
-        String message = mailContentBuilder.build(link);
+        confirmationTokenService.createEmailConfirmationToken(user.getUserId(), user.getEmail());
 
-        mailService.sendEmail(new NotificationEmail("게정 활성화를 실행해주세요.", user.getEmail(), message));
-
+        return createdUser;
 
     }
 
-    private String generateVerificationToken(User user) {
-        String token = UUID.randomUUID().toString();
-        VerificationToken verificationToken = new VerifcationToken();
-        verificationToken.setToken(token);
-        verificationToken.setUser(user);
-        verificationTokenRepository.save(verificationToken);
+    public User updateUser(User user) {
 
-        return token;
+        return userRepository.save(user);
+
     }
 
-    public void verifyAccount(String token) {
-        Optional<VerificationToken> verificationTokenOptional = verificationTokenRepository.findByToken(token);
-        verificationTokenOptional.orElseThrow(() -> new RuntimeException("잘못된 토큰"));
 
-        fetchUserAndEnable(verificationTokenOptional.get());
-    }
 
     private void validateDuplicateUser(String email) {
 
@@ -81,10 +68,16 @@ public class UserService {
         }
     }
 
-    private void fetchUserAndEnable(VerificationToken verificationToken) {
-        String email = verificationToken.getUser().getEmail();
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없음"));
-        user.setEnabled(true);
-        userRepository.save(user);
+    public void confirmEmail(String token) {
+        ConfirmationToken findConfirmationToken = confirmationTokenService.findByIdAndExpirationDateAfterAndExpired(token);
+        Optional<User> optionalUser = userRepository.findById(findConfirmationToken.getUserId());
+
+        User user = optionalUser.orElseThrow(() ->
+                new RuntimeException("no user"));
+
+        confirmationTokenService.useToken(findConfirmationToken);
+        user.setEmailVerified(true);
+        updateUser(user);
+
     }
 }

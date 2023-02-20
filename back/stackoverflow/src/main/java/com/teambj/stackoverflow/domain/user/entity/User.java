@@ -36,4 +36,7 @@ public class User {
     @JoinColumn(name = "reputation_id")
     private Reputation reputation;
 
+    @Column
+    private Boolean emailVerified = false;
+
 }
