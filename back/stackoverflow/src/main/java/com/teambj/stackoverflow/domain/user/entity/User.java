@@ -36,11 +36,4 @@ public class User {
     @JoinColumn(name = "reputation_id")
     private Reputation reputation;
 
-//    public void setReputation(Reputation reputation) {
-//        this.reputation = reputation;
-//        if (reputation.getUser() != this) {
-//            reputation.setUser(this);
-//        }
-//    }
-
 }

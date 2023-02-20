@@ -65,3 +65,18 @@ jwt:
   secret: temporary_secret_key_temporary_secret_key_temporary_secret_key_temporary_secret_key
   access-token-expiration-minutes: 1800000
   refresh-token-expiration-minutes : 604800000
+
+
+mail:
+  smtp:
+    host: smtp.gmail.com
+    port: 587
+    username: seb42_pre22@gmail.com //Gmail email
+    password: tenauoxdglfiktvs //Google 계정 2단계 인증 생성 후 앱 비밀번호 생성
+    auth: true
+    starttls:
+      enable: true //일부 SMTP 서버에는 TLS 연결이 필요하므로 TLS 보호 연결을 활성화한다
+  subject:
+    member:
+      registration: Thank you for joining our cafe!
+
