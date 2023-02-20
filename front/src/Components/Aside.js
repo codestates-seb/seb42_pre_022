@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStackOverflow } from "@fortawesome/free-brands-svg-icons";
 import { faMessage } from "@fortawesome/free-regular-svg-icons"
+import sprites from '../assets/sprites.svg';
 
 const Sidebar = styled.div`
   margin-left: 24px;
@@ -33,23 +34,26 @@ const SideWidget = styled.div`
     font-size: 13px;
     color: var(--black-700);
     display: flex;
-    .icon-pencil {
-    width: 15px;
-    height: 15px;
-    margin-right: 5px;
-    background-image: url(images/sprites.svg);
-    background-position: -22px 193px;
+    .sponsored {
+      color: var(--black-500);
+    }
+    .icon-stack {
+      margin-right: 5px;
+      padding-top: 2px;
+    }
+    .icon-message {
+      color: var(--blue-600);
+      margin-right: 5px;
+      padding-top: 2px;
+    }
   }
-  .icon-stack {
-    margin-right: 5px;
-    padding-top: 2px;
-  }
-  .icon-message {
-    color: var(--blue-600);
-    margin-right: 5px;
-    padding-top: 2px;
-  }
-  }
+`
+const PencilDiv = styled.div`
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+  background-image: url(${props => props.url});
+  background-position: -22px 193px;
 `
 
 function Aside() {
@@ -59,14 +63,14 @@ function Aside() {
         <ul>
           <li className="widget-title">The Overflow Blog</li>
           <li className="widget-content">
-            <div className="icon-pencil"></div>
+            <PencilDiv url={sprites} />
             <div>
               Serverless scales well, but most databases don’t
-              <div>sponsored post</div>
+              <div className="sponsored">sponsored post</div>
             </div>
           </li>
           <li className="widget-content">
-            <div className="icon-pencil"></div>
+            <PencilDiv url={sprites} />
             <div>
               Monitoring debt builds up faster than software teams can pay it off
             </div>
