@@ -20,6 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public CustomUserDetailsService(UserRepository userRepository, CustomAuthorityUtils customAuthorityUtils) {
         this.userRepository = userRepository;
         this.customAuthorityUtils = customAuthorityUtils;
+
     }
 
     @Override
@@ -28,19 +29,21 @@ public class CustomUserDetailsService implements UserDetailsService {
         Optional<User> optional = userRepository.findByEmail(username);
         User findUser = optional.orElseThrow(() -> new RuntimeException("존재하지 않는 아이디, 비밀번호 입니다."));
 
-        return new CustomUserDetails(findUser);
-
+        return new UserPrincipal(findUser);
     }
 
-    private final class CustomUserDetails extends User implements UserDetails {
+    public class UserPrincipal extends User implements UserDetails {
 
-        CustomUserDetails(User user){
+
+        UserPrincipal(User user){
             setUserId(user.getUserId());
             setEmail(user.getEmail());
             setPassword(user.getPassword());
             setRoles(user.getRoles());
             setEmailVerified(user.getEmailVerified());
         }
+
+
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
             return customAuthorityUtils.createAuthorities(this.getRoles());
@@ -68,9 +71,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         @Override
         public boolean isEnabled() {
-
             return getEmailVerified();
         }
     }
+
 
 }

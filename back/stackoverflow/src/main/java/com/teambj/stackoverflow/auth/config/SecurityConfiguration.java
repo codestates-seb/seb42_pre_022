@@ -1,7 +1,6 @@
 package com.teambj.stackoverflow.auth.config;
 
-
-import com.teambj.stackoverflow.auth.CustomAuthorityUtils;
+import com.teambj.stackoverflow.auth.CustomUserDetailsService;
 import com.teambj.stackoverflow.auth.filter.JwtAuthenticationFilter;
 import com.teambj.stackoverflow.auth.JwtTokenizer;
 import com.teambj.stackoverflow.auth.filter.JwtVerificationFilter;
@@ -31,11 +30,11 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfiguration{
 
     private final JwtTokenizer jwtTokenizer;
-    private final CustomAuthorityUtils authorityUtils;
+    private final CustomUserDetailsService userDetailsService;
 
-    public SecurityConfiguration(JwtTokenizer jwtTokenizer, CustomAuthorityUtils authorityUtils) {
+    public SecurityConfiguration(JwtTokenizer jwtTokenizer, CustomUserDetailsService userDetailsService) {
         this.jwtTokenizer = jwtTokenizer;
-        this.authorityUtils = authorityUtils;
+        this.userDetailsService = userDetailsService;
     }
 
     @Bean
@@ -74,7 +73,10 @@ public class SecurityConfiguration{
 
     }
 
-    //SpringSecurityFilter 등록
+    /*
+    SpringSecurityFilter 등록
+    JwtAuthenticationFilter, JwtVerificationFilter
+     */
     public class CustomFilterConfigurer extends AbstractHttpConfigurer<CustomFilterConfigurer, HttpSecurity> {
 
         @Override
@@ -86,7 +88,7 @@ public class SecurityConfiguration{
             jwtAuthenticationFilter.setAuthenticationSuccessHandler(new UserAuthenticationSuccessHandler());
             jwtAuthenticationFilter.setAuthenticationFailureHandler(new UserAuthenticationFailureHandler());
 
-            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils);
+            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, userDetailsService);
 
             builder.addFilter(jwtAuthenticationFilter);
             builder.addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);

@@ -53,20 +53,21 @@ public class UserService {
 
     public User updateUser(User user) {
 
-        return userRepository.save(user);
+        User findUser = verifyUser(user.getUserId());
+
+        Optional.ofNullable(user.getDisplayName())
+                .ifPresent(findUser::setDisplayName);
+
+        Optional.ofNullable(user.getProfileImage())
+                .ifPresent(findUser::setProfileImage);
+
+        System.out.println(findUser.getUserId());
+
+        return userRepository.save(findUser);
 
     }
 
 
-
-    private void validateDuplicateUser(String email) {
-
-        Optional<User> optional = userRepository.findByEmail(email);
-        if (optional.isPresent()) {
-            throw new RuntimeException("Exist Email");
-            //로그인으로 이동
-        }
-    }
 
     public void confirmEmail(String token) {
         ConfirmationToken findConfirmationToken = confirmationTokenService.findByIdAndExpirationDateAfterAndExpired(token);
@@ -77,7 +78,20 @@ public class UserService {
 
         confirmationTokenService.useToken(findConfirmationToken);
         user.setEmailVerified(true);
-        updateUser(user);
+        userRepository.save(user);
 
+    }
+
+    private void validateDuplicateUser(String email) {
+
+        Optional<User> optional = userRepository.findByEmail(email);
+        if (optional.isPresent()) {
+            throw new RuntimeException("Exist Email");
+        }
+    }
+
+    private User verifyUser(Long userId) {
+        Optional<User> optional = userRepository.findById(userId);
+        return optional.orElseThrow(() -> new RuntimeException("No valid user"));
     }
 }

@@ -10,4 +10,6 @@ public interface UserMapper {
     User userPostToUser(UserDto.Post userPost);
 
     UserDto.Response userToUserResponse(User user);
+
+    User userPatchToUser(UserDto.Patch userPatchDto);
 }

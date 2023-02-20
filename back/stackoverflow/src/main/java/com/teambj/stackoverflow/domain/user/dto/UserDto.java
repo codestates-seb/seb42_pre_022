@@ -28,6 +28,19 @@ public class UserDto {
 
     @Getter
     @AllArgsConstructor
+    public static class Patch{
+        private Long userId;
+        private String displayName;
+        private String profileImage;
+
+        public void setUserId(long userId) {
+            this.userId = userId;
+        }
+
+    }
+
+    @Getter
+    @AllArgsConstructor
     public static class Response{
         private long userId;
         private String email;

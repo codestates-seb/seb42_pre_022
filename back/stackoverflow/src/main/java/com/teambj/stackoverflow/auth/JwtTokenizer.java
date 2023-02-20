@@ -1,6 +1,6 @@
 package com.teambj.stackoverflow.auth;
 
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
@@ -56,6 +56,23 @@ public class JwtTokenizer {
                 .compact();
     }
 
+
+    public Date getTokenExpiration(int accessTokenExpirationMinutes) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, accessTokenExpirationMinutes);
+
+        return calendar.getTime();
+    }
+
+    private Key getKeyFromBase64EncodedKey(String base64EncodedSecretKey) {
+        byte[] keyBytes = Decoders.BASE64.decode(base64EncodedSecretKey);
+
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    /*
+    JwtVerification
+     */
     public Map<String, Object> verifySignature(String jws, String base64EncodedSecretKey) {
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
 
@@ -63,24 +80,6 @@ public class JwtTokenizer {
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(jws).getBody();
-
     }
-
-    public Date getTokenExpiration(int accessTokenExpirationMinutes) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE, accessTokenExpirationMinutes);
-        Date expiration = calendar.getTime();
-
-        return expiration;
-    }
-
-    private Key getKeyFromBase64EncodedKey(String base64EncodedSecretKey) {
-
-        byte[] keyBytes = Decoders.BASE64.decode(base64EncodedSecretKey);
-        Key key = Keys.hmacShaKeyFor(keyBytes);
-
-        return key;
-    }
-
 
 }
