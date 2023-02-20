@@ -51,7 +51,7 @@ logging:
 #  allowed-methods: GET,POST,PUT,DELETE,OPTIONS
 #  max-age: 3600
 
-# Auth & OAuth
+ #Auth & OAuth
 #app:
 #  auth:
 #    tokenSecret: ${JWT_SECRET_KEY}
@@ -60,3 +60,12 @@ logging:
 #  oauth2:
 #    authorizedRedirectUris:
 #      - http://localhost/recieve
+
+jwt:
+  secret: temporary_secret_key_temporary_secret_key_temporary_secret_key_temporary_secret_key
+  access-token-expiration-minutes: 1800000
+  refresh-token-expiration-minutes : 604800000
+mail:
+  address:
+    admin: admin@gmail.com
+
