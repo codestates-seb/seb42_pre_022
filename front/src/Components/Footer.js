@@ -6,6 +6,7 @@ import sprites from '../assets/sprites.svg';
 const Container = styled.div`
   background-color: var(--black-800);
   color: var(--black-350) ;
+  width: 100vw;
 `
 
 const FooterContainer = styled.div`

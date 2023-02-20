@@ -15,11 +15,13 @@ const GlobalStyle = createGlobalStyle`
     position: relative;
     margin: 0 auto;
     padding-top: 50px;
-    max-width: 1264px;
+    /* max-width: 1264px; */
     width: 100%;
     height: calc(100vh - 50px);
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
+    align-items: center;
   }
   .content {
     max-width: 1100px;
