@@ -17,6 +17,21 @@ spring:
         format_sql: true
         highlight_sql: true
         use_sql_comments: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${gmail-username}
+    password: ${gmail-password}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+            required: true
+          auth: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
     #  security:
     # In-Memory Test
     # user:
@@ -31,6 +46,8 @@ spring:
 #            scope:
 #              - email
 #              - profile
+
+
 server:
   servlet:
     encoding:
@@ -62,10 +79,14 @@ logging:
 #      - http://localhost/recieve
 
 jwt:
-  secret: temporary_secret_key_temporary_secret_key_temporary_secret_key_temporary_secret_key
+  secret: ${secret-key}
   access-token-expiration-minutes: 1800000
   refresh-token-expiration-minutes : 604800000
+
+
+
+
 mail:
   address:
-    admin: admin@gmail.com
+    admin: ${admin-mail}
 

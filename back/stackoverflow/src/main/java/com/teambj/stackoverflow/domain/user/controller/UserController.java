@@ -8,10 +8,7 @@ import com.teambj.stackoverflow.domain.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -37,7 +34,14 @@ public class UserController {
 
         User createdUser = userService.createUser(user);
 
-
         return new ResponseEntity<>(userMapper.userToUserResponse(createdUser), HttpStatus.OK);
+    }
+
+    @GetMapping("confirm-email")
+    public ResponseEntity verifyAccount(@Valid @RequestParam String token) {
+
+        userService.confirmEmail(token);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

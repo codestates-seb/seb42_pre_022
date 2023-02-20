@@ -39,6 +39,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             setEmail(user.getEmail());
             setPassword(user.getPassword());
             setRoles(user.getRoles());
+            setEmailVerified(user.getEmailVerified());
         }
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -67,7 +68,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         @Override
         public boolean isEnabled() {
-            return true;
+
+            return getEmailVerified();
         }
     }
 
