@@ -6,6 +6,7 @@ import Nav from "./Components/Nav";
 import Aside from "./Components/Aside";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
+import Askquestion from "./Pages/Askquestion";
 import { Routes, Route } from "react-router-dom";
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
       <GlobalStyle />
       <Header />
       <div className="wrap">
+        {/* {(String(window.location.href).slice(21) === "/") ? <Nav /> : null} */}
         <Routes>
           <Route path="/"
             element={<>
@@ -25,11 +27,12 @@ function App() {
             </div>
             </>}
           />
+          <Route path="/askquestion" element={<Askquestion />}/>
           <Route path="/users/login" element={<Login />} />
           <Route path="/users/signup" element={<Signup />} />
         </Routes>
-      </div>
       <Footer />
+      </div>
     </div>
   );
 }
