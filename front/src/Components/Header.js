@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import { loginActions } from "../Reducers/loginReducer";
 import { BasicBlueButton } from "../Styles/Buttons"
-import { SearchBoxDiv, SearchInput } from "../Styles/Divs";
+import SearchBar from "./SearchBar";
 import { ReactComponent as SearchIcon } from "../assets/searchIcon.svg";
 import { ReactComponent as InboxIcon } from "../assets/inboxIcon.svg";
 import { ReactComponent as AchiveIcon } from "../assets/achiveIcon.svg";
@@ -164,7 +164,6 @@ function Header() {
   const dispatch = useDispatch();
   const [menu, setMenu] = useState(false)
 
-  // TODO /ask로 접근했을 때(askQuestion) 메뉴바 생기는지 확인 
   let { pathname } = useLocation();
 
   const handleClick = () => {
@@ -188,10 +187,7 @@ function Header() {
           <HeadTextTabLi>Products</HeadTextTabLi>
           <HeadTextTabLi>For Teams</HeadTextTabLi>
         </ul>
-        <SearchBoxDiv>
-          <SearchInput type="text" maxLength={240} placeholder="Search..." />
-          <SearchIcon />
-        </SearchBoxDiv>
+        <SearchBar />
         <ul>
           <HeadLogoTabLi><SearchIcon /></HeadLogoTabLi>
           {state.login && loginTabList.map((el, i) => <HeadLogoTabLi key={i}>{el}</HeadLogoTabLi>)}
