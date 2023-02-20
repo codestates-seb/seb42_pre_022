@@ -20,8 +20,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${gmail-username}
-    password: ${gmail-password}
+    username: ${gmail_username}
+    password: ${gmail_password}
     properties:
       mail:
         smtp:
@@ -79,14 +79,11 @@ logging:
 #      - http://localhost/recieve
 
 jwt:
-  secret: ${secret-key}
+  secret: ${secret_key}
   access-token-expiration-minutes: 1800000
   refresh-token-expiration-minutes : 604800000
 
-
-
-
 mail:
   address:
-    admin: ${admin-mail}
+    admin: ${admin_mail}
 

@@ -1,6 +1,7 @@
 package com.teambj.stackoverflow.domain.user.service;
 
 import com.teambj.stackoverflow.auth.CustomAuthorityUtils;
+import com.teambj.stackoverflow.auth.JwtTokenizer;
 import com.teambj.stackoverflow.auth.mail.ConfirmationToken;
 import com.teambj.stackoverflow.auth.mail.ConfirmationTokenService;
 import com.teambj.stackoverflow.domain.user.entity.User;
@@ -18,13 +19,15 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthorityUtils customAuthorityUtils;
     private final ConfirmationTokenService confirmationTokenService;
+    private final JwtTokenizer jwtTokenizer;
 
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CustomAuthorityUtils customAuthorityUtils, ConfirmationTokenService confirmationTokenService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CustomAuthorityUtils customAuthorityUtils, ConfirmationTokenService confirmationTokenService, JwtTokenizer jwtTokenizer) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.customAuthorityUtils = customAuthorityUtils;
         this.confirmationTokenService = confirmationTokenService;
+        this.jwtTokenizer = jwtTokenizer;
     }
 
     public User createUser(User user) {
@@ -53,20 +56,21 @@ public class UserService {
 
     public User updateUser(User user) {
 
-        return userRepository.save(user);
+        User findUser = verifyUser(user.getUserId());
+
+        Optional.ofNullable(user.getDisplayName())
+                .ifPresent(findUser::setDisplayName);
+
+        Optional.ofNullable(user.getProfileImage())
+                .ifPresent(findUser::setProfileImage);
+
+        System.out.println(findUser.getUserId());
+
+        return userRepository.save(findUser);
 
     }
 
 
-
-    private void validateDuplicateUser(String email) {
-
-        Optional<User> optional = userRepository.findByEmail(email);
-        if (optional.isPresent()) {
-            throw new RuntimeException("Exist Email");
-            //로그인으로 이동
-        }
-    }
 
     public void confirmEmail(String token) {
         ConfirmationToken findConfirmationToken = confirmationTokenService.findByIdAndExpirationDateAfterAndExpired(token);
@@ -77,7 +81,20 @@ public class UserService {
 
         confirmationTokenService.useToken(findConfirmationToken);
         user.setEmailVerified(true);
-        updateUser(user);
+        userRepository.save(user);
 
+    }
+
+    private void validateDuplicateUser(String email) {
+
+        Optional<User> optional = userRepository.findByEmail(email);
+        if (optional.isPresent()) {
+            throw new RuntimeException("Exist Email");
+        }
+    }
+
+    private User verifyUser(Long userId) {
+        Optional<User> optional = userRepository.findById(userId);
+        return optional.orElseThrow(() -> new RuntimeException("No valid user"));
     }
 }

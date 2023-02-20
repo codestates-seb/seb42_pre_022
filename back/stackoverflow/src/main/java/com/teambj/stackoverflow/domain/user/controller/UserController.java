@@ -1,5 +1,6 @@
 package com.teambj.stackoverflow.domain.user.controller;
 
+import com.google.gson.Gson;
 import com.teambj.stackoverflow.domain.user.dto.UserDto;
 import com.teambj.stackoverflow.domain.user.entity.Reputation;
 import com.teambj.stackoverflow.domain.user.entity.User;
@@ -7,10 +8,12 @@ import com.teambj.stackoverflow.domain.user.mapper.UserMapper;
 import com.teambj.stackoverflow.domain.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 
 @RestController
 @Validated
@@ -43,5 +46,17 @@ public class UserController {
         userService.confirmEmail(token);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping()
+    public ResponseEntity patchUser(@Valid @RequestBody UserDto.Patch userPatchDto, @AuthenticationPrincipal User userDetails) {
+
+        Long userId = userDetails.getUserId();
+        User user = userMapper.userPatchToUser(userPatchDto);
+        user.setUserId(userId);
+
+        User updatedUser = userService.updateUser(user);
+
+        return new ResponseEntity<>(userMapper.userToUserResponse(updatedUser), HttpStatus.OK);
     }
 }

@@ -2,12 +2,14 @@ package com.teambj.stackoverflow.auth;
 
 import com.teambj.stackoverflow.domain.user.entity.User;
 import com.teambj.stackoverflow.domain.user.repository.UserRepository;
+import nonapi.io.github.classgraph.concurrency.AutoCloseableExecutorService;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.nio.file.attribute.UserPrincipal;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -29,6 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         User findUser = optional.orElseThrow(() -> new RuntimeException("존재하지 않는 아이디, 비밀번호 입니다."));
 
         return new CustomUserDetails(findUser);
+//        return UserPrincipal.create(findUser);
 
     }
 
@@ -68,7 +71,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         @Override
         public boolean isEnabled() {
-
             return getEmailVerified();
         }
     }
