@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import { loginActions } from "../Reducers/loginReducer";
 import { BasicBlueButton } from "../Styles/Buttons"
+import SearchBar from "./SearchBar";
 import { ReactComponent as SearchIcon } from "../assets/searchIcon.svg";
 import { ReactComponent as InboxIcon } from "../assets/inboxIcon.svg";
 import { ReactComponent as AchiveIcon } from "../assets/achiveIcon.svg";
@@ -12,26 +13,30 @@ import { ReactComponent as ExchangeIcon } from "../assets/exchangeIcon.svg";
 import logo from "../assets/sprites.svg"
 
 const Containerheader = styled.header`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  z-index:5050;
+  position: fixed;
+  min-width: 425px;
+  height: 50px;
+  border-top:3px solid var(--orange);
+  background-color: var(--black-025);
+  box-shadow:0 1px 2px hsla(0,0%,0%,0.05), 0 1px 4px hsla(0, 0%, 0%, 0.05), 0 2px 8px hsla(0, 0%, 0%, 0.05);
+  > div {
+    height: 100%;
+    width: 79rem;
+    max-width: 100%;
+    margin: 0 auto;
     display: flex;
-    z-index:5050;
-    position: relative;
     justify-content: center;
     align-items: center;
-    position: fixed;
-    width: 97em;
-    max-width: 100%;
-    min-width: 425px;
-    height: 50px;
-    border-top:3px solid var(--orange);
-    background-color: var(--black-025);
-    box-shadow:0 1px 2px hsla(0,0%,0%,0.05), 0 1px 4px hsla(0, 0%, 0%, 0.05), 0 2px 8px hsla(0, 0%, 0%, 0.05);
-    margin: 0 auto;
     > div, ul {
       display: flex;
       align-items: center;
       height: 100%;
     }
-    ul:nth-child(2) {
+    > ul:nth-child(2) {
       padding: 2px 0;
       li:not(:nth-child(2)) {
         display: ${props => props.login.login ? "none" : "block"};
@@ -40,7 +45,7 @@ const Containerheader = styled.header`
         }
       }
     }
-    ul:nth-child(4) {
+    > ul:nth-child(4) {
       gap: 4px;
       list-style: none;
       padding-right: 12px;
@@ -54,6 +59,7 @@ const Containerheader = styled.header`
         margin-left: auto;
       }
     }
+  }
 `
 const HeadTabLi = styled.li`
   list-style: none;
@@ -64,7 +70,7 @@ const HeadTabLi = styled.li`
   :hover {
     background-color: var(--black-075);
   }
-`  
+`
 const HeadLogoI = styled.i`
   display: flex;
   align-items: center;
@@ -108,42 +114,6 @@ const HeadTextTabLi = styled(HeadTabLi)`
   }
   @media only screen and (max-width: 640px) {
     font-size: 11px;
-  }
-`
-const SearchInput = styled.input`
-  flex: 1;
-  display: block;
-  width: 100%;
-  padding: 0.6em 0.7em;
-  padding-left:32px;
-  color: var(--black-700);
-  line-height: calc(15/13);
-  border: 1px solid var(--black-200);
-  border-radius: 3px;
-  font-size: 13px;
-  background-color: var(--white);
-  outline: 0;
-  :focus {
-    border-color: var(--blue-300);
-    box-shadow: 0 0 0 4px hsla(206, 100%, 40%, .15);
-  }
-`
-const SearchBoxDiv = styled.div`
-  flex-grow: 1;
-  position: relative;
-  margin: 0 8px;
-  > svg {
-    position: absolute;
-    top: 50%;
-    right: auto;
-    left: 0.7em;
-    fill: var(--black-400);
-    transform: translateY(-50%);
-    pointer-events: none;    
-  }
-
-  @media only screen and (max-width: 640px) {
-    display: none !important;
   }
 `
 const MenubarLi = styled(HeadLogoTabLi)`
@@ -194,8 +164,7 @@ function Header() {
   const dispatch = useDispatch();
   const [menu, setMenu] = useState(false)
 
-  // TODO /ask로 접근했을 때(askQuestion) 메뉴바 생기는지 확인 
-  let { params } = useParams();
+  let { pathname } = useLocation();
 
   const handleClick = () => {
     dispatch(loginActions.changeLogin())
@@ -208,25 +177,24 @@ function Header() {
 
   return (
     <Containerheader login={state}>
-      <ul>
-        <MenubarLi onClick={openMenu} isopen={menu ? 1 : null} nowparams={params && params.slice(-3) === "ask" ? 1 : null}><div><i/></div></MenubarLi>
-        <HeadLogoTabLi><Link to="/"><HeadLogoI url={logo}/></Link></HeadLogoTabLi>
-      </ul>
-      <ul>
-        <HeadTextTabLi>About</HeadTextTabLi>
-        <HeadTextTabLi>Products</HeadTextTabLi>
-        <HeadTextTabLi>For Teams</HeadTextTabLi>
-      </ul>
-      <SearchBoxDiv>
-        <SearchInput type="text" maxLength={240} placeholder="Search..." />
-        <SearchIcon />
-      </SearchBoxDiv>
-      <ul>
-        <HeadLogoTabLi><SearchIcon /></HeadLogoTabLi>
-        {state.login && loginTabList.map((el, i) => <HeadLogoTabLi key={i}>{el}</HeadLogoTabLi>)}
-        <li><BasicBlueButton skyblue={1} to={state.login ? "/" : "/users/login"} onClick={handleClick}>{loginButton}</BasicBlueButton></li>
-        {!state.login && <li><BasicBlueButton to="/users/signup">Sign up</BasicBlueButton></li>}
-      </ul>
+      <div>
+        <ul>
+          <MenubarLi onClick={openMenu} isopen={menu ? 1 : null} nowparams={pathname && pathname.slice(-3) === "ask" ? 1 : null}><div><i /></div></MenubarLi>
+          <HeadLogoTabLi><Link to="/"><HeadLogoI url={logo} /></Link></HeadLogoTabLi>
+        </ul>
+        <ul>
+          <HeadTextTabLi>About</HeadTextTabLi>
+          <HeadTextTabLi>Products</HeadTextTabLi>
+          <HeadTextTabLi>For Teams</HeadTextTabLi>
+        </ul>
+        <SearchBar />
+        <ul>
+          <HeadLogoTabLi><SearchIcon /></HeadLogoTabLi>
+          {state.login && loginTabList.map((el, i) => <HeadLogoTabLi key={i}>{el}</HeadLogoTabLi>)}
+          <li><BasicBlueButton skyblue={1} to={state.login ? "/" : "/users/login"} onClick={handleClick}>{loginButton}</BasicBlueButton></li>
+          {!state.login && <li><BasicBlueButton to="/users/signup">Sign up</BasicBlueButton></li>}
+        </ul>
+      </div>
     </Containerheader>
   );
 }
