@@ -55,7 +55,6 @@ const VoteButton = styled.button`
     fill: var(--black-200);
     vertical-align: bottom;
   }
-
 `
 const WriterRelatedDiv = styled.div`
   display: flex;
@@ -64,15 +63,17 @@ const WriterRelatedDiv = styled.div`
   padding: 16px 0;
   font-size: 13px;
   color: var(--black-500);
+  justify-content: flex-end;
+  flex-flow: row wrap;
   > div {
     margin: 5px 0;
-    width: 200px;
     > span {
       display:inline-block;
       cursor:pointer;
     }
   }
   .qapost {
+    width: 96px;
     flex: 1 auto;
     margin-left: -4px;
     > span {
@@ -82,25 +83,17 @@ const WriterRelatedDiv = styled.div`
       color: var(--black-400);
     }
   }
-  .qamodified {
-    padding: 0 6px;
-    > span {
-      font-size: 12px;
-      color: var(--blue);
-    }
-    > span:hover {
-      color: var(--blue-500);
-    }
-  }
-  .qawriter {
-    margin-top: 0;
-    padding: 7px;
-    border-radius: 3px;
-    background-color: var(${props => props.writer? "--powder" : null});
-    font-size: 12px;
-  }
-  
 `
+const WriterCardDiv = styled.div`
+  width: 200px;
+  font-size: 12px;
+  margin-top: 0 !important;
+  padding: 7px;
+
+  border-radius: ${props => props.iswriter ? "3px": null};
+  background-color: var(${props => props.iswriter? "--powder" : null});
+`
+
 const QAbodydiv = styled.div`
   padding-right: 16px;
   font-size: 15px;
@@ -149,11 +142,14 @@ function QandADiv( {type} ) {
         {type ? null : <TagsDiv />}       
         <WriterRelatedDiv writer={1}>
           <div className="qapost"><span>Share</span><span>Edit</span><span>Follow</span></div>
-          <div className="qamodified"><span>수정됐으면 ? 수정한 날짜 edited Feb 13 at 6:24 : null</span></div>
-          <div className="qawriter">
+          <WriterCardDiv className="card" iswriter={null}>
+            <span className="linktext">edited Feb 13 at 6:24</span>
+            {<UserCard />}
+          </WriterCardDiv>
+          <WriterCardDiv className="qawriter card" iswriter={1}>
             <div>asked {"Feb 10 at 18:04"}</div>
             <UserCard />
-          </div>
+          </WriterCardDiv>
         </WriterRelatedDiv>
       </div>
       <span></span>

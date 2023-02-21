@@ -36,10 +36,13 @@ const QuestionContainerMain = styled.main`
 
   @media only screen and (max-width: 980px) {
     div {
-    float: none !important;
+      float: none !important;
+    }
+    > div:nth-child(4) {
+      width: 100%;
+      margin: 0;
+    }
   }
-}
-
 `
 const QuestionDetailDiv = styled.div`
   white-space: nowrap;
@@ -50,12 +53,16 @@ const QuestionDetailDiv = styled.div`
     color: var(--black-500);
     margin-right: 2px;
   }
+  @media only screen and (max-width: 980px) {
+    font-size: 11px !important;
+  }
 `
 const QuestionDiv = styled.div`
   display: flex;
   flex-direction: column;
   float: left;
   width: calc(100% - 326px);
+  color: var(--black-800);
   .answerpart {
     padding-top: 10px;
     > div {
@@ -65,21 +72,21 @@ const QuestionDiv = styled.div`
       }
     }
     h2 {
-      margin: 1rem 0 0.5rem 0;
+      margin: 1rem 0 0.8rem 0;
       line-height: 1.3;
       font-weight: 400;
-      color: var(--black-800);
       font-size: 1.3rem;
       > div {
         display: inline;
       }
-      > a {
-        color: var(--blue);
-        text-decoration: none;
-      }
-      > a:hover {
-        color: var(--blue-500);
-      }
+    }
+  }
+  .postanswer {
+    display: flex;
+    padding: 10px 0;
+    > em {
+      margin: 1em 0;
+      margin-left: 2px;
     }
   }
 
@@ -95,40 +102,42 @@ function Question() {
   }
 
   return (
-    <QuestionContainerMain className="content">
-      <div>
-        <h1><a href="www.naver.com">(제목)Cursor Resize on scroll bar of div</a></h1>
-        <BasicBlueButton to="/askquestion">Ask Question</BasicBlueButton>
-      </div>
-      <div>
-        <QuestionDetailDiv><span>Asked</span><span>{calculateDate("today")}</span></QuestionDetailDiv>
-        {/* TODO 가장 최근에 달린 답변의 날짜 */}
-        <QuestionDetailDiv><span>Modified</span><span>{calculateDate("today")}</span></QuestionDetailDiv>
-        <QuestionDetailDiv><span>Viewed</span><span>{"7"} times</span></QuestionDetailDiv>
-      </div>
-      <QuestionDiv>
+    <div className="content">
+      <QuestionContainerMain >
         <div>
-          <QandADiv />
+          <h1><a href="www.naver.com">(제목)Cursor Resize on scroll bar of div</a></h1>
+          <BasicBlueButton to="/askquestion">Ask Question</BasicBlueButton>
         </div>
-        <div className="answerpart">
+        <div>
+          <QuestionDetailDiv><span>Asked</span><span>{calculateDate("today")}</span></QuestionDetailDiv>
+          {/* TODO 가장 최근에 달린 답변의 날짜 */}
+          <QuestionDetailDiv><span>Modified</span><span>{calculateDate("today")}</span></QuestionDetailDiv>
+          <QuestionDetailDiv><span>Viewed</span><span>{"7"} times</span></QuestionDetailDiv>
+        </div>
+        <QuestionDiv>
           <div>
-            <h2>{6} Answers</h2>
-            <QandADiv type="answer">답변 map함수</QandADiv>
+            <QandADiv />
           </div>
-          <div>
-            <h2>Your Answer</h2>
-            <WriteBoard />
-            {state.login ? null : <LoginWith />}
+          <div className="answerpart">
             <div>
-              <BasicBlueButton to="/questions/detail">Post your Answer</BasicBlueButton>
-              {state.login ? null : <p>(비로그인 시)By clicking "Post Your Answer", you agree to our terms of service, privacy policy and cookie policy</p>}
+              <h2>{6} Answers</h2>
+              <QandADiv type="answer">답변 map함수</QandADiv>
             </div>
+            <div>
+              <h2>Your Answer</h2>
+              <WriteBoard />
+              {state.login ? null : <LoginWith />}
+              <div className="postanswer">
+                <BasicBlueButton to="/questions/detail">Post your Answer</BasicBlueButton>
+                {state.login ? null : <em>By clicking "Post Your Answer", you agree to our <span className="linktext">terms of service</span>, <span className="linktext">privacy policy</span> and <span className="linktext">cookie policy</span></em>}
+              </div>
+            </div>
+            <h2>{state.login ? "Not the answer you're looking for? " : null}Browse other questions tagged <TagsDiv /> or <Link className="linktext" to="/askquestion">ask your own question.</Link></h2>
           </div>
-          <h2>Not the answer you're looking for? Browse other questions tagged <TagsDiv /> or <Link to="/askquestion">ask your own question.</Link></h2>
-        </div>
-      </QuestionDiv>
-      <Aside />
-    </QuestionContainerMain>
+        </QuestionDiv>
+        <Aside />
+      </QuestionContainerMain>
+    </div>
   );
 }
 

@@ -60,11 +60,19 @@ const GlobalStyle = createGlobalStyle`
     padding-right: 16px;
     }
     @media screen and (max-width: 640px){
-    padding-left: 12px;
-    padding-right: 12px;
     width: 100%;
-}
+    border: none;
+    }
   }
+
+  .linktext {
+    color: var(--blue);
+    text-decoration: none;
+  }
+  .linktext:hover {
+    color: var(--blue-500);
+  }
+
   :root {
     /* color */
     --white: hsl(0,0%,100%);

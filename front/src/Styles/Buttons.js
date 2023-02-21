@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 export const BasicBlueButton = styled(Link)`
+  display:flex;
+  align-items:center;
   cursor: pointer;
   padding: 8px .8em;
   box-shadow: inset 0 1px 0 0 hsla(0,0%,100%,0.7);
