@@ -15,7 +15,7 @@ function App() {
     <div className="app-wrap">
       <GlobalStyle />
       <Header />
-      <div className="wrap">
+      <div className="container">
         {/* {(String(window.location.href).slice(21) === "/") ? <Nav /> : null} */}
         <Routes>
           <Route path="/"
@@ -23,7 +23,6 @@ function App() {
             <Nav />
             <div className="content">
               <Questions />
-              <Aside />
             </div>
             </>}
           />
@@ -31,8 +30,8 @@ function App() {
           <Route path="/users/login" element={<Login />} />
           <Route path="/users/signup" element={<Signup />} />
         </Routes>
+      </div>  
       <Footer />
-      </div>
     </div>
   );
 }
