@@ -3,6 +3,7 @@ import { LogoDiv } from "../Components/Footer";
 import sprites from "../assets/sprites.svg";
 import { BasicBlueButton } from "../Styles/Buttons";
 import LoginWith from "../Components/LoginWith";
+import { Link } from "react-router-dom";
 
 //TODO: Footer에 있는 LogoDiv Styles로 옮기고 경로 수정하기
 
@@ -26,6 +27,14 @@ const LoginContainer = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+  }
+  .signup-link {
+    padding: 24px;
+    display: flex;
+    .signup-link-notice {
+      margin-right: 6px;
+    }
+    a {text-decoration: none;color: var(--blue-600);}a:visited {background: none;}a:active {background: none;}a:hover {color: var(--blue-500)}
   }
 `
 
@@ -68,7 +77,10 @@ const LoginInput = styled.input`
 `
 
 const LoginButton = styled(BasicBlueButton)`
-  width: 250px;
+  width: 100%;
+  padding: 12px;
+  display: block;
+  text-align: center;
 `
 
 function Login() {
@@ -95,6 +107,10 @@ function Login() {
           </LoginFormDiv>
           <LoginButton>Log in</LoginButton>
         </LoginForm>
+        <div className="signup-link">
+          <div className="signup-link-notice">Don’t have an account?</div>
+          <Link to="/users/signup">Sign up</Link>
+        </div>
       </div>
     </LoginContainer>
   );
