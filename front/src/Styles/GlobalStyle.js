@@ -23,11 +23,32 @@ const GlobalStyle = createGlobalStyle`
     justify-content: space-between;
     align-items: center;
   }
+  .container{
+    position: relative;
+    flex: 1 0 auto;
+    max-width: 1264px;
+    width: 100%;
+    background: none;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    margin-top: 0;
+    padding-top: 50px;
+  }
+  html{
+    font-size: 13px;
+  }
+
   .content {
     max-width: 1100px;
     width: calc(100% - 164px);
     display: flex;
-    border-left: 1px solid var(--black-100);
+    border: 1px solid var(--black-100);
+    background-color: var(--white);
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 1px;
+    border-right-width: 0;
     padding: 24px;
   }
   :root {
