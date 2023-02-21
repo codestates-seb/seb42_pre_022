@@ -5,14 +5,26 @@ const CardDiv = styled.div`
   display: flex;
   margin-top: 3px;
   > img {
-  height: 32px;
-  width: 32px;
-  border-radius: 3px;
+    height: 32px;
+    width: 32px;
+    border-radius: 3px;
   }
   > div {
     margin-left: 8px;
+    width: calc(100% - 64px);
+  }
+  .username {
+    font-size: 12px;
+    color: var(--blue);
+  }
+  .username:hover {
+    color: var(--blue-500);
+  }
+  .reputation {
+    font-weight: bold;
   }
 `
+
 
 
 function UserCard() {
@@ -21,8 +33,8 @@ function UserCard() {
     < CardDiv className="profile" >
       <img src={`${process.env.PUBLIC_URL}/images/profileIcon.png`} />
       <div>
-        <p>이름</p>
-        <p>명성</p>
+        <p className="username">이름</p>
+        <p className="reputation">명성</p>
       </div>
     </CardDiv >
   )

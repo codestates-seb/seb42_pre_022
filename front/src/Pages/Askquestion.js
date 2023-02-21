@@ -6,6 +6,7 @@ import WriteBoard from "../Components/WriteBoard";
 //TODO: 제목 간격 조정
 const AskContainer = styled.div`
   width: 100%;
+  height: 100%;
   max-width: 1264px;
   display: flex;
   padding: 0 24px 24px 24px;
