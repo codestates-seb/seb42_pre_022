@@ -67,7 +67,7 @@ public class QuestionService {
         return questionRepository.findAll();
     }
 
-    public void updateQuestionViewCount(Question question, Long viewCount) {
+    public void updateQuestionViewCount(Question question, int viewCount) {
         question.setViewCount(viewCount + 1);
         questionRepository.save(question);
     }
@@ -77,13 +77,10 @@ public class QuestionService {
         questionRepository.delete(question);
     }
 
-
     private Question findVerifiedQuestionById(Long questionId) {
         Optional<Question> optionalQuestion = questionRepository.findById(questionId);
         Question foundQuestion = optionalQuestion.orElseThrow(() -> new BusinessLogicException(ExceptionCode.QUESTION_NOT_FOUND));
 
         return foundQuestion;
     }
-
-
 }
