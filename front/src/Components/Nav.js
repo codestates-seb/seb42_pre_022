@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 const NavContainer = styled.div`
-  display: flex;
+  display: block;
   position: relative;
   flex-direction: column;
   justify-content: center;
