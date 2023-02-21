@@ -28,6 +28,7 @@ const GlobalStyle = createGlobalStyle`
     flex: 1 0 auto;
     max-width: 1264px;
     width: 100%;
+    height: calc(100vh - 50px);
     background: none;
     display: flex;
     justify-content: space-between;
