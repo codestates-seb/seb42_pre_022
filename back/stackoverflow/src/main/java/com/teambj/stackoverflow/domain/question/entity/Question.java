@@ -1,5 +1,6 @@
 package com.teambj.stackoverflow.domain.question.entity;
 
+import com.teambj.stackoverflow.domain.answer.entity.Answer;
 import com.teambj.stackoverflow.domain.user.entity.User;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,8 +42,8 @@ public class Question {
     @JoinColumn(name = "userId")
     private User user;
 
-    //@OneToMany(mappedBy = "", cascade = CascadeType.REMOVE)
-    //private List<Answer> answer = new ArrayList<>();
+    @OneToMany(mappedBy = "", cascade = CascadeType.REMOVE)
+    private List<Answer> answer = new ArrayList<>();
 
     public void addUser(User user) {
         this.user = user;
