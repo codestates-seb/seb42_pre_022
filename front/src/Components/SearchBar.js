@@ -6,7 +6,7 @@ export const SearchInput = styled.input`
   display: block;
   width: 100%;
   padding: 0.6em 0.7em;
-  padding-left:32px;
+  padding-left: 32px;
   color: var(--black-700);
   line-height: calc(15/13);
   border: 1px solid var(--black-200);

@@ -29,7 +29,7 @@ const VoteContainerDiv = styled.div`
     justify-content: center;
     color: var(--black-500);
     margin: 2px;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
   .bookmark {
     padding: 4px 0;
