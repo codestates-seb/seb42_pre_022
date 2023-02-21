@@ -144,11 +144,11 @@ function QandADiv( {type} ) {
           <div className="qapost"><span>Share</span><span>Edit</span><span>Follow</span></div>
           <WriterCardDiv className="card" iswriter={null}>
             <span className="linktext">edited Feb 13 at 6:24</span>
-            {<UserCard />}
+            {<UserCard username="이름" reputation="100"/>}
           </WriterCardDiv>
           <WriterCardDiv className="qawriter card" iswriter={1}>
             <div>asked {"Feb 10 at 18:04"}</div>
-            <UserCard />
+            <UserCard username="이름" reputation="100"/>
           </WriterCardDiv>
         </WriterRelatedDiv>
       </div>
