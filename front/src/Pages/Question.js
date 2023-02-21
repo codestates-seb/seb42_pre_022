@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { BasicBlueButton } from "../Styles/Buttons";
 import Aside from "../Components/Aside";
 import QandADiv from "../Components/QandADiv";
+import TagsDiv from "../Components/TagsDiv";
+import { Link } from "react-router-dom";
 
 const QuestionContainerMain = styled.main`
   display: table;
@@ -53,11 +55,22 @@ const QuestionDiv = styled.div`
   width: calc(100% - 326px);
   .answerpart {
     padding-top: 10px;
-    >h2 {
-      font-size: 1.4rem;
-      margin: 10px 0 8px 0;
+    > h2 {
+      font-size: 1.46rem;
+      margin: 1rem 0 0.5rem 0;
       line-height: 1.3;
       font-weight: 400;
+      color: var(--black-800);
+      > div {
+        display: inline;
+      }
+      > a {
+        color: var(--blue);
+        text-decoration: none;
+      }
+      > a:hover {
+        color: var(--blue-500);
+      }
     }
   }
   .answer {
@@ -92,17 +105,18 @@ function Question() {
         </div>
         <div className="answerpart">
           <h2>{6} Answers</h2>
-          <QandADiv className="answer">답변 map함수</QandADiv>
-          <div>답변 작성 구역</div>
+          <QandADiv type="answer">답변 map함수</QandADiv>
+          <h2>Your Answer</h2>
+          <div>React Quill 답변 작성 구역</div>
           <div>(비로그인 시) 로그인 디브</div>
           <div>
             <BasicBlueButton to="/questions/detail">Post your Answer</BasicBlueButton>
             <p>(비로그인 시)By clicking "Post Your Answer", you agree to our terms of service, privacy policy and cookie policy</p>
           </div>
+          <h2>Not the answer you're looking for? Browse other questions tagged <TagsDiv /> or <Link to="/askquestion">ask your own question.</Link></h2>
         </div>
       </QuestionDiv>
-      <Aside>
-      </Aside>
+      <Aside/>
     </QuestionContainerMain>
   );
 }

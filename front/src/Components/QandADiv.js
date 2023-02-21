@@ -5,6 +5,7 @@ import { ReactComponent as BookmarkIcon } from "../assets/bookmarkIcon.svg";
 import { ReactComponent as HistoryIcon } from "../assets/historyIcon.svg";
 import styled from "styled-components";
 import CommentsDiv from "./CommentsDiv";
+import TagsDiv from "./TagsDiv";
 
 const QAWrapDiv = styled.div`
   display: grid;
@@ -120,9 +121,9 @@ const QAbodydiv = styled.div`
   }
 `
 
-function QandADiv() {
+function QandADiv( {type} ) {
   return (
-    <QAWrapDiv>
+    <QAWrapDiv className={type? type: null}>
       <div>
         <VoteContainerDiv>
           <VoteButton><UpVoteIcon></UpVoteIcon></VoteButton>
@@ -143,6 +144,7 @@ function QandADiv() {
           <p>'compileJava' task (current target is 17) and 'compileKotlin' task (current target is 1.8) jvm target compatibility should be set to the same Java version.</p>
           <p>I can't find where in the buildSrc and the generated Gradle files the 1.8 target is set. How can I tell the Kotlin compiler to use the Java 17 target?</p>
         </QAbodydiv>
+        <TagsDiv />
         <div>
           태그 컴포넌트
         </div>
@@ -156,7 +158,7 @@ function QandADiv() {
         </WriterRelatedDiv>
       </div>
       <span></span>
-      <CommentsDiv></CommentsDiv>
+      <CommentsDiv />
     </QAWrapDiv>
   )
 }
