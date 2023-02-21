@@ -110,6 +110,10 @@ const FilterBtn = styled.div`
   text-decoration: none;
   user-select: none;
   font-size: 12px;
+  outline: none;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
   }
   svg{
   width: 18px;
@@ -122,6 +126,7 @@ const FilterBtn = styled.div`
   cursor: pointer;
   text-align: center;
   user-select: none;
+  white-space: nowrap;
   }
   path{
     fill: currentColor;
@@ -162,13 +167,16 @@ function Questions() {
               <div>
                 <DataControllerBox>
                   <DataController>
-                    <DataControllerBtn start selected><div>Newest</div></DataControllerBtn>
-                    <DataControllerBtn middle ><div>Active</div></DataControllerBtn>
-                    <DataControllerBtn middle ><div>Unanswered</div></DataControllerBtn>
-                    <DataControllerBtn end ><div>More</div></DataControllerBtn>
+                    <DataControllerBtn start={1} selecte={true}><div>Newest</div></DataControllerBtn>
+                    <DataControllerBtn middle="true" ><div>Active</div></DataControllerBtn>
+                    <DataControllerBtn middle="true" ><div>Unanswered</div></DataControllerBtn>
+                    <DataControllerBtn end="true" ><div>More</div></DataControllerBtn>
                   </DataController>
                   <Dropdown />
-                  <FilterBtn><BasicBlueButton skyblue><svg viewBox="0 0 18 18"><path d="M2 4h14v2H2V4Zm2 4h10v2H4V8Zm8 4H6v2h6v-2Z" /></svg>filter</BasicBlueButton></FilterBtn>
+                  <FilterBtn>
+                    <BasicBlueButton skyblue={1}><svg viewBox="0 0 18 18"><path d="M2 4h14v2H2V4Zm2 4h10v2H4V8Zm8 4H6v2h6v-2Z" /></svg> Filter 
+                    </BasicBlueButton>
+                  </FilterBtn>
                 </DataControllerBox>
               </div>
             </QuestionsH2>
