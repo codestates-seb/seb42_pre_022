@@ -1,9 +1,26 @@
 import styled from "styled-components";
 import QuestionsList from "../Components/QuestionsList";
 import { BasicBlueButton } from "../Styles/Buttons";
+import Aside from "../Components/Aside";
 
 const QuestionsContainer = styled.div`
-  width: calc(100% - 300px - var(--su-static24));
+  >div:nth-child(1){
+    width: calc(100% - 300px - 24px);
+    float: left;
+    @media screen and (max-width: 980px){
+    width: 100%;
+    float: none;
+    }
+  }
+  >div:nth-child(2){
+    float: right;
+    @media screen and (max-width: 980px){
+    float: none;
+    clear: both;
+    margin: 0 auto;
+    width: 100%;
+    }
+  }
 `
 const PageHeader = styled.div`
   display: flex;
@@ -116,6 +133,11 @@ const QuestionsContent = styled.div`
   float: none;
   margin: 0 0 20px -24px;
   border-top: 1px solid var(--black-100);
+  @media screen and (max-width: 980px) {
+    margin-left: -16px;
+    margin-right: -16px;
+    width: calc(100% + 2px * 16px);
+  }
 `
 
 
@@ -123,40 +145,43 @@ const QuestionsContent = styled.div`
 function Questions() {
   return (
     <QuestionsContainer>
-      <PageHeader>
-        <h1>All Questions</h1>
-        <div>
-          <BasicBlueButton>Ask Questions</BasicBlueButton>
-        </div>
-      </PageHeader>
       <div>
-        <QuestionsH2>
-          <div className="data">23,502,787 questions</div>
+        <PageHeader>
+          <h1>All Questions</h1>
           <div>
-            <DataControllerBox>
-              <DataController>
-                  <DataControllerBtn start selected><div>Newest</div></DataControllerBtn>
-                  <DataControllerBtn middle ><div>Active</div></DataControllerBtn>
-                  <DataControllerBtn middle ><div>Unanswered</div></DataControllerBtn>
-                  <DataControllerBtn end ><div>More</div></DataControllerBtn>
-              </DataController>
-              <Dropdown />
-              <FilterBtn><BasicBlueButton skyblue><svg viewBox="0 0 18 18"><path d="M2 4h14v2H2V4Zm2 4h10v2H4V8Zm8 4H6v2h6v-2Z"/></svg>filter</BasicBlueButton></FilterBtn>
-            </DataControllerBox>
+            <BasicBlueButton>Ask Questions</BasicBlueButton>
           </div>
-        </QuestionsH2>
-        <ExpandableFilterform></ExpandableFilterform>
+        </PageHeader>
+        <div>
+          <QuestionsH2>
+            <div className="data">23,502,787 questions</div>
+            <div>
+              <DataControllerBox>
+                <DataController>
+                    <DataControllerBtn start selected><div>Newest</div></DataControllerBtn>
+                    <DataControllerBtn middle ><div>Active</div></DataControllerBtn>
+                    <DataControllerBtn middle ><div>Unanswered</div></DataControllerBtn>
+                    <DataControllerBtn end ><div>More</div></DataControllerBtn>
+                </DataController>
+                <Dropdown />
+                <FilterBtn><BasicBlueButton skyblue><svg viewBox="0 0 18 18"><path d="M2 4h14v2H2V4Zm2 4h10v2H4V8Zm8 4H6v2h6v-2Z"/></svg>filter</BasicBlueButton></FilterBtn>
+              </DataControllerBox>
+            </div>
+          </QuestionsH2>
+          <ExpandableFilterform></ExpandableFilterform>
+        </div>
+        <QuestionsContent>
+          <QuestionsList />
+          <QuestionsList />
+          <QuestionsList />
+          <QuestionsList />
+          <QuestionsList />
+          <QuestionsList />
+        </QuestionsContent>
       </div>
-      <QuestionsContent>
-        <QuestionsList />
-        <QuestionsList />
-        <QuestionsList />
-        <QuestionsList />
-        <QuestionsList />
-        <QuestionsList />
-      </QuestionsContent>
-
+      <Aside />
     </QuestionsContainer>
+
   )
 }
 
