@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { loginActions } from "../Reducers/loginReducer";
 import { BasicBlueButton } from "../Styles/Buttons"
 import SearchBar from "./SearchBar";
+import Nav from "./Nav";
 import { ReactComponent as SearchIcon } from "../assets/searchIcon.svg";
 import { ReactComponent as InboxIcon } from "../assets/inboxIcon.svg";
 import { ReactComponent as AchiveIcon } from "../assets/achiveIcon.svg";
@@ -35,39 +36,37 @@ const Containerheader = styled.header`
       display: flex;
       align-items: center;
       height: 100%;
+      list-style: none;
     }
     @media only screen and (max-width: 640px) {
-      > div {
+      > div:nth-child(3) {
         display: none !important;
-      }
-    }
-    > ul:nth-child(2) {
-      padding: 2px 0;
-      li:not(:nth-child(2)) {
-        display: ${props => props.login.login ? "none" : "block"};
-        @media only screen and (max-width: 980px) {
-          display: none;
-        }
-      }
-    }
-    > ul:nth-child(4) {
-      gap: 4px;
-      list-style: none;
-      padding-right: 12px;
-      li:first-child {
-        display: none;
-        @media only screen and (max-width: 640px) {
-          display: flex;
-        }
-      }
-      @media only screen and (max-width: 640px) {
-        margin-left: auto;
       }
     }
   }
 `
+const MenuLogoUl = styled.ul`
+  .nav {
+    position: absolute;
+    top: 48px;
+    z-index: 999;
+    height: auto;
+    box-shadow: 0 1px 2px hsla(0,0%,0%,0.05), 0 1px 4px hsla(0, 0%, 0%, 0.05), 0 2px 8px hsla(0, 0%, 0%, 0.05);
+    background-color: white;
+    border: 1px solid var(--black-075);
+    border-top: none;
+    > div {
+      width: 240px;
+      @media screen and (max-width: 640px){
+        display: block !important;
+      }
+    }
+    @media only screen and (min-width: 640px) {
+      display: none !important;
+    }
+  }
+`
 const HeadTabLi = styled.li`
-  list-style: none;
   background-color: inherit;
   border: none;
   font-size: 13px;
@@ -87,7 +86,7 @@ const HeadLogoI = styled.i`
     width:25px;
   }
 `
-const HeadLogoTabLi = styled(HeadTabLi)`
+const HeadIconTabLi = styled(HeadTabLi)`
   height: 100%;
   padding: 0 8px;
   display: flex;
@@ -110,18 +109,7 @@ const HeadLogoTabLi = styled(HeadTabLi)`
     }
   }
 `
-const HeadTextTabLi = styled(HeadTabLi)`
-  padding: 6px 12px;
-  border-radius: 20px;
-  color: var(--black-600);
-  :hover {
-    color: var(--black-800);
-  }
-  @media only screen and (max-width: 640px) {
-    font-size: 11px;
-  }
-`
-const MenubarLi = styled(HeadLogoTabLi)`
+const MenubarLi = styled(HeadIconTabLi)`
   display: ${props => props.nowparams ? "flex" : "none"};
   padding: 0 16px;
   > div {
@@ -163,6 +151,41 @@ const MenubarLi = styled(HeadLogoTabLi)`
     display: flex;
   }
 `
+const HeadTextTabUl = styled.ul`
+  padding: 2px 0;
+  li:not(:nth-child(2)) {
+    display: ${props => props.login.login ? "none" : "block"};
+    @media only screen and (max-width: 980px) {
+      display: none;
+    }
+  }
+
+`
+const HeadTextTabLi = styled(HeadTabLi)`
+  padding: 6px 12px;
+  border-radius: 20px;
+  color: var(--black-600);
+  :hover {
+    color: var(--black-800);
+  }
+  @media only screen and (max-width: 640px) {
+    font-size: 11px;
+  }
+`
+const IconButtonUl = styled.ul`
+  gap: 4px;
+  padding-right: 12px;
+  li:first-child {
+    display: none;
+    @media only screen and (max-width: 640px) {
+      display: flex;
+    }
+  }
+  @media only screen and (max-width: 640px) {
+    margin-left: auto;
+  } 
+`
+
 
 function Header() {
   const state = useSelector(state => state.loginReducer);
@@ -181,24 +204,25 @@ function Header() {
   const loginTabList = [(<><img src={`${process.env.PUBLIC_URL}/images/profileIcon.png`} /><span>1</span></>), <InboxIcon />, <AchiveIcon />, <HelpIcon />, <ExchangeIcon />]
 
   return (
-    <Containerheader login={state}>
+    <Containerheader>
       <div>
-        <ul>
-          <MenubarLi onClick={openMenu} isopen={menu ? 1 : null} nowparams={pathname && pathname.slice(-3) === "ask" ? 1 : null}><div><i /></div></MenubarLi>
-          <HeadLogoTabLi><Link to="/"><HeadLogoI url={logo} /></Link></HeadLogoTabLi>
-        </ul>
-        <ul>
+        <MenuLogoUl>
+          <MenubarLi onClick={openMenu} isopen={menu ? 1 : null} nowparams={pathname && pathname.slice(-3) === "ask" ? 1 : null}><div><i/></div></MenubarLi>
+          {menu? <li className="nav"><Nav /></li> : null}
+          <HeadIconTabLi><Link to="/"><HeadLogoI url={logo} /></Link></HeadIconTabLi>
+        </MenuLogoUl>
+        <HeadTextTabUl login={state}>
           <HeadTextTabLi>About</HeadTextTabLi>
           <HeadTextTabLi>Products</HeadTextTabLi>
           <HeadTextTabLi>For Teams</HeadTextTabLi>
-        </ul>
+        </HeadTextTabUl>
         <SearchBar placeholder="Search..."/>
-        <ul>
-          <HeadLogoTabLi><SearchIcon /></HeadLogoTabLi>
-          {state.login && loginTabList.map((el, i) => <HeadLogoTabLi key={i}>{el}</HeadLogoTabLi>)}
+        <IconButtonUl>
+          <HeadIconTabLi><SearchIcon /></HeadIconTabLi>
+          {state.login && loginTabList.map((el, i) => <HeadIconTabLi key={i}>{el}</HeadIconTabLi>)}
           <li><BasicBlueButton skyblue={1} to={state.login ? "/" : "/users/login"} onClick={handleClick}>{loginButton}</BasicBlueButton></li>
           {!state.login && <li><BasicBlueButton to="/users/signup">Sign up</BasicBlueButton></li>}
-        </ul>
+        </IconButtonUl>
       </div>
     </Containerheader>
   );

@@ -100,7 +100,7 @@ function Users() {
           </DataController>
         </SearchFilterDiv>
         <UserCardsDiv>
-          <UserCard username="소희" reputation="1000000000" />
+          <UserCard username="이름" reputation="100" />
           <UserCard username="이름" reputation="100" />
           <UserCard username="이름" reputation="100" />
           <UserCard username="이름" reputation="100" />
