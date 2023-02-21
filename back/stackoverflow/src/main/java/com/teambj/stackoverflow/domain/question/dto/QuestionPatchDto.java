@@ -16,8 +16,6 @@ public class QuestionPatchDto {
 
     private String body;
 
-    private Boolean isAnswered;
-
 //    태그 추가 예정
 
     public void setQuestionId(Long questionId) {
