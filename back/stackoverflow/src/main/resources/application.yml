@@ -32,20 +32,16 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
-    #  security:
-    # In-Memory Test
-    # user:
-    #  name: user
-    #  password: user
-#    oauth2:
-#      client:
-#        registration:
-#          google:
-#            clientId: ${GOOGLE_CLIENT_ID}
-#            clientSecret: ${GOOGLE_CLIENT_SECRET}
-#            scope:
-#              - email
-#              - profile
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: ${google_client_id}
+            clientSecret: ${google_client_secret}
+            scope:
+              - email
+              - profile
 
 
 server:

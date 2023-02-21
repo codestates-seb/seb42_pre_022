@@ -1,5 +1,6 @@
-package com.teambj.stackoverflow.auth;
+package com.teambj.stackoverflow.auth.service;
 
+import com.teambj.stackoverflow.auth.CustomAuthorityUtils;
 import com.teambj.stackoverflow.domain.user.entity.User;
 import com.teambj.stackoverflow.domain.user.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
@@ -74,6 +75,9 @@ public class CustomUserDetailsService implements UserDetailsService {
             return getEmailVerified();
         }
     }
+
+
+
 
 
 }

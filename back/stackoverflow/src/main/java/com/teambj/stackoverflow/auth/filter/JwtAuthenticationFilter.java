@@ -1,6 +1,7 @@
 package com.teambj.stackoverflow.auth.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
 import com.teambj.stackoverflow.auth.JwtTokenizer;
 import com.teambj.stackoverflow.domain.user.dto.LoginDto;
 import com.teambj.stackoverflow.domain.user.entity.User;
@@ -23,10 +24,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final JwtTokenizer jwtTokenizer;
     private final AuthenticationManager authenticationManager;
+    private final CustomUserDetailsService userDetailsService;
 
-    public JwtAuthenticationFilter(JwtTokenizer jwtTokenizer, AuthenticationManager authenticationManager) {
+    public JwtAuthenticationFilter(JwtTokenizer jwtTokenizer, AuthenticationManager authenticationManager, CustomUserDetailsService userDetailsService) {
         this.jwtTokenizer = jwtTokenizer;
         this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
     }
 
     @SneakyThrows
@@ -50,6 +53,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         response.setHeader("Authorization",  "Bearer " + accessToken);
         response.setHeader("Refresh", refreshToken);
+
+//        userDetailsService.updateRefreshToken(user.getEmail(), refreshToken);
 
         this.getSuccessHandler().onAuthenticationSuccess(request,response, authResult);
     }

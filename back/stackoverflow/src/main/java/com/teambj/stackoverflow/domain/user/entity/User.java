@@ -14,6 +14,10 @@ import java.util.List;
 @AllArgsConstructor
 public class User extends Auditable {
 
+    public User(String email) {
+        this.email = email;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -39,5 +43,11 @@ public class User extends Auditable {
 
     @Column
     private Boolean emailVerified = false;
+
+    private String refreshToken;
+
+    public void updateRefreshToken(String newToken) {
+        this.refreshToken = newToken;
+    }
 
 }

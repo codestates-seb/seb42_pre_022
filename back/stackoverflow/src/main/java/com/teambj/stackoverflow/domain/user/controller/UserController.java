@@ -1,6 +1,6 @@
 package com.teambj.stackoverflow.domain.user.controller;
 
-import com.teambj.stackoverflow.auth.CustomUserDetailsService;
+import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
 import com.teambj.stackoverflow.domain.user.dto.UserDto;
 import com.teambj.stackoverflow.domain.user.entity.Reputation;
 import com.teambj.stackoverflow.domain.user.entity.User;

@@ -1,11 +1,15 @@
 package com.teambj.stackoverflow.auth.config;
 
-import com.teambj.stackoverflow.auth.CustomUserDetailsService;
+import com.teambj.stackoverflow.auth.CustomAuthorityUtils;
+import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
 import com.teambj.stackoverflow.auth.filter.JwtAuthenticationFilter;
 import com.teambj.stackoverflow.auth.JwtTokenizer;
 import com.teambj.stackoverflow.auth.filter.JwtVerificationFilter;
+import com.teambj.stackoverflow.auth.handler.OAuth2UserSuccessHandler;
 import com.teambj.stackoverflow.auth.handler.UserAuthenticationFailureHandler;
 import com.teambj.stackoverflow.auth.handler.UserAuthenticationSuccessHandler;
+import com.teambj.stackoverflow.domain.user.service.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,13 +32,23 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration{
+    @Value("${spring.security.oauth2.client.registration.google.clientId}")
+    private String clientId;
+
+    @Value("${spring.security.oauth2.client.registration.google.clientSecret}")
+    private String clientSecret;
+
 
     private final JwtTokenizer jwtTokenizer;
     private final CustomUserDetailsService userDetailsService;
+    private final UserService userService;
+    private final CustomAuthorityUtils authorityUtils;
 
-    public SecurityConfiguration(JwtTokenizer jwtTokenizer, CustomUserDetailsService userDetailsService) {
+    public SecurityConfiguration(JwtTokenizer jwtTokenizer, CustomUserDetailsService userDetailsService, UserService userService, CustomAuthorityUtils authorityUtils) {
         this.jwtTokenizer = jwtTokenizer;
         this.userDetailsService = userDetailsService;
+        this.userService = userService;
+        this.authorityUtils = authorityUtils;
     }
 
     @Bean
@@ -52,7 +66,8 @@ public class SecurityConfiguration{
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
                         .anyRequest().permitAll() //추후 수정
-                );
+                )
+                .oauth2Login(oAuth2 -> oAuth2.successHandler(new OAuth2UserSuccessHandler(jwtTokenizer, authorityUtils, userService)));
         return http.build();
     }
 
@@ -83,7 +98,7 @@ public class SecurityConfiguration{
         public void configure(HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
 
-            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtTokenizer, authenticationManager);
+            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtTokenizer, authenticationManager, userDetailsService);
             jwtAuthenticationFilter.setFilterProcessesUrl("/users/login");
             jwtAuthenticationFilter.setAuthenticationSuccessHandler(new UserAuthenticationSuccessHandler());
             jwtAuthenticationFilter.setAuthenticationFailureHandler(new UserAuthenticationFailureHandler());
