@@ -43,7 +43,7 @@ const PageHeader = styled.div`
     margin-bottom: 12px;
   }
 `
-const QuestionsH2 =styled.div`
+const QuestionsH2 = styled.div`
   display: flex;
   margin-bottom: 12px;
   align-items: center;
@@ -69,18 +69,18 @@ const DataController = styled.div`
 
 const DataControllerBtn = styled.a`
   border: 1px solid transparent;
-  border-radius: ${(props)=> props.middle ?"0" :"3px"};
-  border-top-left-radius: ${(props)=> props.end ?"0" :null};
-  border-top-right-radius: ${(props)=> props.start ?"0" :null};
-  border-bottom-right-radius: ${(props)=> props.start ?"0" :null};
-  border-bottom-left-radius: ${(props)=> props.end ?"0" :null};
-  margin-right: ${(props)=> props.end ?"0" :"-1px"};
+  border-radius: ${(props) => props.middle ? "0" : "3px"};
+  border-top-left-radius: ${(props) => props.end ? "0" : null};
+  border-top-right-radius: ${(props) => props.start ? "0" : null};
+  border-bottom-right-radius: ${(props) => props.start ? "0" : null};
+  border-bottom-left-radius: ${(props) => props.end ? "0" : null};
+  margin-right: ${(props) => props.end ? "0" : "-1px"};
   margin-bottom: -1px;
   z-index: 25;
   box-shadow: none;
   border-color: var(--black-400);
-  background-color: ${(props)=> props.selected ?"var(--black-075)" :"transparent"};
-  color: ${(props)=> props.selected ?"var(--black-700)" :"var(--black-500)"};
+  background-color: ${(props) => props.selected ? "var(--black-075)" : "transparent"};
+  color: ${(props) => props.selected ? "var(--black-700)" : "var(--black-500)"};
   white-space: nowrap;
   font-size: 12px;
   padding: 0.8em;
@@ -144,44 +144,45 @@ const QuestionsContent = styled.div`
 
 function Questions() {
   return (
-    <QuestionsContainer>
-      <div>
-        <PageHeader>
-          <h1>All Questions</h1>
-          <div>
-            <BasicBlueButton>Ask Questions</BasicBlueButton>
-          </div>
-        </PageHeader>
+    <div className="content">
+      <QuestionsContainer>
         <div>
-          <QuestionsH2>
-            <div className="data">23,502,787 questions</div>
+          <PageHeader>
+            <h1>All Questions</h1>
             <div>
-              <DataControllerBox>
-                <DataController>
+              <BasicBlueButton>Ask Questions</BasicBlueButton>
+            </div>
+          </PageHeader>
+          <div>
+            <QuestionsH2>
+              <div className="data">23,502,787 questions</div>
+              <div>
+                <DataControllerBox>
+                  <DataController>
                     <DataControllerBtn start selected><div>Newest</div></DataControllerBtn>
                     <DataControllerBtn middle ><div>Active</div></DataControllerBtn>
                     <DataControllerBtn middle ><div>Unanswered</div></DataControllerBtn>
                     <DataControllerBtn end ><div>More</div></DataControllerBtn>
-                </DataController>
-                <Dropdown />
-                <FilterBtn><BasicBlueButton skyblue><svg viewBox="0 0 18 18"><path d="M2 4h14v2H2V4Zm2 4h10v2H4V8Zm8 4H6v2h6v-2Z"/></svg>filter</BasicBlueButton></FilterBtn>
-              </DataControllerBox>
-            </div>
-          </QuestionsH2>
-          <ExpandableFilterform></ExpandableFilterform>
+                  </DataController>
+                  <Dropdown />
+                  <FilterBtn><BasicBlueButton skyblue><svg viewBox="0 0 18 18"><path d="M2 4h14v2H2V4Zm2 4h10v2H4V8Zm8 4H6v2h6v-2Z" /></svg>filter</BasicBlueButton></FilterBtn>
+                </DataControllerBox>
+              </div>
+            </QuestionsH2>
+            <ExpandableFilterform></ExpandableFilterform>
+          </div>
+          <QuestionsContent>
+            <QuestionsList />
+            <QuestionsList />
+            <QuestionsList />
+            <QuestionsList />
+            <QuestionsList />
+            <QuestionsList />
+          </QuestionsContent>
         </div>
-        <QuestionsContent>
-          <QuestionsList />
-          <QuestionsList />
-          <QuestionsList />
-          <QuestionsList />
-          <QuestionsList />
-          <QuestionsList />
-        </QuestionsContent>
-      </div>
-      <Aside />
-    </QuestionsContainer>
-
+        <Aside />
+      </QuestionsContainer>
+    </div>
   )
 }
 

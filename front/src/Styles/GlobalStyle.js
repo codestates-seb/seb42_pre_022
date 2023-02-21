@@ -17,7 +17,8 @@ const GlobalStyle = createGlobalStyle`
     padding-top: 50px;
     /* max-width: 1264px; */
     width: 100%;
-    height: calc(100vh - 50px);
+    /* height: calc(100vh - 50px); */
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -26,15 +27,15 @@ const GlobalStyle = createGlobalStyle`
   .container{
     position: relative;
     flex: 1 0 auto;
-    max-width: 1264px;
+    /* max-width: 1264px; */
     width: 100%;
-    height: calc(100vh - 50px);
+    height: max-content;
     background: none;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     margin: 0 auto;
     margin-top: 0;
-    padding-top: 50px;
+    /* padding-top: 50px; */
   }
   html{
     font-size: 13px;
