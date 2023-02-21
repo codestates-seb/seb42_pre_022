@@ -2,6 +2,8 @@ import styled from "styled-components";
 import QuestionsList from "../Components/QuestionsList";
 import { BasicBlueButton } from "../Styles/Buttons";
 import Aside from "../Components/Aside";
+import { useState } from "react";
+import ExpandableFilterform from "../Components/ExpandableFilterForm";
 
 const QuestionsContainer = styled.div`
   >div:nth-child(1){
@@ -26,21 +28,23 @@ const PageHeader = styled.div`
   display: flex;
   margin-bottom: 12px;
   flex-wrap: wrap;
-  h1{
+  vertical-align: baseline;
+  >h1{
     font-size: 2.07692308rem;
+    margin: 0 0 1em;
     margin-right: 12px;
     margin-bottom: 12px;
     line-height: 1.3;
-    margin: 0 0 1em;
     flex: 1 auto;
-    display: block;
-    margin-block-start: 0.67em;
-    margin-block-end: 0.67em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
+    font-weight: normal;
   }
   >div{
     margin-bottom: 12px;
+    >a{
+      position: relative;
+      display: inline-block;
+      padding: 0.8em;
+    }
   }
 `
 const QuestionsH2 = styled.div`
@@ -60,6 +64,7 @@ const DataControllerBox = styled.div`
   justify-content: space-between;
 `
 const DataController = styled.div`
+  vertical-align: baseline;
   font-size: 100%;
   margin-right: 16px;
   display: flex;
@@ -107,6 +112,10 @@ const FilterBtn = styled.div`
   text-decoration: none;
   user-select: none;
   font-size: 12px;
+  outline: none;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
   }
   svg{
   width: 18px;
@@ -119,15 +128,13 @@ const FilterBtn = styled.div`
   cursor: pointer;
   text-align: center;
   user-select: none;
+  white-space: nowrap;
   }
   path{
     fill: currentColor;
   }
 `
 
-const ExpandableFilterform = styled.form`
-
-`
 const QuestionsContent = styled.div`
   width: auto;
   float: none;
@@ -143,6 +150,10 @@ const QuestionsContent = styled.div`
 
 
 function Questions() {
+  const [isFilterOpen, setFilterOpen] = useState(false);
+  const filterOpenHandler = () => {
+    setFilterOpen(!isFilterOpen)
+  }
   return (
     <div className="content">
       <QuestionsContainer>
@@ -159,17 +170,20 @@ function Questions() {
               <div>
                 <DataControllerBox>
                   <DataController>
-                    <DataControllerBtn start selected><div>Newest</div></DataControllerBtn>
-                    <DataControllerBtn middle ><div>Active</div></DataControllerBtn>
-                    <DataControllerBtn middle ><div>Unanswered</div></DataControllerBtn>
-                    <DataControllerBtn end ><div>More</div></DataControllerBtn>
+                    <DataControllerBtn start={1} selected={true}><div>Newest</div></DataControllerBtn>
+                    <DataControllerBtn middle="true" ><div>Active</div></DataControllerBtn>
+                    <DataControllerBtn middle="true" ><div>Unanswered</div></DataControllerBtn>
+                    <DataControllerBtn end="true" ><div>More</div></DataControllerBtn>
                   </DataController>
                   <Dropdown />
-                  <FilterBtn><BasicBlueButton skyblue><svg viewBox="0 0 18 18"><path d="M2 4h14v2H2V4Zm2 4h10v2H4V8Zm8 4H6v2h6v-2Z" /></svg>filter</BasicBlueButton></FilterBtn>
+                  <FilterBtn onClick={filterOpenHandler}>
+                    <BasicBlueButton skyblue={1}><svg viewBox="0 0 18 18"><path d="M2 4h14v2H2V4Zm2 4h10v2H4V8Zm8 4H6v2h6v-2Z" /></svg> Filter 
+                    </BasicBlueButton>
+                  </FilterBtn>
                 </DataControllerBox>
               </div>
             </QuestionsH2>
-            <ExpandableFilterform></ExpandableFilterform>
+            {/* <ExpandableFilterform /> */} 
           </div>
           <QuestionsContent>
             <QuestionsList />
