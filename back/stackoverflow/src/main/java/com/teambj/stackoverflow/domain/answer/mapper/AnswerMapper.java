@@ -11,7 +11,8 @@ import java.util.List;
 public interface AnswerMapper {
   AnswerMapper INSTANCE = Mappers.getMapper(AnswerMapper.class);
 
-  Answer answerDtoPostToAnswer(AnswerDto.Post answerPost);
+  Answer answerDtoPostToAnswer(AnswerDto.Post answerDto);
+  Answer answerDtoPatchToAnswer(AnswerDto.Patch answerDto);
   AnswerDto.Response answerToAnswerResponseDto(Answer answer);
-  List<AnswerDto.Response> answerToAnswerResponseDtoList(List<Answer> answer);
+  List<AnswerDto.Response> answerListToAnswerResponseDtoList(List<Answer> answer);
 }
