@@ -26,7 +26,7 @@ const PageHeader = styled.div`
   display: flex;
   margin-bottom: 12px;
   flex-wrap: wrap;
-  h1{
+  >h1{
     font-size: 2.07692308rem;
     margin-right: 12px;
     margin-bottom: 12px;
@@ -38,6 +38,7 @@ const PageHeader = styled.div`
     margin-block-end: 0.67em;
     margin-inline-start: 0px;
     margin-inline-end: 0px;
+    font-weight: 400;
   }
   >div{
     margin-bottom: 12px;
