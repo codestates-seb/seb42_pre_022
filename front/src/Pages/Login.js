@@ -18,7 +18,7 @@ const LoginContainer = styled.div`
   .login-logo {
     margin-bottom: 16px;
   }
-  .login-with, .login-form {
+  .login-form {
     margin-bottom: 16px;
     width: 90%;
     max-width: 300px;
@@ -78,9 +78,7 @@ function Login() {
       <div className="login-logo">
         <LogoDiv url={sprites} />
       </div>
-      <div className="login-with">
-        <LoginWith />
-      </div>
+      <LoginWith />
       <div className="login-form">
         <LoginForm>
           <LoginFormDiv>
