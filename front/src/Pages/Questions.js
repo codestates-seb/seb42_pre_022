@@ -2,6 +2,8 @@ import styled from "styled-components";
 import QuestionsList from "../Components/QuestionsList";
 import { BasicBlueButton } from "../Styles/Buttons";
 import Aside from "../Components/Aside";
+import { useState } from "react";
+import ExpandableFilterform from "../Components/ExpandableFilterForm";
 
 const QuestionsContainer = styled.div`
   >div:nth-child(1){
@@ -133,9 +135,6 @@ const FilterBtn = styled.div`
   }
 `
 
-const ExpandableFilterform = styled.form`
-
-`
 const QuestionsContent = styled.div`
   width: auto;
   float: none;
@@ -151,6 +150,10 @@ const QuestionsContent = styled.div`
 
 
 function Questions() {
+  const [isFilterOpen, setFilterOpen] = useState(false);
+  const filterOpenHandler = () => {
+    setFilterOpen(!isFilterOpen)
+  }
   return (
     <div className="content">
       <QuestionsContainer>
@@ -173,14 +176,14 @@ function Questions() {
                     <DataControllerBtn end="true" ><div>More</div></DataControllerBtn>
                   </DataController>
                   <Dropdown />
-                  <FilterBtn>
+                  <FilterBtn onClick={filterOpenHandler}>
                     <BasicBlueButton skyblue={1}><svg viewBox="0 0 18 18"><path d="M2 4h14v2H2V4Zm2 4h10v2H4V8Zm8 4H6v2h6v-2Z" /></svg> Filter 
                     </BasicBlueButton>
                   </FilterBtn>
                 </DataControllerBox>
               </div>
             </QuestionsH2>
-            <ExpandableFilterform></ExpandableFilterform>
+            {/* <ExpandableFilterform /> */} 
           </div>
           <QuestionsContent>
             <QuestionsList />
