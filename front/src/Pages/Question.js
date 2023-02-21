@@ -4,6 +4,8 @@ import Aside from "../Components/Aside";
 import QandADiv from "../Components/QandADiv";
 import TagsDiv from "../Components/TagsDiv";
 import { Link } from "react-router-dom";
+import WriteBoard from "../Components/WriteBoard";
+import { useSelector } from "react-redux";
 
 const QuestionContainerMain = styled.main`
   display: table;
@@ -55,12 +57,18 @@ const QuestionDiv = styled.div`
   width: calc(100% - 326px);
   .answerpart {
     padding-top: 10px;
-    > h2 {
-      font-size: 1.46rem;
+    > div {
+      padding: 10px 0;
+      > h2 {
+        font-size: 1.46rem;
+      }
+    }
+    h2 {
       margin: 1rem 0 0.5rem 0;
       line-height: 1.3;
       font-weight: 400;
       color: var(--black-800);
+      font-size: 1.3rem;
       > div {
         display: inline;
       }
@@ -73,15 +81,13 @@ const QuestionDiv = styled.div`
       }
     }
   }
-  .answer {
-    padding: 16px 0 !important;
-    border-bottom: 1px solid var(--black-075);
-  }
+
   @media screen and (max-width: 980px) {
     width: 100%;
   }
 `
 function Question() {
+  const state = useSelector(state => state.loginReducer);
   // TODO 날짜 계산기 만들기 today, yesterday, 2 days ago~ 한달, 3 months ago ... */
   const calculateDate = (date) => {
     return date
@@ -101,22 +107,26 @@ function Question() {
       </div>
       <QuestionDiv>
         <div>
-          <QandADiv />        
+          <QandADiv />
         </div>
         <div className="answerpart">
-          <h2>{6} Answers</h2>
-          <QandADiv type="answer">답변 map함수</QandADiv>
-          <h2>Your Answer</h2>
-          <div>React Quill 답변 작성 구역</div>
-          <div>(비로그인 시) 로그인 디브</div>
           <div>
-            <BasicBlueButton to="/questions/detail">Post your Answer</BasicBlueButton>
-            <p>(비로그인 시)By clicking "Post Your Answer", you agree to our terms of service, privacy policy and cookie policy</p>
+            <h2>{6} Answers</h2>
+            <QandADiv type="answer">답변 map함수</QandADiv>
+          </div>
+          <div>
+            <h2>Your Answer</h2>
+            <WriteBoard />
+            {state.login ? null : <div>(비로그인 시) 로그인 디브</div>}
+            <div>
+              <BasicBlueButton to="/questions/detail">Post your Answer</BasicBlueButton>
+              {state.login ? null : <p>(비로그인 시)By clicking "Post Your Answer", you agree to our terms of service, privacy policy and cookie policy</p>}
+            </div>
           </div>
           <h2>Not the answer you're looking for? Browse other questions tagged <TagsDiv /> or <Link to="/askquestion">ask your own question.</Link></h2>
         </div>
       </QuestionDiv>
-      <Aside/>
+      <Aside />
     </QuestionContainerMain>
   );
 }

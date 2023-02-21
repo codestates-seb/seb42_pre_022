@@ -19,6 +19,8 @@ const QAWrapDiv = styled.div`
     min-width: 0px;
   }
 
+  padding: ${props => props.answer ? "16px 0 !important" : null};
+  border-bottom: 1px solid var(${props => props.answer ? "--black-075" : ""});
 `
 const VoteContainerDiv = styled.div`
   display: flex;
@@ -94,7 +96,7 @@ const WriterRelatedDiv = styled.div`
     margin-top: 0;
     padding: 7px;
     border-radius: 3px;
-    background-color: var(--powder);
+    background-color: var(${props => props.writer? "--powder" : null});
     font-size: 12px;
   }
   
@@ -123,7 +125,7 @@ const QAbodydiv = styled.div`
 
 function QandADiv( {type} ) {
   return (
-    <QAWrapDiv className={type? type: null}>
+    <QAWrapDiv answer={type? type: null}>
       <div>
         <VoteContainerDiv>
           <VoteButton><UpVoteIcon></UpVoteIcon></VoteButton>
@@ -144,11 +146,8 @@ function QandADiv( {type} ) {
           <p>'compileJava' task (current target is 17) and 'compileKotlin' task (current target is 1.8) jvm target compatibility should be set to the same Java version.</p>
           <p>I can't find where in the buildSrc and the generated Gradle files the 1.8 target is set. How can I tell the Kotlin compiler to use the Java 17 target?</p>
         </QAbodydiv>
-        <TagsDiv />
-        <div>
-          태그 컴포넌트
-        </div>
-        <WriterRelatedDiv>
+        {type ? null : <TagsDiv />}       
+        <WriterRelatedDiv writer={1}>
           <div className="qapost"><span>Share</span><span>Edit</span><span>Follow</span></div>
           <div className="qamodified"><span>수정됐으면 ? 수정한 날짜 edited Feb 13 at 6:24 : null</span></div>
           <div className="qawriter">
