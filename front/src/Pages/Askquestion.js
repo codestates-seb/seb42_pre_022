@@ -1,9 +1,7 @@
 import styled from "styled-components";
 import askbackground from "../assets/askbackground.svg";
 import { BasicBlueButton } from "../Styles/Buttons";
-import ReactQuill from "react-quill";
-import 'react-quill/dist/quill.snow.css';
-import quillModule from "../quillModule";
+import WriteBoard from "../Components/WriteBoard";
 
 //TODO: 제목 간격 조정
 const AskContainer = styled.div`
@@ -76,11 +74,6 @@ const FormDiv = styled.div`
   }
   .textarea-div {width: 100%; margin: 0; border: 1px solid var(--black-200); border-radius: 3px;}
   @media only screen and (max-width: 1050px) {width: 100%;}
-`
-
-const QuestionForm = styled.div`
-  width: 100%;
-  height: 300px;
 `
 
 // input창 Header에서 재활용 가능 -> styles에 옮기기
@@ -158,9 +151,7 @@ function Askquestion() {
           <div className="form-title">What are the details of your problem?</div>
           <div>Introduce the problem and expand on what you put in the title. Minimum 20 characters.</div>
         </div>
-        <QuestionForm>
-          <ReactQuill theme="snow" modules={quillModule} style={{ width: "100%", height: "230px" }} />
-        </QuestionForm>
+        <WriteBoard />
         <BasicBlueButton className="button">Next</BasicBlueButton>
       </FormDiv>
       <FormDiv>

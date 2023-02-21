@@ -80,7 +80,7 @@ const FooterContainer = styled.div`
     }
 `
 
-const LogoDiv = styled.div`
+export const LogoDiv = styled.div`
   width: 32px;
   height: 50px;
   background-image: url(${props => props.url});

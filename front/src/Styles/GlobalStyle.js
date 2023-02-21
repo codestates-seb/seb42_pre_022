@@ -28,6 +28,7 @@ const GlobalStyle = createGlobalStyle`
     flex: 1 0 auto;
     max-width: 1264px;
     width: 100%;
+    height: calc(100vh - 50px);
     background: none;
     display: flex;
     justify-content: space-between;
@@ -37,6 +38,9 @@ const GlobalStyle = createGlobalStyle`
   }
   html{
     font-size: 13px;
+    @media (max-width: 640px){
+    font-size: 11px;
+    }
   }
 
   .content {
@@ -50,6 +54,15 @@ const GlobalStyle = createGlobalStyle`
     border-left-width: 1px;
     border-right-width: 0;
     padding: 24px;
+    @media screen and (max-width: 980px){
+    padding-left: 16px;
+    padding-right: 16px;
+    }
+    @media screen and (max-width: 640px){
+    padding-left: 12px;
+    padding-right: 12px;
+    width: 100%;
+}
   }
   :root {
     /* color */
