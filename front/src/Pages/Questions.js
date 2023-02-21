@@ -26,22 +26,23 @@ const PageHeader = styled.div`
   display: flex;
   margin-bottom: 12px;
   flex-wrap: wrap;
+  vertical-align: baseline;
   >h1{
     font-size: 2.07692308rem;
+    margin: 0 0 1em;
     margin-right: 12px;
     margin-bottom: 12px;
     line-height: 1.3;
-    margin: 0 0 1em;
     flex: 1 auto;
-    display: block;
-    margin-block-start: 0.67em;
-    margin-block-end: 0.67em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    font-weight: 400;
+    font-weight: normal;
   }
   >div{
     margin-bottom: 12px;
+    >a{
+      position: relative;
+      display: inline-block;
+      padding: 0.8em;
+    }
   }
 `
 const QuestionsH2 =styled.div`
@@ -61,6 +62,7 @@ const DataControllerBox = styled.div`
   justify-content: space-between;
 `
 const DataController = styled.div`
+  vertical-align: baseline;
   font-size: 100%;
   margin-right: 16px;
   display: flex;
