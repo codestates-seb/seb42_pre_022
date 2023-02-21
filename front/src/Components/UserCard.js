@@ -6,6 +6,7 @@ const CardDiv = styled.div`
   margin-top: 3px;
   font-size: 12px;
   min-width: 200px;
+  align-items: center;
   > img {
     height: 32px;
     width: 32px;
@@ -16,17 +17,18 @@ const CardDiv = styled.div`
     width: calc(100% - 64px);
   }
   .reputation {
+    color: var(--black-500);
     font-weight: bold;
   }
 `
-function UserCard() {
+function UserCard({ userimg, username, reputation }) {
 
   return (
     < CardDiv className="profile" >
-      <img src={`${process.env.PUBLIC_URL}/images/profileIcon.png`} />
+      <img src={`${process.env.PUBLIC_URL}/images/profileIcon.png`} alt=""/>
       <div>
-        <p className="linktext">이름</p>
-        <p className="reputation">명성</p>
+        <p className="linktext">{username}</p>
+        <p className="reputation">{reputation}</p>
       </div>
     </CardDiv >
   )

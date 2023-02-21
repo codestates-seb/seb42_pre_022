@@ -1,6 +1,20 @@
 import { ReactComponent as SearchIcon } from "../assets/searchIcon.svg";
 import styled from "styled-components"
 
+export const SearchBoxDiv = styled.div`
+  flex-grow: 1;
+  position: relative;
+  margin: 0 8px;
+  > svg {
+    position: absolute;
+    top: 50%;
+    right: auto;
+    left: 0.7em;
+    fill: var(--black-400);
+    transform: translateY(-50%);
+    pointer-events: none;    
+  }
+`
 export const SearchInput = styled.input`
   flex: 1;
   display: block;
@@ -19,30 +33,11 @@ export const SearchInput = styled.input`
     box-shadow: 0 0 0 4px hsla(206, 100%, 40%, .15);
   }
 `
-export const SearchBoxDiv = styled.div`
-  flex-grow: 1;
-  position: relative;
-  margin: 0 8px;
-  > svg {
-    position: absolute;
-    top: 50%;
-    right: auto;
-    left: 0.7em;
-    fill: var(--black-400);
-    transform: translateY(-50%);
-    pointer-events: none;    
-  }
-
-  @media only screen and (max-width: 640px) {
-    display: none !important;
-  }
-`
-
-function SearchBar() {
+function SearchBar( {placeholder} ) {
 
   return (
     <SearchBoxDiv>
-      <SearchInput type="text" maxLength={240} placeholder="Search..." />
+      <SearchInput type="text" maxLength={240} placeholder={placeholder} />
       <SearchIcon />
     </SearchBoxDiv>
   )

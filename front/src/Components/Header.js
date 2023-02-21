@@ -36,6 +36,11 @@ const Containerheader = styled.header`
       align-items: center;
       height: 100%;
     }
+    @media only screen and (max-width: 640px) {
+      > div {
+        display: none !important;
+      }
+    }
     > ul:nth-child(2) {
       padding: 2px 0;
       li:not(:nth-child(2)) {
@@ -187,7 +192,7 @@ function Header() {
           <HeadTextTabLi>Products</HeadTextTabLi>
           <HeadTextTabLi>For Teams</HeadTextTabLi>
         </ul>
-        <SearchBar />
+        <SearchBar placeholder="Search..."/>
         <ul>
           <HeadLogoTabLi><SearchIcon /></HeadLogoTabLi>
           {state.login && loginTabList.map((el, i) => <HeadLogoTabLi key={i}>{el}</HeadLogoTabLi>)}
