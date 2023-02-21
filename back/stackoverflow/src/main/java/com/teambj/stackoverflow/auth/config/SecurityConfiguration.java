@@ -5,7 +5,6 @@ import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
 import com.teambj.stackoverflow.auth.filter.JwtAuthenticationFilter;
 import com.teambj.stackoverflow.auth.JwtTokenizer;
 import com.teambj.stackoverflow.auth.filter.JwtVerificationFilter;
-import com.teambj.stackoverflow.auth.handler.OAuth2UserSuccessHandler;
 import com.teambj.stackoverflow.auth.handler.UserAuthenticationFailureHandler;
 import com.teambj.stackoverflow.auth.handler.UserAuthenticationSuccessHandler;
 import com.teambj.stackoverflow.domain.user.service.UserService;
@@ -41,14 +40,12 @@ public class SecurityConfiguration{
 
     private final JwtTokenizer jwtTokenizer;
     private final CustomUserDetailsService userDetailsService;
-    private final UserService userService;
-    private final CustomAuthorityUtils authorityUtils;
 
-    public SecurityConfiguration(JwtTokenizer jwtTokenizer, CustomUserDetailsService userDetailsService, UserService userService, CustomAuthorityUtils authorityUtils) {
+
+    public SecurityConfiguration(JwtTokenizer jwtTokenizer, CustomUserDetailsService userDetailsService) {
         this.jwtTokenizer = jwtTokenizer;
         this.userDetailsService = userDetailsService;
-        this.userService = userService;
-        this.authorityUtils = authorityUtils;
+
     }
 
     @Bean
@@ -67,7 +64,7 @@ public class SecurityConfiguration{
                 .authorizeHttpRequests(authorize -> authorize
                         .anyRequest().permitAll() //추후 수정
                 )
-                .oauth2Login(oAuth2 -> oAuth2.successHandler(new OAuth2UserSuccessHandler(jwtTokenizer, authorityUtils, userService)));
+                .oauth2Login(withDefaults());
         return http.build();
     }
 

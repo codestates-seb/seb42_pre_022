@@ -1,6 +1,6 @@
 package com.teambj.stackoverflow.domain.question.controller;
 
-import com.teambj.stackoverflow.auth.CustomUserDetailsService;
+import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
 import com.teambj.stackoverflow.domain.question.dto.QuestionPatchDto;
 import com.teambj.stackoverflow.domain.question.dto.QuestionPostDto;
 import com.teambj.stackoverflow.domain.question.dto.QuestionResponseDto;
