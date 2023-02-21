@@ -1,5 +1,6 @@
 package com.teambj.stackoverflow.response;
 
+import com.teambj.stackoverflow.domain.user.dto.UserDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -36,8 +38,20 @@ public class ApiResponse<T> {
         return new ApiResponse<>(new ApiResponseHeader(status.value(), status.getReasonPhrase()), body);
     }
 
+    /*
+    SingleResponse
+     */
     public static <T> ApiResponse<T> ok(String key, T value) {
         Map<String, T> body = new HashMap<>() {{ put(key, value); }};
+
+        return new ApiResponse<>(new ApiResponseHeader(OK, OK_MESSAGE), body);
+    }
+
+    /*
+    MultiResponse
+     */
+    public static <T> ApiResponse<T> ok(String key1, T value1, String key2, T value2) {
+        Map<String, T> body = new HashMap<>() {{ put(key1, value1); put(key2,value2);}};
 
         return new ApiResponse<>(new ApiResponseHeader(OK, OK_MESSAGE), body);
     }
