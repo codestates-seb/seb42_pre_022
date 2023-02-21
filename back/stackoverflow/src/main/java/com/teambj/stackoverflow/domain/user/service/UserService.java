@@ -93,7 +93,7 @@ public class UserService {
         }
     }
 
-    private User verifyUser(Long userId) {
+    public User verifyUser(Long userId) {
         Optional<User> optional = userRepository.findById(userId);
         return optional.orElseThrow(() -> new RuntimeException("No valid user"));
     }

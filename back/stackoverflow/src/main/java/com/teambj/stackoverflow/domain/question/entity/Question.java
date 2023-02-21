@@ -1,7 +1,9 @@
 package com.teambj.stackoverflow.domain.question.entity;
 
+import com.teambj.stackoverflow.domain.answer.entity.Answer;
 import com.teambj.stackoverflow.domain.user.entity.User;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
@@ -27,10 +29,13 @@ public class Question {
     @Column(nullable = false)
     private String body;
 
-    private Long answerCount;
+    @Column(columnDefinition = "integer default 0")
+    private int answerCount;
 
-    private Long viewCount;
+    @Column(columnDefinition = "integer default 0")
+    private int viewCount;
 
+    @Column(updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private LocalDateTime modifiedAt = LocalDateTime.now();
@@ -41,18 +46,18 @@ public class Question {
     @JoinColumn(name = "userId")
     private User user;
 
-    //@OneToMany(mappedBy = "", cascade = CascadeType.REMOVE)
-    //private List<Answer> answer = new ArrayList<>();
+    @OneToMany(/*mappedBy = "", */cascade = CascadeType.REMOVE)
+    private List<Answer> answer = new ArrayList<>();
 
     public void addUser(User user) {
         this.user = user;
     }
 
-    public void setAnswerCount(Long answerCount) {
+    public void setAnswerCount(int answerCount) {
         this.answerCount = answerCount;
     }
 
-    public void setViewCount(Long viewCount) {
+    public void setViewCount(int viewCount) {
         this.viewCount = viewCount;
     }
 }
