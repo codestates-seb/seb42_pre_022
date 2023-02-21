@@ -36,7 +36,6 @@ public class UserDto {
         public void setUserId(long userId) {
             this.userId = userId;
         }
-
     }
 
     @Getter

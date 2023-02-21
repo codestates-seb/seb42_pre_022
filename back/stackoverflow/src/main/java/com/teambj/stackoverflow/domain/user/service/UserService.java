@@ -5,6 +5,9 @@ import com.teambj.stackoverflow.auth.mail.ConfirmationToken;
 import com.teambj.stackoverflow.auth.mail.ConfirmationTokenService;
 import com.teambj.stackoverflow.domain.user.entity.User;
 import com.teambj.stackoverflow.domain.user.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -93,5 +96,15 @@ public class UserService {
     private User verifyUser(Long userId) {
         Optional<User> optional = userRepository.findById(userId);
         return optional.orElseThrow(() -> new RuntimeException("No valid user"));
+    }
+
+    public Page<User> getUserList(int page) {
+
+        return userRepository.findAll(PageRequest.of(page,36,Sort.by(Sort.Direction.DESC, "reputation")));
+    }
+
+    public User getUser(Long userId) {
+
+        return verifyUser(userId);
     }
 }

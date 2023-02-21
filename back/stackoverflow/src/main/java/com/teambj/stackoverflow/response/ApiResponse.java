@@ -19,12 +19,25 @@ public class ApiResponse<T> {
         return new ApiResponse<>(new ApiResponseHeader(status.value(), status.getReasonPhrase()), body);
     }
 
+
     public static <T> ApiResponse<T> ok() {
         return new ApiResponse<>(new ApiResponseHeader(ResponseCode.OK.status, ResponseCode.OK.message), null);
     }
 
+    /*
+    SingleResponse
+     */
     public static <T> ApiResponse<T> ok(String key, T value) {
         Map<String, T> body = new HashMap<>() {{ put(key, value); }};
+
+        return new ApiResponse<>(new ApiResponseHeader(ResponseCode.OK.status, ResponseCode.OK.message), body);
+    }
+
+    /*
+    MultiResponse
+     */
+    public static <T> ApiResponse<T> ok(String key1, T value1, String key2, T value2) {
+        Map<String, T> body = new HashMap<>() {{ put(key1, value1); put(key2,value2);}};
 
         return new ApiResponse<>(new ApiResponseHeader(ResponseCode.OK.status, ResponseCode.OK.message), body);
     }
