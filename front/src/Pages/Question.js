@@ -6,6 +6,7 @@ import TagsDiv from "../Components/TagsDiv";
 import { Link } from "react-router-dom";
 import WriteBoard from "../Components/WriteBoard";
 import { useSelector } from "react-redux";
+import LoginWith from "../Components/LoginWith";
 
 const QuestionContainerMain = styled.main`
   display: table;
@@ -94,7 +95,7 @@ function Question() {
   }
 
   return (
-    <QuestionContainerMain>
+    <QuestionContainerMain className="content">
       <div>
         <h1><a href="www.naver.com">(제목)Cursor Resize on scroll bar of div</a></h1>
         <BasicBlueButton to="/askquestion">Ask Question</BasicBlueButton>
@@ -117,7 +118,7 @@ function Question() {
           <div>
             <h2>Your Answer</h2>
             <WriteBoard />
-            {state.login ? null : <div>(비로그인 시) 로그인 디브</div>}
+            {state.login ? null : <LoginWith />}
             <div>
               <BasicBlueButton to="/questions/detail">Post your Answer</BasicBlueButton>
               {state.login ? null : <p>(비로그인 시)By clicking "Post Your Answer", you agree to our terms of service, privacy policy and cookie policy</p>}

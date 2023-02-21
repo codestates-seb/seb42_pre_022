@@ -1,5 +1,14 @@
 import styled from "styled-components";
 
+const LoginWithContainer = styled.div`
+  margin-bottom: 16px;
+  width: 90%;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
 const LoginWithButton = styled.button`
   flex: 1 auto;
   padding: 10px;
@@ -14,10 +23,10 @@ const LoginWithButton = styled.button`
 
 function LoginWith() {
   return (
-    <>
+    <LoginWithContainer>
       <LoginWithButton>Log in with Google</LoginWithButton>
       <LoginWithButton color="--black-750">Log in with Github</LoginWithButton>
-    </>
+    </LoginWithContainer>
   )
 }
 
