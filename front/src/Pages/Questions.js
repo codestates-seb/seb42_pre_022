@@ -170,7 +170,7 @@ function Questions() {
               <div>
                 <DataControllerBox>
                   <DataController>
-                    <DataControllerBtn start={1} selecte={true}><div>Newest</div></DataControllerBtn>
+                    <DataControllerBtn start={1} selected={true}><div>Newest</div></DataControllerBtn>
                     <DataControllerBtn middle="true" ><div>Active</div></DataControllerBtn>
                     <DataControllerBtn middle="true" ><div>Unanswered</div></DataControllerBtn>
                     <DataControllerBtn end="true" ><div>More</div></DataControllerBtn>
