@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const NavContainer = styled.div`
   display: flex;
@@ -17,6 +18,15 @@ const NavContainer = styled.div`
   transition: box-shadow ease-in-out .1s,transform ease-in-out .1s;
   transform: translateZ(0);
   text-align: left;
+  >div{
+    position: sticky;
+    width: auto;
+    margin-bottom: 8px;
+    overflow-y: auto;
+    top: 50px;
+    max-height: calc(100vh-50px);
+    padding-top: 24px;
+  }
   @media screen and (max-width: 640px){
     display: none;
   }
@@ -25,15 +35,14 @@ const MainMenu = styled.ol`
   list-style: none;
   color: var(--black-600);
   margin: 0 0 12px;
-  font-size: 100%;
+  font-size: 13px;
   vertical-align: baseline;
+  margin-block-start: 0px;
+  margin-block-end: 0px;
   >li{
-    display: list-item;
-    line-height: 2;
-    font-size: 13px;
     position: relative;
   }
-  >li:nth-child(1){
+  >li:nth-child(1) {
     text-transform: uppercase;
     margin : 16px 0 4px 8px;
     color: var(--fc-light);
@@ -41,7 +50,9 @@ const MainMenu = styled.ol`
   }
   >li:nth-child(2) >a{
     /* withsvg */
-    padding: 8px 6px 8px 8px;
+    display: flex;
+    padding: 8px 6px 8px 0;
+    padding-left: 8px;
   }
   >li:nth-child(n+3) >a{
     /* withoutsvg */
@@ -59,34 +70,50 @@ const MainMenu = styled.ol`
     user-select: auto;
     text-decoration: none;
     display: block;
+    color: var(--black-600);
+    line-height: 2;
+    font-size: 13px;
   }
   svg{
     width: 18px;
     height: 18px;
+    flex-shrink: 0;
     margin-top: -1px;
     margin-right: 4px;
-    vertical-align: middle;
+    vertical-align: bottom;
+    >path{
+      fill: currentColor;
+    }
+  }
+  span{
+    line-height: calc(17/13);
+  }
+  >div{
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 `
 
 
 function Nav() {
   return (
-    <>
-      <NavContainer>
+    <NavContainer>
+      <div>
       <MainMenu>
-        <li>Public</li>
-        <li className="youarehere">
-          <a>
-            <svg viewBox="0 0 18 18"><path d="M 9 1 C 4.64 1 1 4.64 1 9 c 0 4.36 3.64 8 8 8 c 4.36 0 8 -3.64 8 -8 c 0 -4.36 -3.64 -8 -8 -8 Z M 8 15.32 a 6.46 6.46 0 0 1 -4.3 -2.74 a 6.46 6.46 0 0 1 -0.93 -5.01 L 7 11.68 v 0.8 c 0 0.88 0.12 1.32 1 1.32 v 1.52 Z m 5.72 -2 c -0.2 -0.66 -1 -1.32 -1.72 -1.32 h -1 v -2 c 0 -0.44 -0.56 -1 -1 -1 H 6 V 7 h 1 c 0.44 0 1 -0.56 1 -1 V 5 h 2 c 0.88 0 1.4 -0.72 1.4 -1.6 v -0.33 a 6.45 6.45 0 0 1 3.83 4.51 a 6.45 6.45 0 0 1 -1.51 5.73 v 0.01 Z" /></svg>
-            <span>Questions</span>
-          </a>
-        </li>
-        <li><a>Tags</a></li>
-        <li><a>Users</a></li>
-      </MainMenu>
-      </NavContainer>
-    </>
+      <li>Public</li>
+      <li>
+        <Link to="/">
+          <svg viewBox="0 0 18 18"><path d="M9 1C4.64 1 1 4.64 1 9c0 4.36 3.64 8 8 8 4.36 0 8-3.64 8-8 0-4.36-3.64-8-8-8ZM8 15.32a6.46 6.46 0 0 1-4.3-2.74 6.46 6.46 0 0 1-.93-5.01L7 11.68v.8c0 .88.12 1.32 1 1.32v1.52Zm5.72-2c-.2-.66-1-1.32-1.72-1.32h-1v-2c0-.44-.56-1-1-1H6V7h1c.44 0 1-.56 1-1V5h2c.88 0 1.4-.72 1.4-1.6v-.33a6.45 6.45 0 0 1 3.83 4.51 6.45 6.45 0 0 1-1.51 5.73v.01Z"></path></svg>
+          <span>Questions</span>
+        </Link>
+      </li>
+      <li className="youarehere"><a><div>Tags</div></a></li>
+      <li><a><div>Users</div></a></li>
+    </MainMenu>
+      </div>
+    </NavContainer>
   );
 }
 
