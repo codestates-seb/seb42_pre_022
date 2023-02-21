@@ -8,8 +8,8 @@ import java.math.BigInteger;
 
 @Getter
 public class QuestionPostDto {
-    @NotNull
-    private long userId;
+//    @NotNull
+    private Long userId;
 
     @NotBlank
     private String title;
