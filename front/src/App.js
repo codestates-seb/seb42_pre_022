@@ -30,8 +30,9 @@ function App() {
           <Route path="/users/login" element={<Login />} />
           <Route path="/users/signup" element={<Signup />} />
         </Routes>
-      </div>  
-      <Footer />
+      </div>
+      {/*배포 이후 배포한 주소 길이에 맞게 slice 변경*/}
+      {(String(window.location.href).slice(21) === "/users/login" || String(window.location.href).slice(21) === "/users/signup") ? null : <Footer />}
     </div>
   );
 }
