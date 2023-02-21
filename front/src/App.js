@@ -7,11 +7,12 @@ import Nav from "./Components/Nav";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import Askquestion from "./Pages/Askquestion";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 
 function App() {
 
-  console.log(String(window.location.href).slice(21));
+  const location = useLocation();
+  console.log(location.pathname);
 
   return (
     <div className="app-wrap">
@@ -20,8 +21,7 @@ function App() {
       <div className="wrap">
         {/* {(String(window.location.href).slice(21) === "/") ? <Nav /> : null} */}
         <div className="container">
-        {(String(window.location.href).slice(21) === "/users/login" || String(window.location.href).slice(21) === "/users/signup"
-        || String(window.location.href).slice(21) === "/askquestion") ? null : <Nav />}
+        {(location.pathname === "/users/login" || location.pathname === "/users/signup" || location.pathname === "/askquestion") ? null : <Nav />}
           <Routes>
             <Route path="/" element={<Questions />}/>
             <Route path="/askquestion" element={<Askquestion />} />
@@ -30,7 +30,7 @@ function App() {
           </Routes>
         </div>
       {/*배포 이후 배포한 주소 길이에 맞게 slice 변경*/}
-      {(String(window.location.href).slice(21) === "/users/login" || String(window.location.href).slice(21) === "/users/signup") ? null : <Footer />}
+      {(location.pathname === "/users/login" || location.pathname === "/users/signup") ? null : <Footer />}
       </div>
     </div>
   );
