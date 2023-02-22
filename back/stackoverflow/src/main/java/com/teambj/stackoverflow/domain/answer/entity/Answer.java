@@ -28,11 +28,9 @@ public class Answer extends Auditable {
     @JoinColumn(name = "QUESTION_ID")
     private Question question;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
-
 
     @OneToMany(mappedBy = "answer", fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
