@@ -18,6 +18,12 @@ public class User extends Auditable {
         this.email = email;
     }
 
+    public User(String email, String password,Boolean emailVerified) {
+        this.email = email;
+        this.password = password;
+        this.emailVerified = emailVerified;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;

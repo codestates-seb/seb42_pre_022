@@ -6,6 +6,7 @@ import com.teambj.stackoverflow.auth.JwtTokenizer;
 import com.teambj.stackoverflow.domain.user.dto.LoginDto;
 import com.teambj.stackoverflow.domain.user.entity.User;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final JwtTokenizer jwtTokenizer;
