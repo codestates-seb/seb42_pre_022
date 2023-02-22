@@ -97,8 +97,45 @@ const MypageMenuBtn = styled.a`
 `
 const MypageContent = styled.div`
   display: flex;
+  margin: -12px;
   margin-bottom: 48px;
+  >div:nth-child(1){
+    flex-basis: calc(25% - 24px);
+    margin: 12px;
+    flex-shrink: 0;
+  }
+  >div:nth-child(2){
+    margin: 12px;
+    flex-grow: 1;
+  }
 `
+const MypageGrid = styled.div`
+  display: grid;
+  gap: (24px, 0) (24px, 0);
+  .title{
+    font-size: 1.61538462rem;
+    margin-bottom: 8px;
+  }
+  .content{
+    color: var(--fc-light);
+    border-radius: var(--br-md) ;
+    border: 1px solid var(--bc-medium);
+    background-color: var(--white);
+    padding: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    margin: -8px;
+    >div{
+      flex-basis: alcc(50%-16px);
+      margin: 8px;
+    }
+  }
+  .number{
+    color: var(--fc-dark);
+    font-size: 1.30769231rem;
+  }
+`
+
 
 function Mypage() {
   let user = {
@@ -135,7 +172,27 @@ function Mypage() {
           <MypageMenuBtn>Saves</MypageMenuBtn>
           <MypageMenuBtn>Settings</MypageMenuBtn>
         </MypageMenuBar>
-        <MypageContent></MypageContent>
+        <MypageContent>
+          <div>
+            <MypageGrid>
+              <div>
+                <div className="title">Stats</div>
+                <div className="content">
+                  <div><div className="number">1</div>reputation</div>
+                  <div><div className="number">0</div>reached</div>
+                  <div><div className="number">0</div>answers</div>
+                  <div><div className="number">0</div>questions</div>
+                </div>
+              </div>
+              <div></div>
+            </MypageGrid>
+          </div>
+          <div>
+            <MypageGrid>
+              
+            </MypageGrid>
+          </div>
+        </MypageContent>
       </MypageContainer>
     </div>
   );
