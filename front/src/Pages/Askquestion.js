@@ -16,10 +16,12 @@ import { useState } from "react";
 // DONE 1-4. 질문 상세 내용 20자 이상이어야 다음 화면 열림 -> 버튼 유무는 구현
 // DONE 1-5. tag 구현
 // TODO 2. 로그인 되어있고 모든 value가 작성되면 질문 등록 버튼을 눌렀을 때 질문 등록
-// TODO 3. Discard draft 눌렀을 경우 모든 value를 비우고 홈으로 이동 -> localstorage 비우기
+// -> askquestion 버튼 눌렀을 때 로그인을 체크하면 이 과정을 생략할 수 있음
+// -> 어쨌든 구현해야 함
+// DONE 3. Discard draft 눌렀을 경우 모든 value를 비우고 홈으로 이동 -> localstorage 비우기
 // DONE 3-1. Discard draft 눌렀을 때 확인창 띄우기 (alert 또는 window.confirm 활용)
-// TODO 4. 다른 페이지로 이동 시 작성 중인 데이터 저장 -> localstorage에 저장
-// TODO Question: 서버에서 질문 작성 받을 때 tags도 저장할 수 있도록
+// DONE 4. 다른 페이지로 이동 시 작성 중인 데이터 저장 -> localstorage에 저장
+// DONE Question: 서버에서 질문 작성 받을 때 tags도 저장할 수 있도록
 
 const AskContainer = styled.div`
   width: 100%;
@@ -184,15 +186,37 @@ const PostDiv = styled.div`
 
 function Askquestion() {
   // 작성 가능 상태를 제어하는 상태는 useState 활용
-  const [titleDone, setTitleDone] = useState(false);
-  const [questionDone, setQuestionDone] = useState(false);
-  const [tagStart, setTagStart] = useState(false);
+  const [titleDone, setTitleDone] = useState(() => {
+    const titleDoneData = localStorage.getItem("titleDone");
+    if (titleDoneData !== null) {
+      return JSON.parse(titleDoneData);
+    } else {
+      return false;
+    }
+  })
+  const [questionDone, setQuestionDone] = useState(() => {
+    const questionDoneData = localStorage.getItem("questionDone");
+    if (questionDoneData !== null) {
+      return JSON.parse(questionDoneData);
+    } else {
+      return false;
+    }
+  });
+  const [tagStart, setTagStart] = useState(() => {
+    const tagStartData = localStorage.getItem("tagStart");
+    if (tagStartData !== null) {
+      return JSON.parse(tagStartData);
+    } else {
+      return false;
+    }
+  });
   const state = useSelector(state => state.askquestionReducer);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const discardPost = () => {
     if (window.confirm("Are you sure you want to discard this question?")) {
+      localStorage.removeItem("titleValue"); localStorage.removeItem("questionValue"); localStorage.removeItem("titleDone"); localStorage.removeItem("questionDone"); localStorage.removeItem("tagStart");
       navigate("/");
     }
   }
@@ -205,13 +229,16 @@ function Askquestion() {
   const titleNextHandler = () => {
     if (state.titleValue.length > 0) {
       setTitleDone(true);
+      localStorage.setItem("titleDone", true);
     } else {
       setTitleDone(false);
+      localStorage.setItem("titleDone", false);
     }
   }
 
   const questionNextHandler = () => {
     setTagStart(true);
+    localStorage.setItem("tagStart", true);
   }
 
   console.log(state);
