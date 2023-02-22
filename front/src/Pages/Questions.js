@@ -183,7 +183,7 @@ function Questions() {
                 </DataControllerBox>
               </div>
             </QuestionsH2>
-            {/* <ExpandableFilterform /> */} 
+            <ExpandableFilterform isFilterOpen={isFilterOpen} /> 
           </div>
           <QuestionsContent>
             <QuestionsList />
