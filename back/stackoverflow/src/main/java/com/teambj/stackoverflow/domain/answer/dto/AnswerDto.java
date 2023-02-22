@@ -36,16 +36,6 @@ public class AnswerDto {
 
     @Getter
     @AllArgsConstructor
-    public static class Patch {
-        @Positive
-        private Long answerId;
-
-        @NotBlank
-        private String body;
-    }
-
-    @Getter
-    @AllArgsConstructor
     public static class Response {
         private UserDto.Response user;
         private Long answerId;
