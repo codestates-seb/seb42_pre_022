@@ -19,7 +19,8 @@ public class AnswerRepositoryImpl implements AnswerRepositoryCustom {
 
     @Override
     public List<Answer> findAnswers(Long questionId) {
-        return queryFactory.selectFrom(answer)
+        return queryFactory.select(answer)
+                   .from(answer)
                    .where(questionIdEq(questionId))
                    .fetch();
     }

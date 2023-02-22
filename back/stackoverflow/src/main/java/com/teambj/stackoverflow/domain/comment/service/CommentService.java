@@ -1,10 +1,7 @@
 package com.teambj.stackoverflow.domain.comment.service;
 
-import com.teambj.stackoverflow.domain.answer.entity.Answer;
-import com.teambj.stackoverflow.domain.answer.service.AnswerService;
 import com.teambj.stackoverflow.domain.comment.entity.Comment;
 import com.teambj.stackoverflow.domain.comment.repository.CommentRepository;
-import com.teambj.stackoverflow.domain.question.service.QuestionService;
 import com.teambj.stackoverflow.utils.CustomBeanUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,10 +24,19 @@ public class CommentService {
     }
 
     /*
+     * # 코멘트 조회
+     *
+     */
+    public Comment findComment(Long commentId) {
+        return findVerifiedComment(commentId);
+    }
+
+    /*
      * # 코멘트 조회 (질문)
      *
      */
-    public void findQuestionComments(Long questionId) {
+    public List<Comment> findQuestionComments(Long questionId) {
+        return commentRepository.findQuestionComments(questionId);
     }
 
     /*

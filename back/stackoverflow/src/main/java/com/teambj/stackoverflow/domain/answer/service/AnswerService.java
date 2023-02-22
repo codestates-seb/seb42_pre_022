@@ -25,7 +25,6 @@ public class AnswerService {
     private final AnswerRepository answerRepository;
     private final CommentRepository commentRepository;
 
-    private final QuestionService questionService;
     private final CommentService commentService;
     private final CustomBeanUtil<Answer> customBeanUtil;
 
@@ -46,13 +45,12 @@ public class AnswerService {
     }
 
     /*
-     * # 답변 조회 (전체)
+     * # 답변 조회 (전체 & 코멘트 포함)
      *
      */
     @Transactional(readOnly = true)
     public List<Answer> findAnswers(Long questionId) {
-        Question question = questionService.findQuestion(questionId);
-        List<Answer> answers = answerRepository.findAnswers(question.getQuestionId());
+        List<Answer> answers = answerRepository.findAnswers(questionId);
 
         for (Answer answer : answers) {
             List<Comment> answerComments = commentService.findAnswerComments(answer.getAnswerId());
@@ -95,7 +93,7 @@ public class AnswerService {
     private Answer findVerifiedAnswer(Long answerId) {
         Optional<Answer> byId = answerRepository.findById(answerId);
 
-        return byId.orElseThrow(() -> new BusinessLogicException(ExceptionCode.QUESTION_NOT_FOUND));
+        return byId.orElseThrow(() -> new RuntimeException("등록된 답변이 없습니다."));
     }
 
 

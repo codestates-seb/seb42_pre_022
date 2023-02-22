@@ -1,5 +1,7 @@
 package com.teambj.stackoverflow.domain.comment.dto;
 
+import com.teambj.stackoverflow.domain.user.dto.UserDto;
+import com.teambj.stackoverflow.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -32,6 +34,7 @@ public class CommentDto {
     @Getter
     @AllArgsConstructor
     public static class Response {
+        private UserDto.Response user;
         private Long commentId;
         private String body;
         private LocalDateTime createdDate;

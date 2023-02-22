@@ -23,6 +23,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @Validated
@@ -33,22 +34,21 @@ public class AnswerController {
 
     private final UserService userService;
     private final QuestionService questionService;
-    private final QuestionMapper questionMapper;
 
     private final AnswerService answerService;
     private final AnswerMapper answerMapper;
 
     @PostMapping
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> postAnswer(
         @Valid @RequestBody AnswerDto.Post answerDto,
         @AuthenticationPrincipal CustomUserDetailsService.UserPrincipal userDetails
     ) {
-        System.out.println("userDetails = " + userDetails);
-        // User user = userService.findUser(userDetails);
+        User user = userService.getUser(userDetails.getUserId());
         Question question = questionService.findQuestion(answerDto.getQuestionId());
 
         Answer answer = answerMapper.answerDtoPostToAnswer(answerDto);
-        // answer.setUser(user);
+        answer.setUser(user);
         answer.setQuestion(question);
 
         Answer createdAnswer = answerService.createAnswer(answer);
@@ -66,7 +66,15 @@ public class AnswerController {
     }
 
     @PatchMapping
-    public ResponseEntity<?> patchAnswer(@Valid @RequestBody AnswerDto.Patch answerDto) {
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> patchAnswer(
+        @Valid @RequestBody AnswerDto.Patch answerDto,
+        @AuthenticationPrincipal CustomUserDetailsService.UserPrincipal userDetails
+    ) {
+        Answer findAnswer = answerService.findAnswer(answerDto.getAnswerId());
+        if (!Objects.equals(findAnswer.getUser().getUserId(), userDetails.getUserId()))
+            throw new RuntimeException("수정 권한이 없습니다.");
+
         Answer answer = answerService.updateAnswer(answerMapper.answerDtoPatchToAnswer(answerDto));
         AnswerDto.Response response = answerMapper.answerToAnswerResponseDto(answer);
 
@@ -74,7 +82,16 @@ public class AnswerController {
     }
 
     @DeleteMapping("/{answer-id}")
-    public ResponseEntity<?> deleteAnswer(@Positive @PathVariable("answer-id") Long answerId) {
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> deleteAnswer(
+        @Positive @PathVariable("answer-id") Long answerId,
+        @AuthenticationPrincipal CustomUserDetailsService.UserPrincipal userDetails
+    ) {
+        Answer findAnswer = answerService.findAnswer(answerId);
+
+        if (!Objects.equals(findAnswer.getUser().getUserId(), userDetails.getUserId()))
+            throw new RuntimeException("삭제 권한이 없습니다.");
+
         answerService.deleteAnswer(answerId);
 
         return ResponseEntity.noContent().build();
