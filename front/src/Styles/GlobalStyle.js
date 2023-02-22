@@ -7,6 +7,72 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     font-family: 'Noto Sans', 'Noto Sans KR', sans-serif;
     }
+  .app-wrap {
+    width: 100%;
+    height: 100vh;
+  }
+  .wrap {
+    position: relative;
+    margin: 0 auto;
+    padding-top: 50px;
+    /* max-width: 1264px; */
+    width: 100%;
+    /* height: calc(100vh - 50px); */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .container{
+    position: relative;
+    flex: 1 0 auto;
+    /* max-width: 1264px; */
+    width: 100%;
+    height: max-content;
+    background: none;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    margin-top: 0;
+    /* padding-top: 50px; */
+  }
+  html{
+    font-size: 13px;
+    @media (max-width: 640px){
+    font-size: 11px;
+    }
+  }
+
+  .content {
+    max-width: 1100px;
+    width: calc(100% - 164px);
+    display: flex;
+    border: 1px solid var(--black-100);
+    background-color: var(--white);
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 1px;
+    border-right-width: 0;
+    padding: 24px;
+    @media screen and (max-width: 980px){
+    padding-left: 16px;
+    padding-right: 16px;
+    }
+    @media screen and (max-width: 640px){
+    width: 100%;
+    border: none;
+    }
+  }
+
+  .linktext {
+    color: var(--blue);
+    text-decoration: none;
+  }
+  .linktext:hover {
+    color: var(--blue-500);
+  }
+
   :root {
     /* color */
     --white: hsl(0,0%,100%);
@@ -135,6 +201,19 @@ const GlobalStyle = createGlobalStyle`
     --highlight-variable: hsl(80,80.5%,26.5%);
     --highlight-addition: var(--green-700);
     --highlight-deletion: var(--red-600);
+    --theme-base-primary-color-h: 27;
+    --theme-base-primary-color-s: 90%;
+    --theme-base-primary-color-l: 55%;
+    --theme-base-primary-color-r: 243.525;
+    --theme-base-primary-color-g: 129.9225;
+    --theme-base-primary-color-b: 36.975;
+    --theme-primary-color-h: var(--theme-light-primary-color-h, var(--theme-base-primary-color-h));
+    --theme-primary-color-s: var(--theme-light-primary-color-s, var(--theme-base-primary-color-s));
+    --theme-primary-color-l: var(--theme-light-primary-color-l, var(--theme-base-primary-color-l));
+    --theme-primary-color-r: var(--theme-light-primary-color-r, var(--theme-base-primary-color-r));
+    --theme-primary-color-g: var(--theme-light-primary-color-g, var(--theme-base-primary-color-g));
+    --theme-primary-color-b: var(--theme-light-primary-color-b, var(--theme-base-primary-color-b));
+
     }
 `
 
