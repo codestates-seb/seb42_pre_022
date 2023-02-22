@@ -2,6 +2,7 @@ import styled from "styled-components";
 import askbackground from "../assets/askbackground.svg";
 import { BasicBlueButton } from "../Styles/Buttons";
 import WriteBoard from "../Components/WriteBoard";
+import { SearchInput } from "../Components/SearchBar";
 
 //TODO: 제목 간격 조정
 const AskContainer = styled.div`
@@ -78,22 +79,9 @@ const FormDiv = styled.div`
 `
 
 // input창 Header에서 재활용 가능 -> styles에 옮기기
-const FormInput = styled.input`
-  display: block;
-  width: 100%;
+const FormInput = styled(SearchInput)`
+  padding-left: 0.7em;
   margin: 2px 0;
-  padding: 0.6em 0.7em;
-  color: var(--black-700);
-  line-height: calc(15/13);
-  border: 1px solid var(--black-200);
-  border-radius: 3px;
-  font-size: 13px;
-  background-color: var(--white);
-  outline: 0;
-  :focus {
-    border-color: var(--blue-300);
-    box-shadow: 0 0 0 4px hsla(206, 100%, 40%, .15);
-  }
   ::placeholder {color: var(--black-200)}
 `
 
