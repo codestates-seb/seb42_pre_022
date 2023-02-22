@@ -167,7 +167,7 @@ const QuestionsContent = styled.div`
 
 
 function Questions() {
-  const filter = useSelector((state)=> state.filter.value);
+  const filter = useSelector((state)=> state.filter);
   const dispatch = useDispatch();
   const [isFilterOpen, setFilterOpen] = useState(false);
   const filterOpenHandler = () => {
@@ -194,8 +194,8 @@ function Questions() {
               <div>
                 <DataControllerBox>
                   <DataController>
-                    <DataControllerBtn onClick={()=>filteringHandler('Newest')} start={1} selected={filter==='Newest'}><div>Newest</div></DataControllerBtn>
-                    <DataControllerBtn onClick={()=>filteringHandler('Unanswered')} middle="true" selected={filter==='Unanswered'} ><div>Unanswered</div></DataControllerBtn>
+                    <DataControllerBtn onClick={()=>filteringHandler('newest')} start={1} selected={filter.newest}><div>Newest</div></DataControllerBtn>
+                    <DataControllerBtn onClick={()=>filteringHandler('unanswered')} middle="true" selected={filter.unanswered} ><div>Unanswered</div></DataControllerBtn>
                     <DataControllerBtn end="true" >More</DataControllerBtn>
                   </DataController>
                   <Dropdown />
@@ -206,7 +206,7 @@ function Questions() {
                 </DataControllerBox>
               </div>
             </QuestionsH2>
-            <ExpandableFilterform isFilterOpen={isFilterOpen} /> 
+            <ExpandableFilterform isFilterOpen={isFilterOpen} filter={filter} dispatch={dispatch}/> 
           </div>
           <QuestionsContent>
             <QuestionsList />

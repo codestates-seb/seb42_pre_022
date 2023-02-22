@@ -1,7 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 let initialState = {
-  value : "newest"
+  newest: true,
+  highestscore: false,
+  unanswered: false,
+  tag: 0,
 }
 
 const filterSlice = createSlice({
@@ -9,11 +12,20 @@ const filterSlice = createSlice({
   initialState,
   reducers: {
     filteringBy: (state, action) => {
-      state.value = action.payload
+      state.newest=false
+      state.unanswered=false
+      state[action.payload]= true
+    },
+    customfilter: (state, action) => {
+      if(action.payload === 'newest' || action.payload === 'highestscore'){
+        state.newest = false
+        state.highestscore = false
+      }
+      state[action.payload] = !state[action.payload]
     }
   }
 
 })
 
-export const { filteringBy } = filterSlice.actions
+export const { filteringBy, customfilter } = filterSlice.actions
 export default filterSlice.reducer
