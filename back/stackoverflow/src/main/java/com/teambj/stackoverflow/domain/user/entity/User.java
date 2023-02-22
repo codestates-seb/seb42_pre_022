@@ -18,10 +18,12 @@ public class User extends Auditable {
         this.email = email;
     }
 
-    public User(String email, String password,Boolean emailVerified) {
+    public User(String email, String password,Boolean emailVerified, Reputation reputation, String displayName) {
         this.email = email;
         this.password = password;
         this.emailVerified = emailVerified;
+        this.reputation = reputation;
+        this.displayName = displayName;
     }
 
     @Id

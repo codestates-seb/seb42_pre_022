@@ -29,7 +29,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         //Access Token
-        String jws = request.getHeader("Authorization").replace("Bearer ", "");
+        String jws = request.getHeader("Authorization").replace("Bearer_", "");
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
 
         //Verify AccessToken
@@ -40,14 +40,12 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
 
-
-
     }
 
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String authentication = request.getHeader("Authorization");
 
-        return authentication == null || !authentication.startsWith("Bearer ");
+        return authentication == null || !authentication.startsWith("Bearer_");
     }
 
 
