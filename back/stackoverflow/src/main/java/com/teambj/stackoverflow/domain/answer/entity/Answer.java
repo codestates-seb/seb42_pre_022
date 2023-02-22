@@ -3,6 +3,7 @@ package com.teambj.stackoverflow.domain.answer.entity;
 import com.teambj.stackoverflow.audit.Auditable;
 import com.teambj.stackoverflow.domain.comment.entity.Comment;
 import com.teambj.stackoverflow.domain.question.entity.Question;
+import com.teambj.stackoverflow.domain.user.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,9 +28,11 @@ public class Answer extends Auditable {
     @JoinColumn(name = "QUESTION_ID")
     private Question question;
 
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "USER_ID")
-    // private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_ID")
+    private User user;
+
 
     @OneToMany(mappedBy = "answer", fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
