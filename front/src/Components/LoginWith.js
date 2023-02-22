@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
-import googleicon from "../assets/googleicon.png";
+import { ReactComponent as GoogleIcon } from "../assets/googleicon.svg";
 
 const LoginWithContainer = styled.div`
   margin-bottom: 16px;
@@ -31,17 +31,17 @@ const LoginWithButton = styled.button`
   }
 `
 
-const GoogleIcon = styled.img`
-  width: 13px;
-  height: 13px;
-  margin-right: 4px;
-`
+// const GoogleIcon = styled.img`
+//   width: 13px;
+//   height: 13px;
+//   margin-right: 4px;
+// `
 
 function LoginWith() {
   return (
     <LoginWithContainer>
       <LoginWithButton hover="--black-025" font="--black">
-        <GoogleIcon src={googleicon} alt="googleicon" />
+        <GoogleIcon className="logo-icon" />
         Log in with Google
       </LoginWithButton>
       <LoginWithButton color="--black-750" hover="--black-800">
