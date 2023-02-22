@@ -103,9 +103,16 @@ function LoginSignupForm() {
             Passwords must contain at least eight characters, including at least 1 letter and 1 number.
           </FormNoticeDiv>
         ) : null}
-        <LoginButton>
-          {(location.pathname === "/users/signup") ? "Sign up" : "Log in"}
-        </LoginButton>
+        {/*Log in: 로그인 서버로 넘겨서 응답 잘 받으면 홈으로 페이지 넘기기, 없다는 응답 시 alert 띄우기*/}
+        {/*Sign up: display name, email, password 형식에 맞지 않으면 alert, 맞으면 페이지 넘기기*/}
+        {(location.pathname === "/users/signup") ? (
+          <LoginButton>
+            Sign up
+          </LoginButton>
+        ) : (
+          <LoginButton>
+            Log in
+          </LoginButton>)}
         {(location.pathname === "/users/signup") ? (
           <FormNoticeDiv>
             By clicking “Sign up”, you agree to our <span>terms of service</span>, <span>privacy policy</span> and <span>cookie policy</span>
@@ -114,14 +121,14 @@ function LoginSignupForm() {
       </LoginForm>
       {(location.pathname === "/users/signup") ? (
         <SignupLink>
-        <div className="signup-link-notice">Already have an account?</div>
-        <Link to="/users/login">Log in</Link>
-      </SignupLink>
+          <div className="signup-link-notice">Already have an account?</div>
+          <Link to="/users/login">Log in</Link>
+        </SignupLink>
       ) : (
         <SignupLink>
-        <div className="signup-link-notice">Don’t have an account?</div>
-        <Link to="/users/signup">Sign up</Link>
-      </SignupLink>
+          <div className="signup-link-notice">Don’t have an account?</div>
+          <Link to="/users/signup">Sign up</Link>
+        </SignupLink>
       )}
     </LoginFormContainer>
   )
