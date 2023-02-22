@@ -3,8 +3,24 @@ import askbackground from "../assets/askbackground.svg";
 import { BasicBlueButton } from "../Styles/Buttons";
 import WriteBoard from "../Components/WriteBoard";
 import { SearchInput } from "../Components/SearchBar";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { askquestionActions } from "../Reducers/askquestionReducer";
+import { useState } from "react";
 
-//TODO: 제목 간격 조정
+// TODO: 기능 구현
+// DONE 1. 글자 수 조건이 맞아야 다음 칸 작성 가능(tag는 생각해보기)
+// DONE 1-1. 제목 redux 상태 관리 구현
+// DONE 1-2. 이전 작업이 적합하게 완료되어야 다음 화면 열림
+// DONE 1-3. 질문 상세 내용 redux 상태 관리 구현
+// DONE 1-4. 질문 상세 내용 20자 이상이어야 다음 화면 열림 -> 버튼 유무는 구현
+// DONE 1-5. tag 구현
+// TODO 2. 로그인 되어있고 모든 value가 작성되면 질문 등록 버튼을 눌렀을 때 질문 등록
+// TODO 3. Discard draft 눌렀을 경우 모든 value를 비우고 홈으로 이동 -> localstorage 비우기
+// DONE 3-1. Discard draft 눌렀을 때 확인창 띄우기 (alert 또는 window.confirm 활용)
+// TODO 4. 다른 페이지로 이동 시 작성 중인 데이터 저장 -> localstorage에 저장
+// TODO Question: 서버에서 질문 작성 받을 때 tags도 저장할 수 있도록
+
 const AskContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -16,6 +32,13 @@ const AskContainer = styled.div`
   align-items: center;
   margin-bottom: 48px;
   color: var(--black-800);
+  .disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+    background-color: var(--black-050);
+    z-index: 999;
+    color: var(--black-200);
+  }
 `
 
 const TitleNotice = styled.div`
@@ -69,6 +92,10 @@ const FormDiv = styled.div`
   .button {
     margin-top: 8px;
   }
+  .button-disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
   .form-title {
     cursor: pointer;
     font-size: 14px;
@@ -85,6 +112,58 @@ const FormInput = styled(SearchInput)`
   ::placeholder {color: var(--black-200)}
 `
 
+const TagInput = styled.div`
+  flex: 1;
+  display: flex;
+  width: 100%;
+  padding: 0.6em 0.5em;
+  color: var(--black-700);
+  line-height: calc(15/13);
+  border: 1px solid var(--black-200);
+  border-radius: 3px;
+  font-size: 13px;
+  background-color: var(--white);
+  input {
+    border-style: none;
+    outline: none;
+  }
+  :focus-within {
+    border-color: var(--blue-300);
+    box-shadow: 0 0 0 4px hsla(206, 100%, 40%, .15);
+  }
+  ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    margin-right: 6px;
+  }
+  li {
+    margin: 0 4px;
+    padding: 4px;
+    background-color: var(--powder-100);
+    border-radius: 3px;
+    color: var(--powder-700);
+  }
+  span {
+    padding: 4px;
+  }
+  button {
+    padding: 0 4px;
+    margin-left: 4px;
+    font-size: 13px;
+    font-weight: bold;
+    background-color: transparent;
+    border-style: none;
+    border-radius: 3px;
+    color: var(--powder-700);
+    cursor: pointer;
+    :hover {
+      background-color: var(--powder-800);
+      color: var(--white);
+    }
+  }
+`
+
 const PostDiv = styled.div`
   width: 70%;
   padding: 16px 0;
@@ -95,15 +174,47 @@ const PostDiv = styled.div`
     padding: 8px;
     margin-left: 8px;
     color: var(--red);
+    border-radius: 3px;
+    border: 4px solid var(--white);
     cursor: pointer;
+    :hover {background-color: var(--red-050);}
+    :active {background-color: var(--red-100); border: 4px solid var(--red-100);}
   }
 `
 
 function Askquestion() {
+  // 작성 가능 상태를 제어하는 상태는 useState 활용
+  const [titleDone, setTitleDone] = useState(false);
+  const [questionDone, setQuestionDone] = useState(false);
+  const [tagStart, setTagStart] = useState(false);
+  const state = useSelector(state => state.askquestionReducer);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  console.log(String(window.location.href).slice(21))
-  //TODO: textarea에 작성된 글자 효과 주기 -> 굵게, 기울기, ...
-  //TODO: 나머지 레이아웃 먼저 구성하고 textarea 구성하기
+  const discardPost = () => {
+    if (window.confirm("Are you sure you want to discard this question?")) {
+      navigate("/");
+    }
+  }
+
+  const titleInputHandler = (e) => {
+    const data = e.target.value;
+    dispatch(askquestionActions.changeTitleValue({ data }));
+  }
+
+  const titleNextHandler = () => {
+    if (state.titleValue.length > 0) {
+      setTitleDone(true);
+    } else {
+      setTitleDone(false);
+    }
+  }
+
+  const questionNextHandler = () => {
+    setTagStart(true);
+  }
+
+  console.log(state);
 
   return (
     <AskContainer>
@@ -132,27 +243,48 @@ function Askquestion() {
           <label htmlFor="title" className="form-title">Title</label>
           <div>Be specific and imagine you’re asking a question to another person.</div>
         </div>
-        <FormInput type="text" id="title" placeholder="e.g Is there an R function for finding the index of an element in a vector?" />
-        <BasicBlueButton className="button">Next</BasicBlueButton>
+        <FormInput type="text" id="title" placeholder="e.g Is there an R function for finding the index of an element in a vector?" value={state.titleValue} onChange={titleInputHandler} />
+        <BasicBlueButton className="button" onClick={titleNextHandler}>Next</BasicBlueButton>
       </FormDiv>
-      <FormDiv>
+      <FormDiv className={titleDone ? "" : "disabled"}>
         <div>
           <div className="form-title">What are the details of your problem?</div>
           <div>Introduce the problem and expand on what you put in the title. Minimum 20 characters.</div>
         </div>
-        <WriteBoard />
-        <BasicBlueButton className="button">Next</BasicBlueButton>
+        <WriteBoard setQuestionDone={setQuestionDone} />
+        {titleDone ? (<BasicBlueButton className={questionDone ? "button" : "button button-disabled"} onClick={questionNextHandler}>Next</BasicBlueButton>) : null}
       </FormDiv>
-      <FormDiv>
+      <FormDiv className={(titleDone && tagStart) ? "" : "disabled"}>
         <div>
           <label htmlFor="tags" className="form-title">Tags</label>
           <div>Add up to 5 tags to describe what your question is about. Start typing to see suggestions.</div>
         </div>
-        <FormInput type="text" id="tags" placeholder="e.g. (ajax iphone string)" />
+        <TagInput>
+          <ul>
+            {state.tags.map((tag, index) => (
+              <li key={index}>
+                <span>{tag}
+                  <button onClick={() => {
+                    const indexToRemove = index;
+                    dispatch(askquestionActions.removeTag({ indexToRemove }))
+                  }}>x</button>
+                </span>
+              </li>
+            ))}
+          </ul>
+          <input type="text" id="tags" placeholder={state.tags.length === 0 ? "e.g. (ajax iphone string)" : ""}
+            onKeyUp={(event) => {
+              if (event.key === "Enter") {
+                const data = event.target.value;
+                dispatch(askquestionActions.addTag({ data }));
+                event.target.value = "";
+              }
+            }} />
+        </TagInput>
       </FormDiv>
       <PostDiv>
         <BasicBlueButton>Post your question</BasicBlueButton>
-        <div className="discard">Discard draft</div>
+        <div className="discard" onClick={discardPost}>Discard draft</div>
       </PostDiv>
     </AskContainer>
   );
