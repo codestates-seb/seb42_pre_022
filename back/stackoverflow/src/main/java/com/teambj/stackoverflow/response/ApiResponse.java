@@ -19,7 +19,6 @@ public class ApiResponse<T> {
         return new ApiResponse<>(new ApiResponseHeader(status.value(), status.getReasonPhrase()), body);
     }
 
-
     public static <T> ApiResponse<T> ok() {
         return new ApiResponse<>(new ApiResponseHeader(ResponseCode.OK.status, ResponseCode.OK.message), null);
     }
