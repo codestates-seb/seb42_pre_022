@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { BasicBlueButton } from "../Styles/Buttons";
 import { Link, useLocation } from "react-router-dom";
+import { SearchInput } from "./SearchBar";
 
 const LoginFormContainer = styled.div`
   margin-bottom: 16px;
@@ -47,21 +48,9 @@ const LoginFormDiv = styled.div`
   margin-top: 24px;
 `
 
-const LoginInput = styled.input`
-  display: block;
-  width: 100%;
+const LoginInput = styled(SearchInput)`
+  padding-left: 0.7em;
   margin: 2px 0;
-  padding: 0.6em 0.7em;
-  color: var(--black-700);
-  line-height: calc(15/13);
-  border: 1px solid var(--black-200);
-  border-radius: 3px;
-  background-color: var(--white);
-  outline: 0;
-  :focus {
-    border-color: var(--blue-300);
-    box-shadow: 0 0 0 4px hsla(206, 100%, 40%, .15);
-  }
   ::placeholder {color: var(--black-200)}
 `
 
