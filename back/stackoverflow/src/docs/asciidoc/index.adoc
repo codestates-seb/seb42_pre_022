@@ -1,0 +1,95 @@
+= REST Docs
+:toc: left
+:toclevels: 2
+:toc-title: APIs
+:doctype: book
+:icons: font
+:docinfo: shared-head
+:sectlinks:
+:source-highlighter: highlightjs
+
+[[introduction]]
+== 소개
+
+[[common]]
+== 공통 사항
+API에 관계없이 아래 사항을 지켜주셔야 합니다.
+
+=== Domain
+|===
+| 환경 | domain
+
+| 개발서버
+| `localhost:8080`
+
+| 운영서버
+| AWS
+|===
+
+=== HTTP State Code
+
+|===
+| Code | Description
+
+| `200 OK`
+| 요청을 성공적으로 처리함.
+
+| `201 Created`
+| 새 리소스를 성공적으로 생성함.
+응답의 `Location` 헤더에 해당 리소스의 URI가 담겨있다.
+
+| `204 No Content`
+| 기존 리소스를 성공적으로 수정함.
+
+| `400 Bad Request`
+| 잘못된 요청을 보낸 경우. 응답 본문에 더 오류에 대한 정보가 담겨있다.
+
+| `404 Not Found`
+| 요청한 리소스가 없음.
+
+| `401 Unauthorized`
+| 요청한 리소스를 처리 할 권한이 없음.
+|===
+
+=== Error custom code
+
+|===
+| Code | StateCode | Description
+
+| `ERR001`
+| `401 Unauthorize`
+| 요청한 리소스를 처리 할 권한이 없음.
+
+| `ERR002`
+| `404 Not Found`
+| 요청한 리소스가 없음.
+
+| `ERR003`
+| `400 Bad Request`
+| 잘못된 요청을 보낸 경우. 응답 본문에 더 오류에 대한 정보가 담겨있다.
+
+| `ERR004`
+| `401 Forbidden`
+| 권한이 없는 경우.
+|===
+
+=== Error Response Body
+
+|===
+| Field | Description
+
+| `code`
+| 커스텀 에러 코드
+
+| `message`
+| 응답 메세지
+
+| `errors`
+| 에러 상세 메세지
+|===
+
+[[APIs]]
+== Answer
+=== 조회
+:operation-response-fields-data-title: Response Fields
+operation::answer-controller-test/get-answers-test[snippets='curl-request,http-request,http-response,request-parameters,response-body,response-fields-data']
