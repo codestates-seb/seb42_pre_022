@@ -1,6 +1,7 @@
 package com.teambj.stackoverflow.domain.user.service;
 
 import com.teambj.stackoverflow.auth.CustomAuthorityUtils;
+import com.teambj.stackoverflow.auth.JwtTokenizer;
 import com.teambj.stackoverflow.auth.mail.ConfirmationToken;
 import com.teambj.stackoverflow.auth.mail.ConfirmationTokenService;
 import com.teambj.stackoverflow.domain.user.entity.User;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -21,13 +23,15 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthorityUtils customAuthorityUtils;
     private final ConfirmationTokenService confirmationTokenService;
+    private final JwtTokenizer jwtTokenizer;
 
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CustomAuthorityUtils customAuthorityUtils, ConfirmationTokenService confirmationTokenService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CustomAuthorityUtils customAuthorityUtils, ConfirmationTokenService confirmationTokenService, JwtTokenizer jwtTokenizer) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.customAuthorityUtils = customAuthorityUtils;
         this.confirmationTokenService = confirmationTokenService;
+        this.jwtTokenizer = jwtTokenizer;
     }
 
     public User createUser(User user) {
@@ -106,5 +110,10 @@ public class UserService {
     public User getUser(Long userId) {
 
         return verifyUser(userId);
+    }
+
+    public void updateRefreshToken(String username, String refreshToken) {
+        User user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        user.updateRefreshToken(refreshToken);
     }
 }
