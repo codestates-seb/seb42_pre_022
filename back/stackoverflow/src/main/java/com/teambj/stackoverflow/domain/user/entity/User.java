@@ -39,8 +39,8 @@ public class User extends Auditable {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private String profileImage = "default";
+//    @Column(nullable = false)
+//    private String profileImage = "default";
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();

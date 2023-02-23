@@ -36,11 +36,8 @@ public class OAuth2UserDetailsService extends DefaultOAuth2UserService {
         String password = String.valueOf(oAuth2User.getAttributes().get("password"));
         String displayName = email.replace("@gmail.com", "");
 
-        log.info("after authentication - email : " + email);
-
         Optional<User> findUser = userRepository.findByEmail(email);
 
-        log.info("after authentication - findUser : " + findUser);
         User user = findUser.orElseGet(() -> new User(email, password, true, new Reputation(),displayName));
         userRepository.save(user);
 

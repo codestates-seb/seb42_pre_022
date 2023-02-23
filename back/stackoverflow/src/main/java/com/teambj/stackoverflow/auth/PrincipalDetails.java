@@ -1,7 +1,6 @@
 package com.teambj.stackoverflow.auth;
 
 import com.teambj.stackoverflow.domain.user.entity.User;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,7 +28,6 @@ public class PrincipalDetails extends User implements UserDetails, OAuth2User {
 
     //OAuth2User
     public PrincipalDetails(User user, Map<String, Object> attributes) {
-        log.info("principal details - user" +  getUsername());
         setUserId(user.getUserId());
         setEmail(user.getEmail());
         setPassword(user.getPassword());
@@ -76,7 +74,6 @@ public class PrincipalDetails extends User implements UserDetails, OAuth2User {
 
     @Override
     public boolean isEnabled() {
-        System.out.println(getEmailVerified());
         return getEmailVerified();
 
     }

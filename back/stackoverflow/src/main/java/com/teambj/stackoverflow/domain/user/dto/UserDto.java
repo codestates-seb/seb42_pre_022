@@ -44,7 +44,14 @@ public class UserDto {
         private long userId;
         private String email;
         private String displayName;
+        private String profileImage;
         private Reputation reputation;
+
+        public String getProfileImage(){
+            return "https://source.boringavatars.com/beam/120/" + userId + "?colors=66FFFF,8CBFE6,B380CC,D940B3,FF0099";
+        }
+
+
 
         public int getReputation() {
             return reputation.getAmount();

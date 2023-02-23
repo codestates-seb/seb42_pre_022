@@ -9,16 +9,20 @@ import com.teambj.stackoverflow.domain.user.mapper.UserMapper;
 import com.teambj.stackoverflow.domain.user.service.UserService;
 import com.teambj.stackoverflow.response.ApiResponse;
 import com.teambj.stackoverflow.utils.UriUtil;
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Validated
@@ -37,7 +41,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> postUser(@Valid @RequestBody UserDto.Post userPostDto){
+    public ResponseEntity<?> postUser(@Valid @RequestBody UserDto.Post userPostDto) {
 
         User user = userMapper.userPostToUser(userPostDto);
         user.setReputation(new Reputation());
@@ -67,15 +71,15 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getUsers(@Positive @RequestParam int page){
-        Page<User> userList = userService.getUserList(page-1);
+    public ResponseEntity<?> getUsers(@Positive @RequestParam int page) {
+        Page<User> userList = userService.getUserList(page - 1);
         List<UserDto.Response> userResponseList = userMapper.userListToUserResponseList(userList);
 
         return ResponseEntity.ok().body(ApiResponse.ok("data", userResponseList, "pageNumber", page));
     }
 
     @GetMapping("/{user-id}")
-    public ResponseEntity<?> getUser(@Positive @PathVariable("user-id") Long userId){
+    public ResponseEntity<?> getUser(@Positive @PathVariable("user-id") Long userId) {
         User user = userService.getUser(userId);
 
         return ResponseEntity.ok().body(ApiResponse.ok("data", userMapper.userToUserResponse(user)));
@@ -91,4 +95,22 @@ public class UserController {
 
         return ResponseEntity.ok().body(ApiResponse.ok("data", userMapper.userToUserResponse(user)));
     }
+
+//    @GetMapping("/refresh")
+//    public ResponseEntity<?> getRefreshToken(HttpServletRequest request, HttpServletResponse response) {
+//        String authorizationHeader = request.getHeader("Authorization");
+//
+//        if(authorizationHeader == null || !authorizationHeader.startsWith("Bearer_")){
+//            throw new RuntimeException("JWT token 이 존재하지 않습니다.");
+//        }
+//
+//        String refreshToken = authorizationHeader.replace("Bearer_", "");
+//        Map<String, String> tokens = userService.refresh(refreshToken);
+//        response.setHeader("Authorization", "Bearer_" + tokens.get("access_token"));
+//        if(tokens.get("refresh_token") != null){
+//            response.setHeader("refresh_token", tokens.get("refresh_token"));
+//        }
+//        return ResponseEntity.ok(tokens);
+//
+//    }
 }

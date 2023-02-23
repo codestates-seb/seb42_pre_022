@@ -1,7 +1,6 @@
 package com.teambj.stackoverflow.domain.user.service;
 
 import com.teambj.stackoverflow.auth.CustomAuthorityUtils;
-import com.teambj.stackoverflow.auth.JwtTokenizer;
 import com.teambj.stackoverflow.auth.mail.ConfirmationToken;
 import com.teambj.stackoverflow.auth.mail.ConfirmationTokenService;
 import com.teambj.stackoverflow.domain.user.entity.User;
@@ -12,9 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -23,15 +20,13 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthorityUtils customAuthorityUtils;
     private final ConfirmationTokenService confirmationTokenService;
-    private final JwtTokenizer jwtTokenizer;
 
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CustomAuthorityUtils customAuthorityUtils, ConfirmationTokenService confirmationTokenService, JwtTokenizer jwtTokenizer) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CustomAuthorityUtils customAuthorityUtils, ConfirmationTokenService confirmationTokenService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.customAuthorityUtils = customAuthorityUtils;
         this.confirmationTokenService = confirmationTokenService;
-        this.jwtTokenizer = jwtTokenizer;
     }
 
     public User createUser(User user) {
@@ -47,10 +42,12 @@ public class UserService {
         User createdUser = userRepository.save(user);
 
         Optional<String> optional = Optional.ofNullable(createdUser.getDisplayName());
+        Long createdUserId = createdUser.getUserId();
         if (optional.isEmpty()) {
-            createdUser.setDisplayName("user"+createdUser.getUserId());
+            createdUser.setDisplayName("user"+createdUserId);
             userRepository.save(createdUser);
         }
+
 
         confirmationTokenService.createEmailConfirmationToken(user.getUserId(), user.getEmail());
 
@@ -65,8 +62,8 @@ public class UserService {
         Optional.ofNullable(user.getDisplayName())
                 .ifPresent(findUser::setDisplayName);
 
-        Optional.ofNullable(user.getProfileImage())
-                .ifPresent(findUser::setProfileImage);
+//        Optional.ofNullable(user.getProfileImage())
+//                .ifPresent(findUser::setProfileImage);
 
         System.out.println(findUser.getUserId());
 
@@ -112,8 +109,10 @@ public class UserService {
         return verifyUser(userId);
     }
 
-    public void updateRefreshToken(String username, String refreshToken) {
-        User user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
-        user.updateRefreshToken(refreshToken);
-    }
+
+//    public Map<String, String> refresh(String refreshToken) {
+//
+//
+//
+//    }
 }
