@@ -7,6 +7,7 @@ import com.teambj.stackoverflow.domain.question.dto.QuestionResponseDto;
 import com.teambj.stackoverflow.domain.question.entity.Question;
 import com.teambj.stackoverflow.domain.question.mapper.QuestionMapper;
 import com.teambj.stackoverflow.domain.question.service.QuestionService;
+import com.teambj.stackoverflow.domain.user.service.UserService;
 import com.teambj.stackoverflow.response.ApiResponse;
 import com.teambj.stackoverflow.response.ApiResponseHeader;
 import com.teambj.stackoverflow.utils.UriUtil;
@@ -37,7 +38,7 @@ public class QuestionController {
 
     @PostMapping("/questions")
     public ResponseEntity postQuestion(@Valid @RequestBody QuestionPostDto questionPostDto) {
-        Question question = questionService.createQuestion(mapper.questionPostDtoToQuestion(questionPostDto), questionPostDto.getUserId());
+        Question question = questionService.createQuestion(mapper.questionPostDtoToQuestion(questionPostDto), questionPostDto.getTagNameList(), questionPostDto.getUserId());
         URI uri = UriUtil.createUri(DEFAULT_URI, question.getQuestionId());
 
         return ResponseEntity.created(uri).body(ApiResponse.created());
@@ -47,7 +48,7 @@ public class QuestionController {
     public ResponseEntity patchQuestion(@PathVariable("questionId") @Positive Long questionId,
                                         @Valid @RequestBody QuestionPatchDto questionPatchDto) {
         questionPatchDto.setQuestionId(questionId);
-        Question question = questionService.updateQuestion(mapper.questionPatchDtoToQuestion(questionPatchDto), questionPatchDto.getUserId());
+        Question question = questionService.updateQuestion(mapper.questionPatchDtoToQuestion(questionPatchDto), questionPatchDto.getTagNameList(), questionPatchDto.getUserId());
 
         return ResponseEntity.ok().body(ApiResponse.ok("data", questionPatchDto));
     }

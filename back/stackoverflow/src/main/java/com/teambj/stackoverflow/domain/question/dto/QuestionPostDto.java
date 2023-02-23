@@ -5,17 +5,17 @@ import lombok.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigInteger;
+import java.util.List;
 
 @Getter
 public class QuestionPostDto {
-//    @NotNull
+    @NotNull
     private Long userId;
 
-    @NotBlank
     private String title;
 
     @NotBlank
     private String body;
 
-//    태그 추가 예정
+    private List<String> tagNameList;
 }

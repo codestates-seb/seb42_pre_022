@@ -1,6 +1,7 @@
 package com.teambj.stackoverflow.domain.question.dto;
 
 import com.teambj.stackoverflow.domain.answer.dto.AnswerDto;
+import com.teambj.stackoverflow.domain.tag.dto.TagResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,6 +18,7 @@ public class QuestionResponseDto {
     private String displayName;
     private Long answerCount;
     private Long viewCount;
+    private List<TagResponseDto> tagList;
     private List<AnswerDto.Response> answerList;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;

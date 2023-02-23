@@ -26,7 +26,7 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long questionId;
 
-    @Column
+    @Column(nullable = true)
     private String title;
 
     @Column(nullable = false)
@@ -37,6 +37,9 @@ public class Question {
 
     @Column(columnDefinition = "integer default 0")
     private int viewCount;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    private List<QuestionTag> questionTags = new ArrayList<>();
 
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
@@ -57,6 +60,10 @@ public class Question {
 
     public void addUser(User user) {
         this.user = user;
+    }
+
+    public void addQuestionTag(QuestionTag questionTag) {
+        questionTags.add(questionTag);
     }
 
     public void setAnswerCount(int answerCount) {
