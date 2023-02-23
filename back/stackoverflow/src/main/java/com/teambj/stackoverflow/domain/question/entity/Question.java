@@ -1,10 +1,13 @@
 package com.teambj.stackoverflow.domain.question.entity;
 
 import com.teambj.stackoverflow.domain.answer.entity.Answer;
+import com.teambj.stackoverflow.domain.comment.entity.Comment;
 import com.teambj.stackoverflow.domain.user.entity.User;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.math.BigInteger;
@@ -23,7 +26,7 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long questionId;
 
-    @Column(nullable = false)
+    @Column
     private String title;
 
     @Column(nullable = false)
@@ -35,18 +38,21 @@ public class Question {
     @Column(columnDefinition = "integer default 0")
     private int viewCount;
 
+    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
+    private List<Comment> comments = new ArrayList<>();
+
+    @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @LastModifiedDate
     private LocalDateTime modifiedAt = LocalDateTime.now();
 
-    private LocalDateTime closedAt = LocalDateTime.now();
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_Id")
     private User user;
 
-    @OneToMany(/*mappedBy = "", */cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Answer> answer = new ArrayList<>();
 
     public void addUser(User user) {
