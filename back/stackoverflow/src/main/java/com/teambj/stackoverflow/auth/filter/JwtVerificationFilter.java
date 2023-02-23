@@ -1,6 +1,6 @@
 package com.teambj.stackoverflow.auth.filter;
 
-import com.teambj.stackoverflow.auth.CustomUserDetailsService;
+import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
 import com.teambj.stackoverflow.auth.JwtTokenizer;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,21 +27,25 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        //verify JWT
-        String jws = request.getHeader("Authorization").replace("Bearer ", "");
+
+        //Access Token
+        String jws = request.getHeader("Authorization").replace("Bearer_", "");
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
+
+        //Verify AccessToken
         Map<String, Object> claims = jwtTokenizer.verifySignature(jws, base64EncodedSecretKey);
 
         //set Authentication on SecurityContext
         setAuthenticationContext(claims);
 
         filterChain.doFilter(request, response);
+
     }
 
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String authentication = request.getHeader("Authorization");
 
-        return authentication == null || !authentication.startsWith("Bearer ");
+        return authentication == null || !authentication.startsWith("Bearer_");
     }
 
 

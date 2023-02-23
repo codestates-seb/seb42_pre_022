@@ -1,6 +1,6 @@
 package com.teambj.stackoverflow.domain.comment.controller;
 
-import com.teambj.stackoverflow.auth.CustomUserDetailsService;
+import com.teambj.stackoverflow.auth.PrincipalDetails;
 import com.teambj.stackoverflow.domain.comment.dto.CommentDto;
 import com.teambj.stackoverflow.domain.comment.entity.Comment;
 import com.teambj.stackoverflow.domain.comment.mapper.CommentMapper;
@@ -34,7 +34,7 @@ public class CommentController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> postComment(
         @Valid @RequestBody CommentDto.Post commentDto,
-        @AuthenticationPrincipal CustomUserDetailsService.UserPrincipal userDetails
+        @AuthenticationPrincipal PrincipalDetails userDetails
     ) {
         User user = userService.getUser(userDetails.getUserId());
         Comment comment = commentMapper.commentDtoPostToComment(commentDto);
@@ -50,7 +50,7 @@ public class CommentController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> patchComment(
         @Valid @RequestBody CommentDto.Patch commentDto,
-        @AuthenticationPrincipal CustomUserDetailsService.UserPrincipal userDetails
+        @AuthenticationPrincipal PrincipalDetails userDetails
     ) {
         Comment findComment = commentService.findComment(commentDto.getCommentId());
         if (!Objects.equals(findComment.getUser().getUserId(), userDetails.getUserId()))
@@ -66,7 +66,7 @@ public class CommentController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> deleteComment(
         @Positive @PathVariable("comment-id") Long commentId,
-        @AuthenticationPrincipal CustomUserDetailsService.UserPrincipal userDetails
+        @AuthenticationPrincipal PrincipalDetails userDetails
     ) {
         Comment findComment = commentService.findComment(commentId);
         if (!Objects.equals(findComment.getUser().getUserId(), userDetails.getUserId()))

@@ -1,6 +1,7 @@
 package com.teambj.stackoverflow.domain.user.controller;
 
-import com.teambj.stackoverflow.auth.CustomUserDetailsService;
+import com.teambj.stackoverflow.auth.PrincipalDetails;
+import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
 import com.teambj.stackoverflow.domain.user.dto.UserDto;
 import com.teambj.stackoverflow.domain.user.entity.Reputation;
 import com.teambj.stackoverflow.domain.user.entity.User;
@@ -56,7 +57,7 @@ public class UserController {
     }
 
     @PatchMapping
-    public ResponseEntity<?> patchUser(@Valid @RequestBody UserDto.Patch userPatchDto, @AuthenticationPrincipal CustomUserDetailsService.UserPrincipal userDetails) {
+    public ResponseEntity<?> patchUser(@Valid @RequestBody UserDto.Patch userPatchDto, @AuthenticationPrincipal PrincipalDetails userDetails) {
         User user = userMapper.userPatchToUser(userPatchDto);
         user.setUserId(userDetails.getUserId());
 
@@ -84,7 +85,7 @@ public class UserController {
     GET - 계정 소유자 정보
      */
     @GetMapping("/principal")
-    public ResponseEntity<?> getPrincipal(@AuthenticationPrincipal CustomUserDetailsService.UserPrincipal userDetails) {
+    public ResponseEntity<?> getPrincipal(@AuthenticationPrincipal PrincipalDetails userDetails) {
 
         User user = userService.getUser(userDetails.getUserId());
 

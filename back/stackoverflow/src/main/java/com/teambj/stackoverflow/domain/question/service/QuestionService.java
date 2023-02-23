@@ -1,6 +1,6 @@
 package com.teambj.stackoverflow.domain.question.service;
 
-import com.teambj.stackoverflow.auth.CustomUserDetailsService;
+import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
 import com.teambj.stackoverflow.domain.question.entity.Question;
 import com.teambj.stackoverflow.domain.question.repository.QuestionRepository;
 import com.teambj.stackoverflow.domain.user.service.UserService;

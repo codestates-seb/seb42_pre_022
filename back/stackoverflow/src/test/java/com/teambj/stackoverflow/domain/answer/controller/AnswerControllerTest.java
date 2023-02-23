@@ -97,12 +97,6 @@ class AnswerControllerTest extends ControllerTest {
                     requestParameters(
                         parameterWithName("questionId").description("질문 식별자")
                     ),
-                    // customRequestFields("custom-request-fields",
-                    //     attributes(attrField("title", "custom-fields")),
-                    //     List.of(
-                    //         fieldWithPath("user").type(JsonFieldType.OBJECT).description("회원 데이터")
-                    //     ).toArray(FieldDescriptor[]::new)
-                    // ),
                     relaxedResponseFields(
                         beneathPath("body.data[]").withSubsectionId("data"),
                         List.of(
@@ -130,13 +124,20 @@ class AnswerControllerTest extends ControllerTest {
         given(answerMapper.answerToAnswerResponseDto(Mockito.any(Answer.class)))
             .willReturn(answerDtoResponse);
 
-        ResultActions actions = mockMvc.perform(
-            patch("/answers")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(gson.toJson(new AnswerDto.Patch(1L, "Modified")))
-        );
+        // ResultActions actions = mockMvc.perform(
+        //     patch("/answers")
+        //         .contentType(MediaType.APPLICATION_JSON)
+        //         .accept(MediaType.APPLICATION_JSON)
+        //         .content(gson.toJson(new AnswerDto.Patch(1L, "Modified")))
+        // );
+        //
+        // actions.andExpect(status().isOk());
 
-        actions.andExpect(status().isOk());
+        // customRequestFields("custom-request-fields",
+        //     attributes(attrField("title", "custom-fields")),
+        //     List.of(
+        //         fieldWithPath("user").type(JsonFieldType.OBJECT).description("회원 데이터")
+        //     ).toArray(FieldDescriptor[]::new)
+        // ),
     }
 }

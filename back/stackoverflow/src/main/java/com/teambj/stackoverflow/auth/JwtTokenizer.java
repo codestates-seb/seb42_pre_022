@@ -76,10 +76,17 @@ public class JwtTokenizer {
     public Map<String, Object> verifySignature(String jws, String base64EncodedSecretKey) {
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
 
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(jws).getBody();
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(jws).getBody();
+
+        } catch (ExpiredJwtException e) {
+            throw new RuntimeException("Expired JWT");
+        }
+
+
     }
 
 }

@@ -1,6 +1,7 @@
 package com.teambj.stackoverflow.domain.answer.controller;
 
-import com.teambj.stackoverflow.auth.CustomUserDetailsService;
+import com.teambj.stackoverflow.auth.PrincipalDetails;
+import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
 import com.teambj.stackoverflow.domain.answer.dto.AnswerDto;
 import com.teambj.stackoverflow.domain.answer.entity.Answer;
 import com.teambj.stackoverflow.domain.answer.mapper.AnswerMapper;
@@ -42,7 +43,7 @@ public class AnswerController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> postAnswer(
         @Valid @RequestBody AnswerDto.Post answerDto,
-        @AuthenticationPrincipal CustomUserDetailsService.UserPrincipal userDetails
+        @AuthenticationPrincipal PrincipalDetails userDetails
     ) {
         User user = userService.getUser(userDetails.getUserId());
         Question question = questionService.findQuestion(answerDto.getQuestionId());
@@ -69,7 +70,7 @@ public class AnswerController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> patchAnswer(
         @Valid @RequestBody AnswerDto.Patch answerDto,
-        @AuthenticationPrincipal CustomUserDetailsService.UserPrincipal userDetails
+        @AuthenticationPrincipal PrincipalDetails userDetails
     ) {
         Answer findAnswer = answerService.findAnswer(answerDto.getAnswerId());
         if (!Objects.equals(findAnswer.getUser().getUserId(), userDetails.getUserId()))
@@ -85,7 +86,7 @@ public class AnswerController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> deleteAnswer(
         @Positive @PathVariable("answer-id") Long answerId,
-        @AuthenticationPrincipal CustomUserDetailsService.UserPrincipal userDetails
+        @AuthenticationPrincipal PrincipalDetails userDetails
     ) {
         Answer findAnswer = answerService.findAnswer(answerId);
 
