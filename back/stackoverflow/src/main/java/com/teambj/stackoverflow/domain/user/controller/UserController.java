@@ -9,21 +9,22 @@ import com.teambj.stackoverflow.domain.user.mapper.UserMapper;
 import com.teambj.stackoverflow.domain.user.service.UserService;
 import com.teambj.stackoverflow.response.ApiResponse;
 import com.teambj.stackoverflow.utils.UriUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
+@Slf4j
 @RestController
 @Validated
 @RequestMapping("/users")
@@ -61,6 +62,7 @@ public class UserController {
     }
 
     @PatchMapping
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> patchUser(@Valid @RequestBody UserDto.Patch userPatchDto, @AuthenticationPrincipal PrincipalDetails userDetails) {
         User user = userMapper.userPatchToUser(userPatchDto);
         user.setUserId(userDetails.getUserId());
@@ -81,6 +83,7 @@ public class UserController {
     @GetMapping("/{user-id}")
     public ResponseEntity<?> getUser(@Positive @PathVariable("user-id") Long userId) {
         User user = userService.getUser(userId);
+        log.info("getUser");
 
         return ResponseEntity.ok().body(ApiResponse.ok("data", userMapper.userToUserResponse(user)));
     }
@@ -89,6 +92,7 @@ public class UserController {
     GET - 계정 소유자 정보
      */
     @GetMapping("/principal")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getPrincipal(@AuthenticationPrincipal PrincipalDetails userDetails) {
 
         User user = userService.getUser(userDetails.getUserId());

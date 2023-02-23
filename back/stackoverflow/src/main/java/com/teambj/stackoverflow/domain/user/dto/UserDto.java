@@ -31,7 +31,6 @@ public class UserDto {
     public static class Patch{
         private Long userId;
         private String displayName;
-        private String profileImage;
 
         public void setUserId(long userId) {
             this.userId = userId;
@@ -46,12 +45,6 @@ public class UserDto {
         private String displayName;
         private String profileImage;
         private Reputation reputation;
-
-        public String getProfileImage(){
-            return "https://source.boringavatars.com/beam/120/" + userId + "?colors=66FFFF,8CBFE6,B380CC,D940B3,FF0099";
-        }
-
-
 
         public int getReputation() {
             return reputation.getAmount();

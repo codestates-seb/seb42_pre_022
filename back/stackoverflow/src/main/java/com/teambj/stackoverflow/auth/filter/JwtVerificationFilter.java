@@ -34,51 +34,17 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        String uriPath = request.getContextPath();
-        String authorizationHeader = request.getHeader("Authorization");
+        //Access Token
+        String jws = request.getHeader("Authorization").replace("Bearer_", "");
+        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
 
+        //Verify AccessToken
+        Map<String, Object> claims = jwtTokenizer.verifySignature(jws, base64EncodedSecretKey);
 
-        if(uriPath.equals("/users/login") || uriPath.equals("/users/refresh")){
-            filterChain.doFilter(request, response);
-        } else if( authorizationHeader == null || !authorizationHeader.startsWith("Bearer_")){
-            log.info("JWT VerificationFilter : JWT TOKEN 이 존재하지 않습니다.");
-        }else{
-            try {
-                //Access Token
-                String jws = authorizationHeader.replace("Bearer_", "");
-                String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
-                //Verify AccessToken
-                Map<String, Object> claims = jwtTokenizer.verifySignature(jws, base64EncodedSecretKey);
-
-                //set Authentication on SecurityContext
-                setAuthenticationContext(claims);
-
-                filterChain.doFilter(request, response);
-//            } catch (TokenExpiredException e) {
-//                log.info("CustomAuthorizationFilter : Access Token이 만료되었습니다.");
-//                response.setStatus(SC_UNAUTHORIZED);
-//                response.setContentType(APPLICATION_JSON_VALUE);
-//                response.setCharacterEncoding("utf-8");
-//                ErrorResponse errorResponse = new ErrorResponse(401, "Access Token이 만료되었습니다.");
-//                new ObjectMapper().writeValue(response.getWriter(), errorResponse);
-            } catch (Exception e) {
-                log.info("CustomAuthorizationFilter : JWT 토큰이 잘못되었습니다. message : {}", e.getMessage());
-//                response.setStatus(SC_BAD_REQUEST);
-//                response.setContentType(APPLICATION_JSON_VALUE);
-//                response.setCharacterEncoding("utf-8");
-//                ErrorResponse errorResponse = new ErrorResponse(400, "잘못된 JWT Token 입니다.");
-//                new ObjectMapper().writeValue(response.getWriter(), errorResponse);
-            }
-        }
-
-
-
-
-
-
+        //set Authentication on SecurityContext
+        setAuthenticationContext(claims);
 
         filterChain.doFilter(request, response);
-
     }
 
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {

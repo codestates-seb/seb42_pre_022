@@ -5,15 +5,18 @@ import com.teambj.stackoverflow.auth.mail.ConfirmationToken;
 import com.teambj.stackoverflow.auth.mail.ConfirmationTokenService;
 import com.teambj.stackoverflow.domain.user.entity.User;
 import com.teambj.stackoverflow.domain.user.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 @Service
+@Slf4j
 public class UserService {
     
     private final UserRepository userRepository;
@@ -36,23 +39,26 @@ public class UserService {
         String encryptedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encryptedPassword);
 
-        List<String> roles = customAuthorityUtils.createRoles(user.getEmail());
+        List<String> roles = new ArrayList<>(customAuthorityUtils.createRoles(user.getEmail()));
         user.setRoles(roles);
 
-        User createdUser = userRepository.save(user);
+        User createdUser = userRepository.saveAndFlush(user);
 
-        Optional<String> optional = Optional.ofNullable(createdUser.getDisplayName());
-        Long createdUserId = createdUser.getUserId();
+        Long userId = user.getUserId();
+
+        Optional<String> optional = Optional.ofNullable(user.getDisplayName());
         if (optional.isEmpty()) {
-            createdUser.setDisplayName("user"+createdUserId);
-            userRepository.save(createdUser);
+            user.setDisplayName("user"+userId);
         }
 
+        String profileURI = "https://source.boringavatars.com/beam/120/" + userId + "?colors=66FFFF,8CBFE6,B380CC,D940B3,FF0099";
+        user.setProfileImage(profileURI);
+
+        userRepository.save(user);
 
         confirmationTokenService.createEmailConfirmationToken(user.getUserId(), user.getEmail());
 
         return createdUser;
-
     }
 
     public User updateUser(User user) {
@@ -62,13 +68,7 @@ public class UserService {
         Optional.ofNullable(user.getDisplayName())
                 .ifPresent(findUser::setDisplayName);
 
-//        Optional.ofNullable(user.getProfileImage())
-//                .ifPresent(findUser::setProfileImage);
-
-        System.out.println(findUser.getUserId());
-
         return userRepository.save(findUser);
-
     }
 
 
@@ -83,7 +83,6 @@ public class UserService {
         confirmationTokenService.useToken(findConfirmationToken);
         user.setEmailVerified(true);
         userRepository.save(user);
-
     }
 
     private void validateDuplicateUser(String email) {
@@ -99,20 +98,20 @@ public class UserService {
         return optional.orElseThrow(() -> new RuntimeException("No valid user"));
     }
 
+    @Transactional(readOnly = true)
     public Page<User> getUserList(int page) {
-
         return userRepository.findAll(PageRequest.of(page,36,Sort.by(Sort.Direction.DESC, "reputation")));
     }
 
     public User getUser(Long userId) {
+        log.info("why twice response..?");
 
-        return verifyUser(userId);
+        Optional<User> optional = userRepository.findById(userId);
+        return optional.orElseThrow(() -> new RuntimeException("No valid user"));
     }
 
-
-//    public Map<String, String> refresh(String refreshToken) {
-//
-//
-//
-//    }
+    public User getPrincipal(Long userId) {
+        Optional<User> optional = userRepository.findById(userId);
+        return optional.orElseThrow(() -> new RuntimeException("No valid user"));
+    }
 }
