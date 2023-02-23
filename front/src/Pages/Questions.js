@@ -8,6 +8,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { filteringBy } from "../Reducers/filterquestionReducer";
 import useGET from "../util/useGET";
 import axios from "axios";
+import PaginationLeft from "../Components/PaginationLeft";
+import PaginationRight from "../Components/PaginationRight";
+import { setTotalPage } from "../Reducers/paginationReducer";
 
 const QuestionsContainer = styled.div`
   >div:nth-child(1){
@@ -170,6 +173,7 @@ const QuestionsContent = styled.div`
 
 function Questions() {
   const filter = useSelector((state)=> state.filter);
+  const pages = useSelector((state)=> state.pages);
   const dispatch = useDispatch();
   const [isFilterOpen, setFilterOpen] = useState(false);
   const filterOpenHandler = () => {
@@ -191,23 +195,63 @@ function Questions() {
         "createdAt": new Date(),
         "modifiedAt": null,
         "closedAt": null
-    }
-]);
+    },
+    {
+      "questionId": 2,
+      "userId": null,
+      "title": "Extracting output from Postman using Python",
+      "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
+      "displayName": null,
+      "answerCount": 0,
+      "viewCount": 0,
+      "createdAt": new Date(),
+      "modifiedAt": null,
+      "closedAt": null
+  },
+  {
+    "questionId": 3,
+    "userId": null,
+    "title": "Extracting output from Postman using Python",
+    "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
+    "displayName": null,
+    "answerCount": 0,
+    "viewCount": 0,
+    "createdAt": new Date(),
+    "modifiedAt": null,
+    "closedAt": null
+  },
+  {
+    "questionId": 4,
+    "userId": null,
+    "title": "Extracting output from Postman using Python",
+    "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
+    "displayName": null,
+    "answerCount": 0,
+    "viewCount": 0,
+    "createdAt": new Date(),
+    "modifiedAt": null,
+    "closedAt": null
+  },
+  ]);
 
-const authHandler = () => {
-  axios
-    .get('http://4085-125-133-80-221.jp.ngrok.io/questions')
-    .then((res) => {
-      setallquesitons(res.data);
-    })
-    .catch((err) => {
-      console.log(err)
-    });
-};
+  useEffect(()=>{
+    dispatch(setTotalPage(allquestions.length))
+  },[]);
+  
+// const authHandler = () => {
+//   axios
+//     .get('')
+//     .then((res) => {
+//       setallquesitons(res.data);
+//     })
+//     .catch((err) => {
+//       console.log(err)
+//     });
+// };
 
-useEffect(() => {
-  authHandler();
-}, []);
+// useEffect(() => {
+//   authHandler();
+// }, []);
 
   return (
     <div className="content">
@@ -241,9 +285,11 @@ useEffect(() => {
           </div>
           <QuestionsContent>
             {allquestions.map(ele=>{
-              return <QuestionsList title={ele.title} body={ele.body} createdAt={ele.createdAt} viewCount={ele.viewCount} answerCount={ele.answerCount}/>
+              return <QuestionsList key={ele.questionId} title={ele.title} body={ele.body} createdAt={ele.createdAt} viewCount={ele.viewCount} answerCount={ele.answerCount}/>
             })}
           </QuestionsContent>
+          <PaginationLeft />
+          <PaginationRight />
         </div>
         <Aside />
       </QuestionsContainer>
