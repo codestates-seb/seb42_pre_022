@@ -4,7 +4,7 @@ spring:
       enabled: true
       path: /h2
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:testdb;NON_KEYWORDS=USER
     username: sa
     password:
     driver-class-name: org.h2.Driver
@@ -17,20 +17,33 @@ spring:
         format_sql: true
         highlight_sql: true
         use_sql_comments: true
-    #  security:
-    # In-Memory Test
-    # user:
-    #  name: user
-    #  password: user
-#    oauth2:
-#      client:
-#        registration:
-#          google:
-#            clientId: ${GOOGLE_CLIENT_ID}
-#            clientSecret: ${GOOGLE_CLIENT_SECRET}
-#            scope:
-#              - email
-#              - profile
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${gmail_username}
+    password: ${gmail_password}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+            required: true
+          auth: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: ${google_client_id}
+            clientSecret: ${google_client_secret}
+            scope:
+              - email
+              - profile
+
+
 server:
   servlet:
     encoding:
@@ -51,7 +64,7 @@ logging:
 #  allowed-methods: GET,POST,PUT,DELETE,OPTIONS
 #  max-age: 3600
 
-# Auth & OAuth
+ #Auth & OAuth
 #app:
 #  auth:
 #    tokenSecret: ${JWT_SECRET_KEY}
@@ -60,3 +73,13 @@ logging:
 #  oauth2:
 #    authorizedRedirectUris:
 #      - http://localhost/recieve
+
+jwt:
+  secret: ${secret_key}
+  access-token-expiration-minutes: 1800000
+  refresh-token-expiration-minutes : 604800000
+
+mail:
+  address:
+    admin: ${admin_mail}
+

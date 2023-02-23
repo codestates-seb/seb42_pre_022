@@ -1,4 +1,4 @@
-import UserCard from "../Components/UserCard";
+import UserCard from "./UserCard";
 import { ReactComponent as UpVoteIcon } from "../assets/upVoteIcon.svg";
 import { ReactComponent as DownVoteIcon } from "../assets/downVoteIcon.svg";
 import { ReactComponent as BookmarkIcon } from "../assets/bookmarkIcon.svg";
@@ -6,6 +6,9 @@ import { ReactComponent as HistoryIcon } from "../assets/historyIcon.svg";
 import styled from "styled-components";
 import CommentsDiv from "./CommentsDiv";
 import TagsDiv from "./TagsDiv";
+import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import deleteData from "../util/deleteData";
 
 const QAWrapDiv = styled.div`
   display: grid;
@@ -67,19 +70,21 @@ const WriterRelatedDiv = styled.div`
   flex-flow: row wrap;
   > div {
     margin: 5px 0;
-    > span {
+    > a {
       display:inline-block;
-      cursor:pointer;
+      cursor: pointer;
     }
   }
   .qapost {
     width: 96px;
     flex: 1 auto;
     margin-left: -4px;
-    > span {
+    > a {
+      color: var(--black-500);
       margin: -4px 4px;
+      text-decoration: none;
     }
-    > span:hover {
+    > a:hover {
       color: var(--black-400);
     }
   }
@@ -90,10 +95,9 @@ const WriterCardDiv = styled.div`
   margin-top: 0 !important;
   padding: 7px;
 
-  border-radius: ${props => props.iswriter ? "3px": null};
-  background-color: var(${props => props.iswriter? "--powder" : null});
+  border-radius: ${props => props.iswriter ? "3px" : null};
+  background-color: var(${props => props.iswriter ? "--powder" : null});
 `
-
 const QAbodydiv = styled.div`
   padding-right: 16px;
   font-size: 15px;
@@ -116,9 +120,24 @@ const QAbodydiv = styled.div`
   }
 `
 
-function QandADiv( {type} ) {
+function QandAPost({ type, body, name, id, answerCount }) {
+  const {login} = useSelector(state => state.loginReducer);
+  const navigate = useNavigate()
+  const deletePost = () => {
+    if (window.confirm("정말 삭제하시겠습니까?") === true) {
+      const url = type ? "answers" : "questions"
+      if (!answerCount) {
+        deleteData(`/${url}/${id}`)
+        .then(()=> alert("삭제되었습니다!"))
+        .then(()=> navigate("/"))
+      } else {
+        alert("답변이 달린 질문글은 삭제할 수 없습니다.")
+      }
+    }
+  }
+
   return (
-    <QAWrapDiv answer={type? type: null}>
+    <QAWrapDiv answer={type ? type : null}>
       <div>
         <VoteContainerDiv>
           <VoteButton><UpVoteIcon></UpVoteIcon></VoteButton>
@@ -130,6 +149,7 @@ function QandADiv( {type} ) {
       </div>
       <div>
         <QAbodydiv>
+          <p>{body}</p>
           <p>(본문)I'm starting a new Kotlin project, and I used Gradle 7.2 to generate the project structure and the buildSrc scripts. I'm not including them here because I have not changed them - I'm just using whatever Gradle generated.</p>
           <pre>I'm getting the following message as part of the build:</pre>
           <p>'compileJava' task (current target is 17) and 'compileKotlin' task (current target is 1.8) jvm target compatibility should be set to the same Java version.</p>
@@ -139,16 +159,15 @@ function QandADiv( {type} ) {
           <p>'compileJava' task (current target is 17) and 'compileKotlin' task (current target is 1.8) jvm target compatibility should be set to the same Java version.</p>
           <p>I can't find where in the buildSrc and the generated Gradle files the 1.8 target is set. How can I tell the Kotlin compiler to use the Java 17 target?</p>
         </QAbodydiv>
-        {type ? null : <TagsDiv />}       
+        {type ? null : <TagsDiv />}
         <WriterRelatedDiv writer={1}>
-          <div className="qapost"><span>Share</span><span>Edit</span><span>Follow</span></div>
+          <div className="qapost"><a>Share</a>{login ? <Link to={`/${type? "answers":"questions"}/edit/${id}`}>Edit</Link> : null}<a>Follow</a>{login ? <a onClick={deletePost}>Delete</a> : null}</div>
           <WriterCardDiv className="card" iswriter={null}>
             <span className="linktext">edited Feb 13 at 6:24</span>
-            {<UserCard username="이름" reputation="100"/>}
           </WriterCardDiv>
           <WriterCardDiv className="qawriter card" iswriter={1}>
             <div>asked {"Feb 10 at 18:04"}</div>
-            <UserCard username="이름" reputation="100"/>
+            <UserCard username={name} reputation="100" />
           </WriterCardDiv>
         </WriterRelatedDiv>
       </div>
@@ -158,4 +177,4 @@ function QandADiv( {type} ) {
   )
 }
 
-export default QandADiv;
+export default QandAPost;

@@ -1,12 +1,14 @@
+import { Link, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { BasicBlueButton } from "../Styles/Buttons";
 import Aside from "../Components/Aside";
-import QandADiv from "../Components/QandADiv";
+import QandAPost from "../Components/QandAPost";
 import TagsDiv from "../Components/TagsDiv";
-import { Link } from "react-router-dom";
 import WriteBoard from "../Components/WriteBoard";
-import { useSelector } from "react-redux";
 import LoginWith from "../Components/LoginWith";
+import useGET from "../util/useGET";
+import postData from "../util/postData";
 
 const QuestionContainerMain = styled.main`
   display: table;
@@ -40,7 +42,7 @@ const QuestionContainerMain = styled.main`
     }
     > div:nth-child(4) {
       width: 100%;
-      margin: 0;
+      margin: 5px 0;
     }
   }
 `
@@ -95,48 +97,65 @@ const QuestionDiv = styled.div`
   }
 `
 function Question() {
-  const state = useSelector(state => state.loginReducer);
+  const { question_id } = useParams()
+  const [question, error] = useGET(`/questions/${question_id}`)
+  // console.log(question)
+  const {login} = useSelector(state => state.loginReducer);
+  const postAnswer = () => {
+    postData(`/answers`, {questionId: question_id, body: "답변 생성"})
+  }
   // TODO 날짜 계산기 만들기 today, yesterday, 2 days ago~ 한달, 3 months ago ... */
   const calculateDate = (date) => {
+    const today = new Date()
+    // const day = today.getDate() - date.getDate()
+    // const month = today.getMonth() - date.getMonth()
+    // const year = today.getFullYear() - date.getFullYear()
+
     return date
   }
+  // console.log(login)
+  // TODO 편집 버튼 누르면 아이디, 타이틀, 바디, 태그 상태에 저장하고 edit으로 이동 Link, 편집 후 id값 참고해서 Question 리..다이렉트?
+
 
   return (
     <div className="content">
-      <QuestionContainerMain >
-        <div>
-          <h1><a href="www.naver.com">(제목)Cursor Resize on scroll bar of div</a></h1>
-          <BasicBlueButton to="/askquestion">Ask Question</BasicBlueButton>
-        </div>
-        <div>
-          <QuestionDetailDiv><span>Asked</span><span>{calculateDate("today")}</span></QuestionDetailDiv>
-          {/* TODO 가장 최근에 달린 답변의 날짜 */}
-          <QuestionDetailDiv><span>Modified</span><span>{calculateDate("today")}</span></QuestionDetailDiv>
-          <QuestionDetailDiv><span>Viewed</span><span>{"7"} times</span></QuestionDetailDiv>
-        </div>
-        <QuestionDiv>
+      {error && <div>{error}</div>}
+      {question &&
+        <QuestionContainerMain >
           <div>
-            <QandADiv />
+            <h1><a href="www.naver.com">{question.title}</a></h1>
+            <BasicBlueButton to="/askquestion">Ask Question</BasicBlueButton>
           </div>
-          <div className="answerpart">
+          <div>
+            <QuestionDetailDiv><span>Asked</span><span>{calculateDate(question.createdAt)}</span></QuestionDetailDiv>
+            {/* TODO 가장 최근에 달린 답변의 날짜 */}
+            <QuestionDetailDiv><span>Modified</span><span>{calculateDate(question.modifiedAt)}</span></QuestionDetailDiv>
+            <QuestionDetailDiv><span>Viewed</span><span>{question.viewCount} times</span></QuestionDetailDiv>
+          </div>
+          <QuestionDiv>
             <div>
-              <h2>{6} Answers</h2>
-              <QandADiv type="answer">답변 map함수</QandADiv>
+              <QandAPost body={question.body} name={question.displayName} id={question_id} answerCount={question.answerCount}/>
             </div>
-            <div>
-              <h2>Your Answer</h2>
-              <WriteBoard />
-              {state.login ? null : <LoginWith />}
-              <div className="postanswer">
-                <BasicBlueButton to="/questions/detail">Post your Answer</BasicBlueButton>
-                {state.login ? null : <em>By clicking "Post Your Answer", you agree to our <span className="linktext">terms of service</span>, <span className="linktext">privacy policy</span> and <span className="linktext">cookie policy</span></em>}
+            <div className="answerpart">
+              <div>
+                <h2>{6} Answers</h2>
+                <QandAPost type="answer">답변 map함수</QandAPost>
               </div>
+              <div>
+                <h2>Your Answer</h2>
+                <WriteBoard />
+                {login ? null : <LoginWith />}
+                <div className="postanswer">
+                  <BasicBlueButton onClick={postAnswer} to={`/questions/${question_id}`}>Post your Answer</BasicBlueButton>
+                  {login ? null : <em>By clicking "Post Your Answer", you agree to our <span className="linktext">terms of service</span>, <span className="linktext">privacy policy</span> and <span className="linktext">cookie policy</span></em>}
+                </div>
+              </div>
+              <h2>{login ? "Not the answer you're looking for? " : null}Browse other questions tagged <TagsDiv /> or <Link className="linktext" to="/askquestion">ask your own question.</Link></h2>
             </div>
-            <h2>{state.login ? "Not the answer you're looking for? " : null}Browse other questions tagged <TagsDiv /> or <Link className="linktext" to="/askquestion">ask your own question.</Link></h2>
-          </div>
-        </QuestionDiv>
-        <Aside />
-      </QuestionContainerMain>
+          </QuestionDiv>
+          <Aside />
+        </QuestionContainerMain>
+      }
     </div>
   );
 }

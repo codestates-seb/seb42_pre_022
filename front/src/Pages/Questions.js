@@ -4,6 +4,8 @@ import { BasicBlueButton } from "../Styles/Buttons";
 import Aside from "../Components/Aside";
 import { useState } from "react";
 import ExpandableFilterform from "../Components/ExpandableFilterForm";
+import { useSelector, useDispatch } from "react-redux";
+import { filteringBy } from "../Reducers/filterquestionReducer";
 
 const QuestionsContainer = styled.div`
   >div:nth-child(1){
@@ -73,6 +75,7 @@ const DataController = styled.div`
 `
 
 const DataControllerBtn = styled.a`
+  display: ${(props) => props.end ? "inline-block" : "flex"};
   border: 1px solid transparent;
   border-radius: ${(props) => props.middle ? "0" : "3px"};
   border-top-left-radius: ${(props) => props.end ? "0" : null};
@@ -89,6 +92,7 @@ const DataControllerBtn = styled.a`
   white-space: nowrap;
   font-size: 12px;
   padding: 0.8em;
+  padding-right: ${(props) => props.end ? "calc(.8em * 2.5)" : null};
   cursor: pointer;
   line-height: 15/13;
   position: relative;
@@ -96,6 +100,19 @@ const DataControllerBtn = styled.a`
   text-align: center;
   text-decoration: none;
   user-select: none;
+  :nth-child(3):after{
+    border-color: currentColor transparent;
+    border-style: solid;
+    border-width: 4px;
+    border-bottom-width: 0;
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    right: 0.8em;
+    top: calc(50% - 2px);
+    z-index: 30;
+  }
+
 `
 
 
@@ -150,10 +167,17 @@ const QuestionsContent = styled.div`
 
 
 function Questions() {
+  const filter = useSelector((state)=> state.filter);
+  const dispatch = useDispatch();
   const [isFilterOpen, setFilterOpen] = useState(false);
   const filterOpenHandler = () => {
     setFilterOpen(!isFilterOpen)
   }
+  const filteringHandler = (keyword) => {
+    dispatch(filteringBy(keyword))
+  }
+
+
   return (
     <div className="content">
       <QuestionsContainer>
@@ -170,10 +194,9 @@ function Questions() {
               <div>
                 <DataControllerBox>
                   <DataController>
-                    <DataControllerBtn start={1} selected={true}><div>Newest</div></DataControllerBtn>
-                    <DataControllerBtn middle="true" ><div>Active</div></DataControllerBtn>
-                    <DataControllerBtn middle="true" ><div>Unanswered</div></DataControllerBtn>
-                    <DataControllerBtn end="true" ><div>More</div></DataControllerBtn>
+                    <DataControllerBtn onClick={()=>filteringHandler('newest')} start={1} selected={filter.newest}><div>Newest</div></DataControllerBtn>
+                    <DataControllerBtn onClick={()=>filteringHandler('unanswered')} middle="true" selected={filter.unanswered} ><div>Unanswered</div></DataControllerBtn>
+                    <DataControllerBtn end="true" >More</DataControllerBtn>
                   </DataController>
                   <Dropdown />
                   <FilterBtn onClick={filterOpenHandler}>
@@ -183,7 +206,7 @@ function Questions() {
                 </DataControllerBox>
               </div>
             </QuestionsH2>
-            {/* <ExpandableFilterform /> */} 
+            <ExpandableFilterform isFilterOpen={isFilterOpen} filter={filter} dispatch={dispatch}/> 
           </div>
           <QuestionsContent>
             <QuestionsList />
