@@ -182,6 +182,7 @@ const PostDiv = styled.div`
     :hover {background-color: var(--red-050);}
     :active {background-color: var(--red-100); border: 4px solid var(--red-100);}
   }
+  @media only screen and (max-width: 1050px) {width: 100%;}
 `
 
 function Askquestion() {
@@ -240,7 +241,18 @@ function Askquestion() {
     setTagStart(true);
     localStorage.setItem("tagStart", true);
   }
-
+  const questionInputHandler = (question) => {
+    const data = question;
+    const originData = data.replaceAll(/<[^>]*>/g, '');
+    dispatch(askquestionActions.changeQuestionValue({data}));
+    if(originData.length >= 20) {
+      setQuestionDone(true);
+      localStorage.setItem("questionDone", true)
+    } else {
+      setQuestionDone(false);
+      localStorage.setItem("questionDone", false)
+    }
+  }
   console.log(state);
 
   return (
@@ -278,7 +290,7 @@ function Askquestion() {
           <div className="form-title">What are the details of your problem?</div>
           <div>Introduce the problem and expand on what you put in the title. Minimum 20 characters.</div>
         </div>
-        <WriteBoard setQuestionDone={setQuestionDone} />
+        <WriteBoard postBody={state.questionValue} inputHandler={questionInputHandler}/>
         {titleDone ? (<BasicBlueButton className={questionDone ? "button" : "button button-disabled"} onClick={questionNextHandler}>Next</BasicBlueButton>) : null}
       </FormDiv>
       <FormDiv className={(titleDone && tagStart) ? "" : "disabled"}>

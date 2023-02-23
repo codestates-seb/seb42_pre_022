@@ -8,6 +8,7 @@ import TagsDiv from "../Components/TagsDiv";
 import WriteBoard from "../Components/WriteBoard";
 import LoginWith from "../Components/LoginWith";
 import useGET from "../util/useGET";
+import postData from "../util/postData";
 
 const QuestionContainerMain = styled.main`
   display: table;
@@ -100,6 +101,9 @@ function Question() {
   const [question, error] = useGET(`/questions/${question_id}`)
   // console.log(question)
   const {login} = useSelector(state => state.loginReducer);
+  const postAnswer = () => {
+    postData(`/answers`, {questionId: question_id, body: "답변 생성"})
+  }
   // TODO 날짜 계산기 만들기 today, yesterday, 2 days ago~ 한달, 3 months ago ... */
   const calculateDate = (date) => {
     const today = new Date()
@@ -142,7 +146,7 @@ function Question() {
                 <WriteBoard />
                 {login ? null : <LoginWith />}
                 <div className="postanswer">
-                  <BasicBlueButton to="/questions/detail">Post your Answer</BasicBlueButton>
+                  <BasicBlueButton onClick={postAnswer} to={`/questions/${question_id}`}>Post your Answer</BasicBlueButton>
                   {login ? null : <em>By clicking "Post Your Answer", you agree to our <span className="linktext">terms of service</span>, <span className="linktext">privacy policy</span> and <span className="linktext">cookie policy</span></em>}
                 </div>
               </div>
