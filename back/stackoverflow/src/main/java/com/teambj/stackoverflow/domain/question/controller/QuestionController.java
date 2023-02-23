@@ -35,7 +35,7 @@ public class QuestionController {
         this.mapper = mapper;
     }
 
-    @PostMapping("/questions/add")
+    @PostMapping("/questions")
     public ResponseEntity postQuestion(@Valid @RequestBody QuestionPostDto questionPostDto) {
         Question question = questionService.createQuestion(mapper.questionPostDtoToQuestion(questionPostDto), questionPostDto.getUserId());
         URI uri = UriUtil.createUri(DEFAULT_URI, question.getQuestionId());
@@ -43,7 +43,7 @@ public class QuestionController {
         return ResponseEntity.created(uri).body(ApiResponse.created());
     }
 
-    @PatchMapping("/questions/{questionId}/edit")
+    @PatchMapping("/questions/{questionId}")
     public ResponseEntity patchQuestion(@PathVariable("questionId") @Positive Long questionId,
                                         @Valid @RequestBody QuestionPatchDto questionPatchDto) {
         questionPatchDto.setQuestionId(questionId);
