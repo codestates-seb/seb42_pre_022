@@ -21,12 +21,13 @@ function WriteBoard({setQuestionDone}) {
     dispatch(askquestionActions.changeQuestionValue({data}));
     if(originData.length >= 20) {
       setQuestionDone(true);
+      localStorage.setItem("questionDone", true)
     } else {
       setQuestionDone(false);
+      localStorage.setItem("questionDone", false)
     }
   }
 
-  // console.log(state.questionValue);
 
   return (
     <QuestionForm>
