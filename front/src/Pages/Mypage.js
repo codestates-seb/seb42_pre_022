@@ -98,43 +98,76 @@ const MypageMenuBtn = styled.a`
 const MypageContent = styled.div`
   display: flex;
   margin: -12px;
-  margin-bottom: 48px;
   >div:nth-child(1){
     flex-basis: calc(25% - 24px);
     margin: 12px;
     flex-shrink: 0;
+    @media (max-width: 980px) {
+    order: 1;
+    }
   }
   >div:nth-child(2){
     margin: 12px;
     flex-grow: 1;
   }
+  @media (max-width: 980px) {
+    flex-direction: column;
+  }
+  .data-is-here-when-sm{
+    @media screen and (max-width: 980px) and (min-width: 640.1px) {
+    display: none;
+    }
+  }
+  .data-is-here-when-lg{
+    @media screen and (min-width: 980.1px) {
+    display: none;
+    }
+  }
 `
 const MypageGrid = styled.div`
   display: grid;
-  gap: (24px, 0) (24px, 0);
-  .title{
+  gap: 24px 0px;  
+`
+
+const GridItem = styled.div`
+  .grid-title{
     font-size: 1.61538462rem;
     margin-bottom: 8px;
   }
-  .content{
+  .grid-content{
+    text-align: center;
+    padding: 32px;
+    background-color: var(--black-025);
+    border-radius: 5px;
+    border: 1px solid var(--black-075);
     color: var(--fc-light);
-    border-radius: var(--br-md) ;
-    border: 1px solid var(--bc-medium);
+  }
+  .grid-cards{
+    border: 1px solid var(--black-075);
     background-color: var(--white);
     padding: 12px;
+  }
+  `
+  const StatsGrid = styled.div`
+    margin: -8px;
     display: flex;
     flex-wrap: wrap;
-    margin: -8px;
-    >div{
-      flex-basis: alcc(50%-16px);
+    .gridcard{
+      flex-basis: calc(50% - 16px);
       margin: 8px;
+      color: var(--fc-light); 
+      >div{
+        font-size: 1.30769231rem;
+        color: var(--fc-dark);
+      }
+      @media (max-width: 980px) {
+        flex: 1 1 auto;
+      }
     }
-  }
-  .number{
-    color: var(--fc-dark);
-    font-size: 1.30769231rem;
-  }
-`
+    @media (max-width: 980px) {
+      justify-content: space-between;
+    }
+  `
 
 
 function Mypage() {
@@ -175,21 +208,36 @@ function Mypage() {
         <MypageContent>
           <div>
             <MypageGrid>
-              <div>
-                <div className="title">Stats</div>
-                <div className="content">
-                  <div><div className="number">1</div>reputation</div>
-                  <div><div className="number">0</div>reached</div>
-                  <div><div className="number">0</div>answers</div>
-                  <div><div className="number">0</div>questions</div>
+              <GridItem className="data-is-here-when-sm">
+                <div className="grid-title">Stats</div>
+                <div className="grid-cards">
+                  <StatsGrid>
+                    <div className="gridcard"><div>1</div>reputation</div>
+                    <div className="gridcard"><div>0</div>reached</div>
+                    <div className="gridcard"><div>0</div>answers</div>
+                    <div className="gridcard"><div>0</div>questions</div>                  
+                  </StatsGrid>
                 </div>
-              </div>
-              <div></div>
+              </GridItem>
+              <GridItem><div className="grid-title">Communities</div><div className="grid-content"></div></GridItem>
             </MypageGrid>
           </div>
           <div>
             <MypageGrid>
-              
+              <GridItem className="data-is-here-when-lg">
+                <div className="grid-title">Stats</div>
+                <div className="grid-cards">
+                  <StatsGrid>
+                    <div className="gridcard"><div>1</div>reputation</div>
+                    <div className="gridcard"><div>0</div>reached</div>
+                    <div className="gridcard"><div>0</div>answers</div>
+                    <div className="gridcard"><div>0</div>questions</div>                  
+                  </StatsGrid>
+                </div>
+              </GridItem>
+              <GridItem><div className="grid-title">About</div><div className="grid-content"></div></GridItem>
+              <GridItem><div className="grid-title">Badges</div><div className="grid-content"></div></GridItem>
+              <GridItem><div className="grid-title">Posts</div><div className="grid-content"></div></GridItem>
             </MypageGrid>
           </div>
         </MypageContent>
