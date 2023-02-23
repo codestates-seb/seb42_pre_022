@@ -123,14 +123,14 @@ const UsercardMinimal = styled.div`
   flex-wrap: wrap;
   justify-content: flex-end;
   margin-left: auto;
+  time{
+    color: var(--black-500);
+    white-space: nowrap;
+    font-size: 12px;
+  }
 `
 
-function QuestionsList() {
-  let question = {
-    title : "Extracting output from Postman using Python",
-    body : "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
-    answer_count : 1
-  }
+function QuestionsList({title, body, createdAt, viewCount, answerCount}) {
   let tag = [
     {
       title: 'javascript'
@@ -139,17 +139,22 @@ function QuestionsList() {
       title: 'angular'
     }
   ]
-
+  let now = new Date()
+  let changeDateFormat = new Intl.DateTimeFormat('en-US',{month: "short", day: "numeric", year:"numeric"}).format(createdAt)
+  let hour = createdAt.getHours()
+  let changeTimeFormat = new Intl.DateTimeFormat('en-US',{ hour:"numeric", hour12: hour<12, minute:"numeric"}).format(createdAt)
+  
+  
   return (
     <QLiContainer>
       <PostSummaryStats>
         <div><span>0</span><span>votes</span></div>
-        <div className={`${question.answer_count}`!== "0" ?"has-answer" :"null"}><span>{question.answer_count}</span><span>answer</span></div>
-        <div><span>2</span><span>views</span></div>
+        <div className={answerCount !== "0" ?"has-answer" :"null"}><span>{answerCount}</span><span>answer</span></div>
+        <div><span>{viewCount}</span><span>views</span></div>
       </PostSummaryStats>
       <PostSummaryContent>
-        <h3 className="post-summary-title"><a>{question.title}</a></h3>
-        <div className="post-summary-content">{question.body}</div>
+        <h3 className="post-summary-title"><a>{title}</a></h3>
+        <div className="post-summary-content">{body}</div>
         <div className="post-summary-meta">
           <div>
             <ul>
@@ -159,8 +164,7 @@ function QuestionsList() {
             </ul>
           </div>
           <UsercardMinimal>
-            <div>KUSHA B K 1,409 asked Apr 21, 2017 at 4:59</div>
-            <div></div>
+            <div>KUSHA B K 1,409 <time>asked {changeDateFormat} at {changeTimeFormat}</time></div>
           </UsercardMinimal>
         </div>
       </PostSummaryContent>
