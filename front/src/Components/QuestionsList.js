@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import TagsDiv from "./TagsDiv";
 
 const QLiContainer = styled.div`
   background-color: transparent;
@@ -84,40 +85,7 @@ const PostSummaryContent = styled.div`
     flex-wrap: wrap;
     justify-content: space-between;
     row-gap: 8px;
-    >div:nth-child(1){
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      line-height: 18px;
-      float: left;
-    }
-    ul{
-      display: inline;
-      list-style: none;
-      margin-bottom: 1em;
-    }
-    li{
-      display: inline;
-      margin-right: 4px;
-    }
   }
-`
-const Tag = styled.a`
-  font-size: 12px;
-  color: var(--powder-700);
-  background-color: var(--powder-100);
-  border-color: transparent;
-  display: inline-block;
-  padding: 0.4em 0.5em;
-  margin: 2px 2px 2px 0;
-  line-height: 1;
-  white-space: nowrap;
-  text-decoration: none;
-  text-align: center;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 3px;
-  cursor: pointer;
 `
 const UsercardMinimal = styled.div`
   flex-wrap: wrap;
@@ -149,20 +117,14 @@ function QuestionsList({title, body, createdAt, viewCount, answerCount}) {
     <QLiContainer>
       <PostSummaryStats>
         <div><span>0</span><span>votes</span></div>
-        <div className={answerCount !== "0" ?"has-answer" :"null"}><span>{answerCount}</span><span>answer</span></div>
+        <div className={answerCount !== 0 ?"has-answer" :"null"}><span>{answerCount}</span><span>answer</span></div>
         <div><span>{viewCount}</span><span>views</span></div>
       </PostSummaryStats>
       <PostSummaryContent>
         <h3 className="post-summary-title"><a>{title}</a></h3>
         <div className="post-summary-content">{body}</div>
         <div className="post-summary-meta">
-          <div>
-            <ul>
-              {tag.map((ele)=>{
-                return <li><Tag>{ele.title}</Tag></li>
-              })}
-            </ul>
-          </div>
+          <TagsDiv />
           <UsercardMinimal>
             <div>KUSHA B K 1,409 <time>asked {changeDateFormat} at {changeTimeFormat}</time></div>
           </UsercardMinimal>
