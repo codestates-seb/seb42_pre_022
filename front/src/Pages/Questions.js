@@ -2,12 +2,10 @@ import styled from "styled-components";
 import QuestionsList from "../Components/QuestionsList";
 import { BasicBlueButton } from "../Styles/Buttons";
 import Aside from "../Components/Aside";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ExpandableFilterform from "../Components/ExpandableFilterForm";
 import { useSelector, useDispatch } from "react-redux";
 import { filteringBy } from "../Reducers/filterquestionReducer";
-import axios, { Axios } from "axios";
-import { allquestion } from "../Reducers/questionsReducer";
 
 const QuestionsContainer = styled.div`
   >div:nth-child(1){
@@ -170,7 +168,6 @@ const QuestionsContent = styled.div`
 
 function Questions() {
   const filter = useSelector((state)=> state.filter);
-  const data = useSelector((state)=> state.quesitons)
   const dispatch = useDispatch();
   const [isFilterOpen, setFilterOpen] = useState(false);
   const filterOpenHandler = () => {
@@ -179,14 +176,6 @@ function Questions() {
   const filteringHandler = (keyword) => {
     dispatch(filteringBy(keyword))
   }
-
-  // useEffect(()=>{
-  //   axios
-  //   .get('https://fd08-125-133-80-221.jp.ngrok.io/questions')
-  //   .then((res)=>{
-  //     dispatch(allquestion(res))
-  //   })
-  // },[]);
 
 
   return (
