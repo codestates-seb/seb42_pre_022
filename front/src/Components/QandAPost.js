@@ -98,7 +98,6 @@ const WriterCardDiv = styled.div`
   border-radius: ${props => props.iswriter ? "3px" : null};
   background-color: var(${props => props.iswriter ? "--powder" : null});
 `
-
 const QAbodydiv = styled.div`
   padding-right: 16px;
   font-size: 15px;
@@ -126,8 +125,9 @@ function QandAPost({ type, body, name, id, answerCount }) {
   const navigate = useNavigate()
   const deletePost = () => {
     if (window.confirm("정말 삭제하시겠습니까?") === true) {
+      const url = type ? "answers" : "questions"
       if (!answerCount) {
-        deleteData(`/questions/${id}`)
+        deleteData(`/${url}/${id}`)
         .then(()=> alert("삭제되었습니다!"))
         .then(()=> navigate("/"))
       } else {
