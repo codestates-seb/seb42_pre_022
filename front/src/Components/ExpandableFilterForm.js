@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import TagEditor from "./TagEditor";
 import { BasicBlueButton } from "../Styles/Buttons";
+import { customfilter } from "../Reducers/filterquestionReducer";
 
 const FilterForm = styled.form`
   z-index: 30;
@@ -138,7 +139,11 @@ const FilterCancelBtn = styled.button`
 `
 
 
-function ExpandableFilterform({isFilterOpen}) {
+function ExpandableFilterform({isFilterOpen, filter, dispatch}) {
+
+  const customfilterHandler = (e) => {
+    dispatch(customfilter(e.target.id))
+  }
 
   return (
     <FilterForm>
@@ -149,14 +154,14 @@ function ExpandableFilterform({isFilterOpen}) {
               <div>
                 <fieldset>
                   <legend>Filter by</legend>
-                  <div><Checkbox><div><input type="checkbox" id="noanswers" /></div><label for="noanswers">No answers</label></Checkbox></div>
+                  <div><Checkbox><div><input type="checkbox" id="unanswered" checked={filter.unanswered} onClick={customfilterHandler}/></div><label for="unanswered">No answers</label></Checkbox></div>
                 </fieldset>
               </div>
               <div>
                 <fieldset>
                   <legend>Sorted by</legend>
-                  <div><Checkbox><div><input type="radio" id="newest" /></div><label for="newest">Newest</label></Checkbox></div>
-                  <div><Checkbox><div><input type="radio" id="highestscore" /></div><label for="highestscore">Highest score</label></Checkbox></div>
+                  <div><Checkbox><div><input type="radio" id="newest" checked={filter.newest} onClick={customfilterHandler}/></div><label for="newest">Newest</label></Checkbox></div>
+                  <div><Checkbox><div><input type="radio" id="highestscore" checked={filter.highestscore} onClick={customfilterHandler}/></div><label for="highestscore">Highest score</label></Checkbox></div>
                 </fieldset>
               </div>
               <div>
