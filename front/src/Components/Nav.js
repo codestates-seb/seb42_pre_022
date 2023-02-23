@@ -111,8 +111,8 @@ function Nav() {
         <span>Questions</span>
         </Link>
         </li>
-        <li className={pathname === "/tags" ? "youarehere" :null}><a><div>Tags</div></a></li>
-        <li className={pathname === "/users" ? "youarehere" :null}><a><div>Users</div></a></li>
+        <li className={pathname === "/tags" ? "youarehere" :null}><Link to="/tags"><div>Tags</div></Link></li>
+        <li className={pathname.slice(0,7) === "/users" ? "youarehere" :null}><Link to="users"><div>Users</div></Link></li>
         </MainMenu>
       </div>
     </NavContainer>
