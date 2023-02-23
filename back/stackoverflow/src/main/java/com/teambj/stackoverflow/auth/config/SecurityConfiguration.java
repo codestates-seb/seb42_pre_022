@@ -90,6 +90,7 @@ public class SecurityConfiguration{
     CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("*")); //모든 출처에대해 스크립트 기반의 HTTP 통신 허용;
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowedMethods(List.of("POST","GET","PATCH", "DELETE"));
 
         UrlBasedCorsConfigurationSource source= new UrlBasedCorsConfigurationSource();
