@@ -1,6 +1,5 @@
 package com.teambj.stackoverflow.auth.filter;
 
-import com.nimbusds.oauth2.sdk.ErrorResponse;
 import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
 import com.teambj.stackoverflow.auth.JwtTokenizer;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 
-import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 public class JwtVerificationFilter extends OncePerRequestFilter {

@@ -1,7 +1,6 @@
 package com.teambj.stackoverflow.domain.user.controller;
 
 import com.teambj.stackoverflow.auth.PrincipalDetails;
-import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
 import com.teambj.stackoverflow.domain.user.dto.UserDto;
 import com.teambj.stackoverflow.domain.user.entity.Reputation;
 import com.teambj.stackoverflow.domain.user.entity.User;
@@ -10,7 +9,6 @@ import com.teambj.stackoverflow.domain.user.service.UserService;
 import com.teambj.stackoverflow.response.ApiResponse;
 import com.teambj.stackoverflow.utils.UriUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -61,6 +59,9 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    /*
+    PATCH - 사용자 정보 수정
+     */
     @PatchMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> patchUser(@Valid @RequestBody UserDto.Patch userPatchDto, @AuthenticationPrincipal PrincipalDetails userDetails) {
@@ -72,6 +73,9 @@ public class UserController {
         return ResponseEntity.ok().body(ApiResponse.ok("data", userMapper.userToUserResponse(updatedUser)));
     }
 
+    /*
+    GET - 사용자 목록 조회
+     */
     @GetMapping
     public ResponseEntity<?> getUsers(@Positive @RequestParam int page) {
         Page<User> userList = userService.getUserList(page - 1);
@@ -80,6 +84,9 @@ public class UserController {
         return ResponseEntity.ok().body(ApiResponse.ok("data", userResponseList, "pageNumber", page));
     }
 
+    /*
+    GET - 타 사용자 정보 조회
+     */
     @GetMapping("/{user-id}")
     public ResponseEntity<?> getUser(@Positive @PathVariable("user-id") Long userId) {
         User user = userService.getUser(userId);
@@ -89,7 +96,7 @@ public class UserController {
     }
 
     /*
-    GET - 계정 소유자 정보
+    GET - 계정 소유자 정보 조회
      */
     @GetMapping("/principal")
     @PreAuthorize("isAuthenticated()")
