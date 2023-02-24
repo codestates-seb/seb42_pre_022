@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import TagsDiv from "./TagsDiv";
+import { format } from "timeago.js";
 
 const QLiContainer = styled.div`
   background-color: transparent;
@@ -155,13 +156,9 @@ function QuestionsList({title, body, createdAt, viewCount, answerCount}) {
   const slicedTime = isAM
    ? changeTimeFormat.slice(0,5)
    : changeTimeFormat
-   const testdate = new Date("2023-02-24T00:48:00.000Z")
-   console.log('fdfdfd')
-   console.log(testdate)
-   console.log(now)
-  console.log(now-testdate)
-  const a=new Intl.RelativeTimeFormat('en', { style: 'narrow' }).format(now-testdate,'day')
-  console.log(a)
+  const timeago = format(now-(now-date))
+  const isWrittenin24 = (now-date) <= (24 * 1000 * 60 * 60)
+
   return (
     <QLiContainer>
       <PostSummaryStats>
@@ -177,7 +174,11 @@ function QuestionsList({title, body, createdAt, viewCount, answerCount}) {
           <UsercardMinimal>
             <UsercardAvartar><div><img src="https://www.gravatar.com/avatar/4809af7fca6e64f604badf6dfaf01ae9?s=256&d=identicon&r=PG"></img></div></UsercardAvartar>
             <UsercardInfo><div className="uc-username">KUSHA B K</div><div className="uc-reputation">1,409</div></UsercardInfo>
-            <time>asked {changeDateFormat} at {slicedTime}</time>
+            {isWrittenin24
+              ? <time>asked {timeago}</time> 
+              : <time>asked {changeDateFormat} at {slicedTime}</time>
+            }
+            
           </UsercardMinimal>
         </div>
       </PostSummaryContent>
