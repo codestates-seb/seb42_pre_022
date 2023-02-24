@@ -1,6 +1,5 @@
 package com.teambj.stackoverflow.auth.config;
 
-import com.teambj.stackoverflow.auth.CustomAuthorityUtils;
 import com.teambj.stackoverflow.auth.handler.OAuth2UserSuccessHandler;
 import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
 import com.teambj.stackoverflow.auth.filter.JwtAuthenticationFilter;
@@ -44,18 +43,13 @@ public class SecurityConfiguration{
 
     private final JwtTokenizer jwtTokenizer;
     private final CustomUserDetailsService userDetailsService;
-    private final CustomAuthorityUtils authorityUtils;
     private final OAuth2UserDetailsService oAuth2UserDetailsService;
-    private final OAuth2UserSuccessHandler oAuth2UserSuccessHandler;
 
 
-    public SecurityConfiguration(JwtTokenizer jwtTokenizer, CustomUserDetailsService userDetailsService, CustomAuthorityUtils authorityUtils, OAuth2UserDetailsService oAuth2UserDetailsService, OAuth2UserSuccessHandler oAuth2UserSuccessHandler) {
+    public SecurityConfiguration(JwtTokenizer jwtTokenizer, CustomUserDetailsService userDetailsService, OAuth2UserDetailsService oAuth2UserDetailsService) {
         this.jwtTokenizer = jwtTokenizer;
         this.userDetailsService = userDetailsService;
-
-        this.authorityUtils = authorityUtils;
         this.oAuth2UserDetailsService = oAuth2UserDetailsService;
-        this.oAuth2UserSuccessHandler = oAuth2UserSuccessHandler;
     }
 
     @Bean
@@ -64,7 +58,8 @@ public class SecurityConfiguration{
                 .headers().frameOptions().sameOrigin()
                 .and()
                 .csrf().disable()
-                .cors(withDefaults())
+                .cors().configurationSource(corsConfigurationSource())
+                .and()
                 .formLogin().disable()
                 .httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -77,7 +72,6 @@ public class SecurityConfiguration{
                 .oauth2Login()
                 .successHandler(new OAuth2UserSuccessHandler(jwtTokenizer))
                 .userInfoEndpoint().userService(oAuth2UserDetailsService);//후처리
-
         return http.build();
     }
 
@@ -90,6 +84,7 @@ public class SecurityConfiguration{
     CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("*")); //모든 출처에대해 스크립트 기반의 HTTP 통신 허용;
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowedMethods(List.of("POST","GET","PATCH", "DELETE"));
 
         UrlBasedCorsConfigurationSource source= new UrlBasedCorsConfigurationSource();

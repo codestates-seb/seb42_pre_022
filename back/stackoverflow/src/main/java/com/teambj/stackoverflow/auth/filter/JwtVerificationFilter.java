@@ -2,6 +2,7 @@ package com.teambj.stackoverflow.auth.filter;
 
 import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
 import com.teambj.stackoverflow.auth.JwtTokenizer;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 
+
+@Slf4j
 public class JwtVerificationFilter extends OncePerRequestFilter {
 
     private final JwtTokenizer jwtTokenizer;
@@ -39,7 +42,6 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
         setAuthenticationContext(claims);
 
         filterChain.doFilter(request, response);
-
     }
 
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
