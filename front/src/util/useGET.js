@@ -11,7 +11,7 @@ function useGET(url) {
   const getData = async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}${url}`)
-      setData(response.data)
+      setData(response.data.body.data)
     } catch (err) {
       setError(err)
     }
