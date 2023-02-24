@@ -13,8 +13,8 @@ public class ConfirmationTokenService {
     private final ConfirmationTokenRepository confirmationTokenRepository;
     private final MailSenderService mailSenderService;
 
-    @Value("${spring.security.oauth2.client.registration.google.clientId}")
-    private String clientId;
+    @Value("${domain}")
+    private String domain;
 
     public ConfirmationTokenService(ConfirmationTokenRepository confirmationTokenRepository, MailSenderService mailSenderService) {
         this.confirmationTokenRepository = confirmationTokenRepository;
@@ -32,7 +32,7 @@ public class ConfirmationTokenService {
         mailMessage.setTo(receiverEmail);
         mailMessage.setSubject("회원가입 이메일 인증");
 
-        mailMessage.setText("http://localhost:8080/users/confirm-email?token=" + confirmationToken.getId());
+        mailMessage.setText(domain + "/users/confirm-email?token=" + confirmationToken.getId());
         mailSenderService.sendEmail(mailMessage);
     }
 
