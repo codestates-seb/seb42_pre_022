@@ -18,7 +18,7 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-.idea
+*.idea
 *.iws
 *.iml
 *.ipr
@@ -38,4 +38,3 @@ out/
 
 .DS_Store
 
-.resources/application-local.yml/
