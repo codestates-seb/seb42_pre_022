@@ -74,6 +74,34 @@ const GlobalStyle = createGlobalStyle`
     color: var(--blue-500);
   }
 
+  .invalid {
+    border: 1px solid var(--red-400);
+    input {
+      padding-right: 32px;
+    }
+    :focus {
+    box-shadow: 0 0 0 4px var(--focus-ring-error);
+    }
+  }
+  .invalid-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    .error-icon {
+      position: absolute;
+      top: 50%;
+      right: 0.7em;
+      margin-top: -9px;
+      pointer-events: none;
+    }
+  }
+  .invalid-notice {
+    color: var(--red-400);
+    font-size: 12px;
+  }
+
   :root {
     /* color */
     --white: hsl(0,0%,100%);

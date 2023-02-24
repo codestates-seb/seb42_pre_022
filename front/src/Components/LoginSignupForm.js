@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { signupActions } from "../Reducers/signupReducer";
 import { useState } from "react";
 import { ReactComponent as ErrorIcon } from "../assets/errorIcon.svg";
-import useGET from "../util/useGET";
+// import useGET from "../util/useGET";
 
 
 const LoginFormContainer = styled.div`
@@ -52,32 +52,6 @@ export const FormNoticeDiv = styled.div`
 
 const LoginFormDiv = styled.div`
   margin-top: 24px;
-  .invalid {
-    border: 1px solid var(--red-400);
-    input {
-      padding-right: 32px;
-    }
-    :focus {
-    box-shadow: 0 0 0 4px var(--focus-ring-error);
-    }
-  }
-  .invalid-wrap {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    .error-icon {
-      position: absolute;
-      top: 50%;
-      right: 0.7em;
-      margin-top: -9px;
-      pointer-events: none;
-    }
-  }
-  .invalid-notice {
-    color: var(--red-400);
-    font-size: 12px;
-  }
   .invalid-password {
     margin-bottom: 12px;
   }
@@ -103,8 +77,8 @@ function LoginSignupForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // const [data, error] = useGET("/users?page=1");
+
   // invalid css를 위한 상태 설정
-  const [nameValid, setNameValid] = useState(true);
   const [emailValid, setEmailValid] = useState(true);
   const [passwordValid, setPasswordValid] = useState(true);
   const emailTest = /^[a-zA-Z0-9]*[@]{1}[a-zA-Z0-9]+[a-zA-Z0-9]*[.]{1}[a-zA-Z]{1,3}$/;
@@ -113,17 +87,13 @@ function LoginSignupForm() {
   // TODO 1: Signup 버튼에 구현할 함수 만들기
   // TODO 1-2: 유효성 검사를 통과하면 서버에 GET 요청 통해 회원정보 조회해 기존 회원에 있던 이메일인지 확인
   // TODO 1-3: 기존 회원이 아니면 통과 -> 서버에 POST 요청
-  // TODO Question: display name 겹치면 안 되는가???
 
+  // TODO Question: display name 겹치면 안 되는가??? -> 지금은 가능
+
+  // signup, login 버튼을 눌렀을 때 실행되는 함수 (유효성 검사, 서버 요청 실행)
   const signupButtonHandler = (e) => {
     e.preventDefault();
-    if (state.displaynameValue.length === 0 || !emailTest.test(state.emailValue) || !passwordTest.test(state.passwordValue)) {
-      if (state.displaynameValue.length === 0) {
-        setNameValid(false);
-      } else {
-        setNameValid(true);
-      };
-
+    if (!emailTest.test(state.emailValue) || !passwordTest.test(state.passwordValue)) {
       if (!emailTest.test(state.emailValue)) {
         setEmailValid(false);
       } else {
@@ -136,13 +106,22 @@ function LoginSignupForm() {
         setPasswordValid(true);
       };
     } else {
-      setNameValid(true);
       setEmailValid(true);
       setPasswordValid(true);
+      // body에 보낼 객체 설정
+      const req = {
+        "displayName": state.displaynameValue.length === 0 ? null : state.displaynameValue,
+        "email": state.emailValue,
+        "password": state.passwordValue
+      }
+      console.log(req);
+      // TODO: value 비우기 전에 서버에 먼저 POST 요청
       const data = "";
       dispatch(signupActions.changeDisplaynameValue({ data }));
       dispatch(signupActions.changeEmailValue({ data }));
       dispatch(signupActions.changePasswordValue({ data }));
+      // TODO: 회원가입이 완료되었습니다 alert 띄우기
+      alert("Your Sign up is Completed!")
       navigate("/users/login");
     }
   }
@@ -164,13 +143,20 @@ function LoginSignupForm() {
     } else {
       setEmailValid(true);
       setPasswordValid(true);
+      const req = {
+        "username": state.loginEmail,
+        "password": state.loginPassword
+      }
+      console.log(req);
+      //TODO: 서버에 POST로 로그인 요청
       const data = "";
       dispatch(signupActions.changeLoginEmail({ data }));
       dispatch(signupActions.changeLoginPassword({ data }));
-      navigate("/");
+      // navigate("/");
     }
   }
 
+  // input값을 상태로 관리하는 함수
   const displaynameInputHandler = (e) => {
     const data = e.target.value;
     dispatch(signupActions.changeDisplaynameValue({ data }));
@@ -206,14 +192,8 @@ function LoginSignupForm() {
               Display name
             </label>
             <div className="invalid-wrap">
-              <LoginInput id="displayname" value={state.displaynameValue} onChange={displaynameInputHandler} className={nameValid ? "" : "invalid"} />
-              {nameValid ? null : <ErrorIcon className="error-icon" />}
+              <LoginInput id="displayname" value={state.displaynameValue} onChange={displaynameInputHandler} />
             </div>
-            {nameValid ? null : (
-              <div className="invalid-notice">
-                Display name cannot be empty.
-              </div>
-            )}
           </LoginFormDiv>
         ) : null}
         <LoginFormDiv>
@@ -251,8 +231,6 @@ function LoginSignupForm() {
             Passwords must contain at least eight characters, including at least 1 alphabet and 1 number.
           </FormNoticeDiv>
         ) : null}
-        {/*Log in: 로그인 서버로 넘겨서 응답 잘 받으면 홈으로 페이지 넘기기, 없다는 응답 시 alert 띄우기*/}
-        {/*Sign up: display name, email, password 형식에 맞지 않으면 alert, 맞으면 페이지 넘기기*/}
         {(pathname === "/users/signup") ? (
           <LoginButton onClick={signupButtonHandler}>
             Sign up
