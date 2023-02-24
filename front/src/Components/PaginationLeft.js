@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { gotoPrev, gotoNext } from "../Reducers/paginationReducer";
+import { gotoPrev, gotoNext, selectPage } from "../Reducers/paginationReducer";
 import { useSelector, useDispatch } from "react-redux";
 
 const Pager = styled.div`
@@ -21,8 +21,6 @@ export const PageBtn = styled.a`
   cursor: pointer;
 `
 
-
-
 function PaginationLeft () {
   const pages = useSelector((state)=> state.pages);
   const dispatch = useDispatch();
@@ -35,7 +33,9 @@ function PaginationLeft () {
     if(pages.currentpage !== pages.totalpage){
       dispatch(gotoNext())
     }
-    
+  }
+  const gotoPageHandler = (num) => {
+    dispatch(selectPage(num))
   }
   const pageNums = new Array(5).fill(pages.currentpage).map((ele,idx)=>{
     if(pages.currentpage<=4){
@@ -52,16 +52,16 @@ function PaginationLeft () {
         <PageBtn className="gotoprev" onClick={gotoPrevHandler} >Prev</PageBtn>
       }
       {pages.currentpage >4 && <>
-        <PageBtn >1</PageBtn>
+        <PageBtn onClick={()=>gotoPageHandler(1)}>1</PageBtn>
         <PageBtn clear={1}>...</PageBtn>
       </>
       }
       {pageNums.map((ele,idx)=>{
-        return <PageBtn key={`page${idx}`} selected={pages.currentpage===ele}>{ele}</PageBtn>
+        return <PageBtn key={`page${idx}`} selected={pages.currentpage===ele} onClick={()=>gotoPageHandler(ele)}>{ele}</PageBtn>
        })}
       {pages.currentpage < pages.totalpage-4 && <>
         <PageBtn clear={1}>...</PageBtn>
-        <PageBtn className="last">{pages.totalpage}</PageBtn>
+        <PageBtn className="last" onClick={()=>gotoPageHandler(pages.totalpage)}>{pages.totalpage}</PageBtn>
       </>}
       {pages.currentpage !== pages.totalpage &&
         <PageBtn className="gotoprev" onClick={gotoNextHandler}>Next</PageBtn>
