@@ -27,8 +27,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Questions />}/>
             <Route path="/questions/:question_id" element={<Question />} />
-            <Route path="/questions/edit/:id" element={<EditPost />}/>
-            <Route path="/answers/edit/:id" element={<EditPost />}/>
+            <Route path="/questions/:id/edit" element={<EditPost />}/>
+            <Route path="/answers/:id/edit" element={<EditPost />}/>
             <Route path="/askquestion" element={<Askquestion />} />
             <Route path="/users/login" element={<Login />} />
             <Route path="/users/signup" element={<Signup />} />

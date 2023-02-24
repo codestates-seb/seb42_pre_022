@@ -1,6 +1,8 @@
-import { Link, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 import styled from "styled-components";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { editPostActions } from "../Reducers/editPostReducer";
 import { BasicBlueButton } from "../Styles/Buttons";
 import Aside from "../Components/Aside";
 import QandAPost from "../Components/QandAPost";
@@ -98,11 +100,14 @@ const QuestionDiv = styled.div`
 `
 function Question() {
   const { question_id } = useParams()
-  const [question, error] = useGET(`/questions/${question_id}`)
-  // console.log(question)
-  const {login} = useSelector(state => state.loginReducer);
+  const [question, Qerror] = useGET(`/questions/${question_id}`)
+  const answerUrl = question.answerCount ? `/answers?questionId=${question_id}` : null
+  const [answers, Aerror] = useGET(answerUrl)
+  const { login } = useSelector(state => state.loginReducer);
+  const [createAnswer, setCreateAnswer] = useState('')
+  const dispatch = useDispatch()
   const postAnswer = () => {
-    postData(`/answers`, {questionId: question_id, body: "답변 생성"})
+    postData(`/answers`, { questionId: question_id, body: createAnswer })
   }
   // TODO 날짜 계산기 만들기 today, yesterday, 2 days ago~ 한달, 3 months ago ... */
   const calculateDate = (date) => {
@@ -110,16 +115,17 @@ function Question() {
     // const day = today.getDate() - date.getDate()
     // const month = today.getMonth() - date.getMonth()
     // const year = today.getFullYear() - date.getFullYear()
-
     return date
   }
-  // console.log(login)
-  // TODO 편집 버튼 누르면 아이디, 타이틀, 바디, 태그 상태에 저장하고 edit으로 이동 Link, 편집 후 id값 참고해서 Question 리..다이렉트?
 
+  useEffect(() => {
+    dispatch(editPostActions.changeNowQ(question))
+  }, [question])
 
   return (
     <div className="content">
-      {error && <div>{error}</div>}
+      {Qerror && <div>question error</div>}
+      {(answerUrl && Aerror) && <div>answer error</div>}
       {question &&
         <QuestionContainerMain >
           <div>
@@ -134,16 +140,20 @@ function Question() {
           </div>
           <QuestionDiv>
             <div>
-              <QandAPost body={question.body} name={question.displayName} id={question_id} answerCount={question.answerCount}/>
+              <QandAPost question={question} />
             </div>
             <div className="answerpart">
               <div>
-                <h2>{6} Answers</h2>
-                <QandAPost type="answer">답변 map함수</QandAPost>
+                {/* 서버 연결 시 answerUrl, 테스트할 때 answers로 사용 */}
+                {answerUrl ? (
+                  <h1>답변 구역</h1>
+                  // <h2>{answers.length} Answers</h2>,
+                  // answers.map(answer => <QandAPost key={answer.answerId} answer></QandAPost>)
+                  ) : null}
               </div>
               <div>
                 <h2>Your Answer</h2>
-                <WriteBoard />
+                <WriteBoard postBody={createAnswer} inputHandler={(p) => setCreateAnswer(p)} />
                 {login ? null : <LoginWith />}
                 <div className="postanswer">
                   <BasicBlueButton onClick={postAnswer} to={`/questions/${question_id}`}>Post your Answer</BasicBlueButton>
