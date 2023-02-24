@@ -58,9 +58,10 @@ class AnswerControllerTest extends ControllerTest {
     @BeforeEach
     void beforeEach() {
         LocalDateTime now = LocalDateTime.now();
+        String profileURI = "https://source.boringavatars.com/beam/120/" + 1L + "?colors=66FFFF,8CBFE6,B380CC,D940B3,FF0099";
 
         UserDto.Response user =
-            new UserDto.Response(1L, "test@test.com", "tester", new Reputation());
+            new UserDto.Response(1L, "test@test.com", "tester", profileURI, new Reputation());
 
         CommentDto.Response commentDtoResponse =
             new CommentDto.Response(user,1L, "Comment body", now, now);

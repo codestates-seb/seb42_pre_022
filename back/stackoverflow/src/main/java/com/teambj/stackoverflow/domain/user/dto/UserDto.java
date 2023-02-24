@@ -32,7 +32,6 @@ public class UserDto {
     public static class Patch{
         private Long userId;
         private String displayName;
-        private String profileImage;
 
         public void setUserId(long userId) {
             this.userId = userId;
@@ -45,6 +44,7 @@ public class UserDto {
         private long userId;
         private String email;
         private String displayName;
+        private String profileImage;
         private Reputation reputation;
 
         public int getReputation() {
