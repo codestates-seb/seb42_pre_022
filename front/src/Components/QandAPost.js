@@ -126,7 +126,7 @@ const QAbodydiv = styled.div`
   }
 `
 
-function QandAPost({ question, answer, qwriter, qId }) {
+function QandAPost({ question, answer, qwriter }) {
   const { login } = useSelector(state => state.loginReducer);
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -144,7 +144,7 @@ function QandAPost({ question, answer, qwriter, qId }) {
         deleteData(`/${url}/${id}`)
           .then(() => alert("삭제되었습니다!"))
           .then(() => answer ?
-            navigate(`/questions/${qId}`)
+            window.location.reload()
             : navigate("/"))
       } else {
         alert("답변이 달린 질문글은 삭제할 수 없습니다.")
