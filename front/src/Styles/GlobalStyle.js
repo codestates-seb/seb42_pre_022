@@ -23,6 +23,7 @@ const GlobalStyle = createGlobalStyle`
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    flex: 1 0 auto;
   }
   .container{
     position: relative;

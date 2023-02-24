@@ -1,5 +1,8 @@
+import { useState, useRef } from "react";
 import styled from "styled-components";
 import CommentLi from "./CommentLi";
+import { CommentTextarea } from "../Styles/Divs";
+import postData from "../util/postData";
 
 const CmtDiv = styled.div`
   font-size: 13px;
@@ -17,18 +20,55 @@ const CmtDiv = styled.div`
   }
   > span:hover {
     color: var(--blue-500);
-    opacity: .6;
+  }
+  .addCmt {
+    opacity: 1;
+    color: var(--blue);
   }
 `
 
-function CommentsDiv() {
+function CommentsDiv({ comments, answerId, questionId }) {
+  const [writeMode, setWriteMode] = useState(false)
+  const [writeComment, setWriteComment] = useState('')
+  const textarea = useRef();
+
+  const handleResizeHeight = () => {
+    textarea.current.style.height = 'auto';
+    textarea.current.style.height = textarea.current.scrollHeight + 'px'
+  }
+  const handleWriteButton = () => {
+    if (writeMode) {
+      const data = { body: writeComment }
+      if (answerId) {
+        data.answerId = answerId
+      } else {
+        data.questionId = questionId
+      }
+      postData("/comments", data)
+        .then(() => setWriteMode(false))
+        .then(() => window.location.reload())
+    } else {
+      setWriteMode(true)
+    }
+  }
+  const handleComment = (e) => {
+    if (e.key === "Enter") {
+      handleWriteButton()
+    } else {
+      setWriteComment(e.target.value);
+      handleResizeHeight();
+    }
+  }
   return (
     <CmtDiv>
-        <ul>
-          <CommentLi />    
-        </ul>
-        <span className="greycolor">Add a comment</span>
-      </CmtDiv>
+      <ul>
+        {comments.map(comment => <CommentLi key={comment.commentId} comment={comment} />)}
+      </ul>
+      {writeMode ?
+        <CommentTextarea ref={textarea} onClick={handleResizeHeight} onKeyUp={handleComment} />
+        : null}
+      <span className={writeMode ? "addCmt" : ""} onClick={handleWriteButton}>Add a comment</span>
+    </CmtDiv>
   )
 }
 

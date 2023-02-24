@@ -11,7 +11,6 @@ import axios from "axios";
 import PaginationLeft from "../Components/PaginationLeft";
 import PaginationRight from "../Components/PaginationRight";
 import { setTotalPage } from "../Reducers/paginationReducer";
-import { current } from "@reduxjs/toolkit";
 
 const QuestionsContainer = styled.div`
   >div:nth-child(1){
@@ -118,7 +117,6 @@ const DataControllerBtn = styled.a`
     top: calc(50% - 2px);
     z-index: 30;
   }
-
 `
 
 
@@ -186,7 +184,7 @@ function Questions() {
 
   const [allquestions, setallquesitons] = useState([
     {
-        "questionId": 1,
+        "questionId": 14343,
         "userId": null,
         "title": "Extracting output from Postman using Python",
         "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
@@ -198,7 +196,7 @@ function Questions() {
         "closedAt": null
     },
     {
-      "questionId": 2,
+      "questionId": 243434,
       "userId": null,
       "title": "Extracting output from Postman using Python",
       "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
@@ -210,7 +208,7 @@ function Questions() {
       "closedAt": null
   },
   {
-    "questionId": 3,
+    "questionId": 323321,
     "userId": null,
     "title": "Extracting output from Postman using Python",
     "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
@@ -222,7 +220,7 @@ function Questions() {
     "closedAt": null
   },
   {
-    "questionId": 3,
+    "questionId": 341453,
     "userId": null,
     "title": "Extracting output from Postman using Python",
     "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
@@ -234,7 +232,7 @@ function Questions() {
     "closedAt": null
   },
   {
-    "questionId": 3,
+    "questionId": 4324324,
     "userId": null,
     "title": "Extracting output from Postman using Python",
     "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
@@ -246,7 +244,7 @@ function Questions() {
     "closedAt": null
   },
   {
-    "questionId": 4,
+    "questionId": 54343,
     "userId": null,
     "title": "Extracting output from Postman using Python",
     "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
@@ -259,32 +257,28 @@ function Questions() {
   },
   ]);
 
-  useEffect(()=>{
-    dispatch(setTotalPage(allquestions.length))
-  },[]);
+  // const authHandler = () => {
+  // axios
+  //   .get('http://ec2-15-164-213-223.ap-northeast-2.compute.amazonaws.com:8080/questions')
+  //   .then((res) => {
+  //     console.log(res.data.body.data)
+  //   })
+  //   .catch((err) => {
+  //     console.log(err)
+  //   });
+  // };
 
-  // const voteArr ;
-  // const 
-  // const sorted=
+  // useEffect(() => {
+  //   authHandler()
+  //   dispatch(setTotalPage(allquestions.length))
+  // }, []);
+  useEffect(() => {
+  dispatch(setTotalPage(Math.floor(allquestions.length/pages.pagesize)))
+  }, [allquestions]);
 
   const start=(pages.currentpage-1)*pages.pagesize
   const end=start+pages.pagesize
-  const onepage = allquestions.slice(start,end)
-//   const authHandler = () => {
-//   axios
-//     .get('')
-//     .then((res) => {
-//       setallquesitons(res.data);
-//     })
-//     .catch((err) => {
-//       console.log(err)
-//     });
-// };
-
-// useEffect(() => {
-//   authHandler();
-// }, []);
-
+  const onepage = allquestions.slice(start, end)
   return (
     <div className="content">
       <QuestionsContainer>

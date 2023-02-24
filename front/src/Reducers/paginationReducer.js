@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 let initialState = {
   currentpage : 1,
-  pagesize : 30,
+  pagesize : 3,
   totalpage : 30,
 }
 
@@ -18,7 +18,7 @@ const pageSlice = createSlice({
       state.currentpage = action.payload
     },
     setTotalPage : (state, action) => {
-      state.totalPage = action.payload
+      state.totalpage = action.payload
     },
     gotoNext : (state) => {
       state.currentpage += 1
