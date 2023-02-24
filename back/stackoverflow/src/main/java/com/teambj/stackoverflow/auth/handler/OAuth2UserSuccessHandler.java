@@ -38,12 +38,6 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-//        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-//        String email = String.valueOf(oAuth2User.getAttributes().get("email"));
-//        List<String> authorities = authorityUtils.createRoles(email);
-//
-//        User user = saveUser(email);
-
         String accessToken = delegateAccessToken(authentication);
         String refreshToken = delegateRefreshToken(authentication);
 
@@ -96,7 +90,8 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
                 .newInstance()
                 .scheme("http")
                 .host("localhost")
-//                .port(80)
+//                .port(3000)
+                .path("/oauth2/redirect")
                 .queryParams(queryParams)
                 .build()
                 .toUri();
