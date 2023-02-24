@@ -91,12 +91,52 @@ const UsercardMinimal = styled.div`
   flex-wrap: wrap;
   justify-content: flex-end;
   margin-left: auto;
+  align-items: center;
+  display: flex;
+  gap: 4px;
+  line-height: 1;
   time{
     color: var(--black-500);
     white-space: nowrap;
     font-size: 12px;
   }
 `
+const UsercardAvartar = styled.a`
+  background-color: hsl(0,0%,100%);
+  border-radius: 3px;
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+  position: relative;
+  vertical-align: bottom;
+  cursor: pointer;
+  img{
+    border-radius: 3px;
+    display: block;
+    height: 16px;
+    width: 16px;
+    margin: 0 auto;
+    vertical-align: baseline;
+  }
+`
+const UsercardInfo = styled.div`
+  align-items: center;
+  flex-direction: row;
+  display: flex;
+  gap: 4px;
+  font-size: 12px;
+  .uc-username{
+    margin: 2px;
+    color: var(--blue-600);
+  }
+  .uc-reputation{
+    display: flex;
+    color: var(--black-600);
+    gap: 6px;
+    font-weight: 700;
+  }
+`
+
 
 function QuestionsList({title, body, createdAt, viewCount, answerCount}) {
   let tag = [
@@ -107,12 +147,21 @@ function QuestionsList({title, body, createdAt, viewCount, answerCount}) {
       title: 'angular'
     }
   ]
-  let now = new Date()
-  let changeDateFormat = new Intl.DateTimeFormat('en-US',{month: "short", day: "numeric", year:"numeric"}).format(createdAt)
-  let hour = createdAt.getHours()
-  let changeTimeFormat = new Intl.DateTimeFormat('en-US',{ hour:"numeric", hour12: hour<12, minute:"numeric"}).format(createdAt)
-  
-  
+  const date = new Date(createdAt)
+  const now = new Date()
+  const changeDateFormat = new Intl.DateTimeFormat('en-US',{month: "short", day: "numeric", year:"numeric", timeZone:"Asia/Seoul"}).format(date)
+  const isAM = new Intl.DateTimeFormat('en-US',{ hour:"numeric",hour12:false,timeZone:"Asia/Seoul"}).format(date)<12
+  const changeTimeFormat = new Intl.DateTimeFormat('en-US',{ hour:"numeric", hour12: isAM, minute:"numeric",timeZone:"Asia/Seoul"}).format(date)
+  const slicedTime = isAM
+   ? changeTimeFormat.slice(0,5)
+   : changeTimeFormat
+   const testdate = new Date("2023-02-24T00:48:00.000Z")
+   console.log('fdfdfd')
+   console.log(testdate)
+   console.log(now)
+  console.log(now-testdate)
+  const a=new Intl.RelativeTimeFormat('en', { style: 'narrow' }).format(now-testdate,'day')
+  console.log(a)
   return (
     <QLiContainer>
       <PostSummaryStats>
@@ -126,7 +175,9 @@ function QuestionsList({title, body, createdAt, viewCount, answerCount}) {
         <div className="post-summary-meta">
           <TagsDiv />
           <UsercardMinimal>
-            <div>KUSHA B K 1,409 <time>asked {changeDateFormat} at {changeTimeFormat}</time></div>
+            <UsercardAvartar><div><img src="https://www.gravatar.com/avatar/4809af7fca6e64f604badf6dfaf01ae9?s=256&d=identicon&r=PG"></img></div></UsercardAvartar>
+            <UsercardInfo><div className="uc-username">KUSHA B K</div><div className="uc-reputation">1,409</div></UsercardInfo>
+            <time>asked {changeDateFormat} at {slicedTime}</time>
           </UsercardMinimal>
         </div>
       </PostSummaryContent>

@@ -11,6 +11,7 @@ import axios from "axios";
 import PaginationLeft from "../Components/PaginationLeft";
 import PaginationRight from "../Components/PaginationRight";
 import { setTotalPage } from "../Reducers/paginationReducer";
+import { current } from "@reduxjs/toolkit";
 
 const QuestionsContainer = styled.div`
   >div:nth-child(1){
@@ -190,9 +191,9 @@ function Questions() {
         "title": "Extracting output from Postman using Python",
         "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
         "displayName": null,
-        "answerCount": 3,
+        "answerCount": 0,
         "viewCount": 0,
-        "createdAt": new Date(),
+        "createdAt": "2023-01-23T22:48:00.000Z",
         "modifiedAt": null,
         "closedAt": null
     },
@@ -202,9 +203,9 @@ function Questions() {
       "title": "Extracting output from Postman using Python",
       "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
       "displayName": null,
-      "answerCount": 0,
-      "viewCount": 0,
-      "createdAt": new Date(),
+      "answerCount": 1,
+      "viewCount": 1,
+      "createdAt": "2023-01-24T18:48:00.000Z",
       "modifiedAt": null,
       "closedAt": null
   },
@@ -214,9 +215,33 @@ function Questions() {
     "title": "Extracting output from Postman using Python",
     "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
     "displayName": null,
-    "answerCount": 0,
-    "viewCount": 0,
-    "createdAt": new Date(),
+    "answerCount": 2,
+    "viewCount": 2,
+    "createdAt": "2023-01-23T07:48:00.000Z",
+    "modifiedAt": null,
+    "closedAt": null
+  },
+  {
+    "questionId": 3,
+    "userId": null,
+    "title": "Extracting output from Postman using Python",
+    "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
+    "displayName": null,
+    "answerCount": 3,
+    "viewCount": 3,
+    "createdAt": "2023-01-23T20:48:00.000Z",
+    "modifiedAt": null,
+    "closedAt": null
+  },
+  {
+    "questionId": 3,
+    "userId": null,
+    "title": "Extracting output from Postman using Python",
+    "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
+    "displayName": null,
+    "answerCount": 4,
+    "viewCount": 4,
+    "createdAt": "2023-01-17T14:48:00.000Z",
     "modifiedAt": null,
     "closedAt": null
   },
@@ -226,9 +251,9 @@ function Questions() {
     "title": "Extracting output from Postman using Python",
     "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
     "displayName": null,
-    "answerCount": 0,
-    "viewCount": 0,
-    "createdAt": new Date(),
+    "answerCount": 5,
+    "viewCount": 5,
+    "createdAt": "2023-01-03T09:48:00.000Z",
     "modifiedAt": null,
     "closedAt": null
   },
@@ -237,8 +262,15 @@ function Questions() {
   useEffect(()=>{
     dispatch(setTotalPage(allquestions.length))
   },[]);
-  
-// const authHandler = () => {
+
+  // const voteArr ;
+  // const 
+  // const sorted=
+
+  const start=(pages.currentpage-1)*pages.pagesize
+  const end=start+pages.pagesize
+  const onepage = allquestions.slice(start,end)
+  // const authHandler = () => {
 //   axios
 //     .get('')
 //     .then((res) => {
@@ -284,7 +316,7 @@ function Questions() {
             <ExpandableFilterform isFilterOpen={isFilterOpen} filter={filter} dispatch={dispatch}/> 
           </div>
           <QuestionsContent>
-            {allquestions.map(ele=>{
+            {onepage.map(ele=>{
               return <QuestionsList key={ele.questionId} title={ele.title} body={ele.body} createdAt={ele.createdAt} viewCount={ele.viewCount} answerCount={ele.answerCount}/>
             })}
           </QuestionsContent>
