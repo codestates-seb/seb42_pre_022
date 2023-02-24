@@ -43,6 +43,7 @@ public class UserService {
         user.setRoles(roles);
 
         User createdUser = userRepository.saveAndFlush(user);
+        log.info(user.getDisplayName());
 
         Long userId = user.getUserId();
 
@@ -104,7 +105,6 @@ public class UserService {
     }
 
     public User getUser(Long userId) {
-        log.info("why twice response..?");
 
         Optional<User> optional = userRepository.findById(userId);
         return optional.orElseThrow(() -> new RuntimeException("No valid user"));
