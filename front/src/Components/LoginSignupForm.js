@@ -6,7 +6,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { signupActions } from "../Reducers/signupReducer";
 import { useState } from "react";
 import { ReactComponent as ErrorIcon } from "../assets/errorIcon.svg";
-// import useGET from "../util/useGET";
 
 
 const LoginFormContainer = styled.div`
@@ -76,7 +75,6 @@ function LoginSignupForm() {
   const state = useSelector(state => state.signupReducer);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const [data, error] = useGET("/users?page=1");
 
   // invalid css를 위한 상태 설정
   const [emailValid, setEmailValid] = useState(true);
@@ -152,7 +150,7 @@ function LoginSignupForm() {
       const data = "";
       dispatch(signupActions.changeLoginEmail({ data }));
       dispatch(signupActions.changeLoginPassword({ data }));
-      // navigate("/");
+      navigate("/");
     }
   }
 

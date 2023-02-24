@@ -108,7 +108,6 @@ const FormDiv = styled.div`
   @media only screen and (max-width: 1050px) {width: 100%;}
 `
 
-// input창 Header에서 재활용 가능 -> styles에 옮기기
 const FormInput = styled(SearchInput)`
   padding-left: 0.7em;
   margin: 2px 0;
@@ -214,14 +213,16 @@ function Askquestion() {
 
   const dispatch = useDispatch();
 
+  // 삭제 버튼 핸들러
   const discardPost = () => {
     if (window.confirm("Are you sure you want to discard this question?")) {
       localStorage.removeItem("titleValue"); localStorage.removeItem("questionValue"); localStorage.removeItem("titleDone"); localStorage.removeItem("questionDone"); localStorage.removeItem("tagStart");
-      window.location.reload();
       window.scrollTo(0,0);
+      window.location.reload();
     }
   }
 
+  // 작성 버튼 핸들러
   const postButtonHandler = (e) => {
     e.preventDefault();
     if ((state.titleValue === "" || state.titleValue === null) || (state.questionValue === null || state.questionValue.replaceAll(/<[^>]*>/g, '').length < 20)) {
@@ -252,6 +253,7 @@ function Askquestion() {
     }
   }
 
+  // 제목 관련 함수 -> 입력 값 상태 관리, 다음으로 넘어가기
   const titleInputHandler = (e) => {
     const data = e.target.value;
     dispatch(askquestionActions.changeTitleValue({ data }));
@@ -267,6 +269,7 @@ function Askquestion() {
     }
   }
 
+  // 질문 본문 관련 함수 -> 입력 값 상태 관리, 다음으로 넘어가기
   const questionNextHandler = () => {
     setTagStart(true);
     localStorage.setItem("tagStart", true);
@@ -283,6 +286,8 @@ function Askquestion() {
       localStorage.setItem("questionDone", false)
     }
   }
+  
+  // 상태 잘 저장되는지 확인
   console.log(state);
 
   return (
