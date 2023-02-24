@@ -4,7 +4,7 @@ import TagsDiv from "../Components/TagsDiv";
 import CommentsDiv from "../Components/CommentsDiv";
 import WriteBoard from "../Components/WriteBoard";
 import { SearchInput } from "../Components/SearchBar";
-import { useParams, useLocation, Link, useNavigate } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { BasicBlueButton } from "../Styles/Buttons";
 import patchData from "../util/patchData";
 import { useEffect, useState } from "react";
@@ -12,10 +12,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { editPostActions } from "../Reducers/editPostReducer";
 
 const EditContainerMain = styled.main`
-  display: table;
   width: 100%;
   > div:nth-child(2) {
     float: right;
+    margin-top: 15px;
   }
   @media only screen and (max-width: 980px) {
     display: flex;
@@ -32,7 +32,10 @@ const EditContainerMain = styled.main`
 const EditPostDiv = styled.div`
   width: calc(100% - 326px);
   float: left;
+  min-width: 0;
+  white-space: normal;
   p {
+    overflow-wrap: break-word;
     font-size: 15px;
     margin-bottom: 1.1em;
   }
@@ -123,7 +126,7 @@ function EditPost() {
           <div>
             <label htmlFor="body">Body</label>
             <WriteBoard id="body" postBody={editBody} inputHandler={(p) => setEditBody(p)} />
-            <div dangerouslySetInnerHTML={{ __html: editBody }}></div>
+            <div dangerouslySetInnerHTML={{ __html: editBody }} />
           </div>
           <div>
             <label>Tags</label>

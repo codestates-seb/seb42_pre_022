@@ -20,8 +20,10 @@ const QAWrapDiv = styled.div`
     grid-column: 1;
   }
   > div:nth-child(2) {
+    padding-right: 16px;
+    min-width: 0;
     > div:nth-child(2) {
-      display: ${props => props.answer? "none" : "block"};
+      display: ${props => props.answer ? "none" : "block"};
       margin: 24px 0 12px;
     }
   }
@@ -80,7 +82,6 @@ const WriterRelatedDiv = styled.div`
     }
   }
   .qapost {
-    width: 96px;
     flex: 1 auto;
     margin-left: -4px;
     > a {
@@ -104,7 +105,7 @@ const WriterCardDiv = styled.div`
   background-color: var(${props => props.iswriter ? "--powder" : null});
 `
 const QAbodydiv = styled.div`
-  padding-right: 16px;
+  padding-top: 12px;
   font-size: 15px;
   line-height: 1.5;
   overflow-wrap: break-word;
@@ -125,24 +126,26 @@ const QAbodydiv = styled.div`
   }
 `
 
-function QandAPost({ question, answer }) {
-  const {login} = useSelector(state => state.loginReducer);
+function QandAPost({ question, answer, qwriter, qId }) {
+  const { login } = useSelector(state => state.loginReducer);
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const post = answer ? answer : question
-  const id = answer? answer.answerId : question.questionId
-  
-  const saveAnswer = () => {
+  const id = answer ? answer.answerId : question.questionId
+
+  const saveAnswerToEdit = () => {
     dispatch(editPostActions.changeNowA(answer))
   }
-  
+
   const deletePost = () => {
     if (window.confirm("정말 삭제하시겠습니까?") === true) {
       const url = answer ? "answers" : "questions"
       if (!post.answerCount) {
         deleteData(`/${url}/${id}`)
-        .then(()=> alert("삭제되었습니다!"))
-        .then(()=> navigate("/"))
+          .then(() => alert("삭제되었습니다!"))
+          .then(() => answer ?
+            navigate(`/questions/${qId}`)
+            : navigate("/"))
       } else {
         alert("답변이 달린 질문글은 삭제할 수 없습니다.")
       }
@@ -153,30 +156,39 @@ function QandAPost({ question, answer }) {
     <QAWrapDiv answer={answer ? 1 : null}>
       <div>
         <VoteContainerDiv>
-          <VoteButton><UpVoteIcon></UpVoteIcon></VoteButton>
+          <VoteButton><UpVoteIcon /></VoteButton>
           <div>0</div>
-          <VoteButton><DownVoteIcon></DownVoteIcon></VoteButton>
-          <VoteButton className="bookmark"><BookmarkIcon></BookmarkIcon></VoteButton>
-          <VoteButton className="history"><HistoryIcon></HistoryIcon></VoteButton>
+          <VoteButton><DownVoteIcon /></VoteButton>
+          <VoteButton className="bookmark"><BookmarkIcon /></VoteButton>
+          <VoteButton className="history"><HistoryIcon /></VoteButton>
         </VoteContainerDiv>
       </div>
       <div>
-        <QAbodydiv dangerouslySetInnerHTML={{__html: post.body}}>
-        </QAbodydiv>
+        <QAbodydiv dangerouslySetInnerHTML={{ __html: post.body }} />
         <TagsDiv />
-        <WriterRelatedDiv writer={1}>
-          <div className="qapost"><a>Share</a>{login ? <Link onClick={answer? saveAnswer : null} to={`/${answer? "answers":"questions"}/${id}/edit`}>Edit</Link> : null}<a>Follow</a>{login ? <a onClick={deletePost}>Delete</a> : null}</div>
-          <WriterCardDiv className="card" iswriter={null}>
-            <span className="linktext">{post.modifiedAt? `edited ${post.modifiedAt}Feb 13 at 6:24`: null}</span>
-          </WriterCardDiv>
-          <WriterCardDiv className="qawriter card" iswriter={1}>
-            <div>asked {post.createdAt}Feb 10 at 18:04</div>
-            <UserCard username={post.displayName} reputation="100" />
+        <WriterRelatedDiv>
+          <div className="qapost">
+            <a>Share</a>
+            {login ? <Link onClick={answer ? saveAnswerToEdit : null} to={`/${answer ? "answers" : "questions"}/${id}/edit`}>Edit</Link> : null}
+            <a>Follow</a>
+            {login ? <a onClick={deletePost}>Delete</a> : null}
+          </div>
+          {post.modifiedDate ?
+            <WriterCardDiv >
+              <span className="linktext">
+                edited {post.modifiedDate}Feb 13 at 6:24</span>
+            </WriterCardDiv>
+            : null}
+          <WriterCardDiv iswriter={qwriter === post.userId ? 1 : null}>
+            <div>asked {post.createdDate}Feb 10 at 18:04</div>
+            <UserCard username={post.displayName} reputation={"100"} />
           </WriterCardDiv>
         </WriterRelatedDiv>
       </div>
-      <span></span>
-      <CommentsDiv />
+      <span />
+      {post.comments?.length ?
+        <CommentsDiv comments={post.comments} questionId={answer ? null : id} answerId={answer ? id : null} />
+        : null}
     </QAWrapDiv>
   )
 }
