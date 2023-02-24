@@ -186,10 +186,11 @@ const PostDiv = styled.div`
 `
 
 function Askquestion() {
+  const state = useSelector(state => state.askquestionReducer);
   // 작성 가능 상태를 제어하는 상태는 useState 활용
   const [titleDone, setTitleDone] = useState(() => {
     const titleDoneData = localStorage.getItem("titleDone");
-    if (titleDoneData !== null) {
+    if (titleDoneData !== null && state.titleValue !== "") {
       return JSON.parse(titleDoneData);
     } else {
       return false;
@@ -197,21 +198,14 @@ function Askquestion() {
   })
   const [questionDone, setQuestionDone] = useState(() => {
     const questionDoneData = localStorage.getItem("questionDone");
-    if (questionDoneData !== null) {
+    if (questionDoneData !== null && state.questionValue.replaceAll(/<[^>]*>/g, '') !== "") {
       return JSON.parse(questionDoneData);
     } else {
       return false;
     }
   });
-  const [tagStart, setTagStart] = useState(() => {
-    const tagStartData = localStorage.getItem("tagStart");
-    if (tagStartData !== null) {
-      return JSON.parse(tagStartData);
-    } else {
-      return false;
-    }
-  });
-  const state = useSelector(state => state.askquestionReducer);
+  const [tagStart, setTagStart] = useState(false);
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
