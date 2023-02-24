@@ -19,18 +19,9 @@ const askquestionSlice = createSlice({
       state.questionValue = JSON.parse(localStorage.getItem("questionValue"));
     },
     addTag: (state, action) => {
-      // const tagValue = action.payload.data;
-      // if(tagValue !== "" && !state.tags.includes(tagValue)) {
-      //   state.tags.push(tagValue);
-      // }
-      if(localStorage.getItem("tags") === null) {
-        localStorage.setItem("tags", JSON.stringify(state.tags));
-      }
       const tagValue = action.payload.data;
       if(tagValue !== "" && !state.tags.includes(tagValue)) {
-        let storageTag = JSON.parse(localStorage.getItem("tags"));
-        localStorage.setItem("tags", JSON.stringify([...storageTag, tagValue]));
-        state.tags = JSON.parse(localStorage.getItem("tags"));
+        state.tags.push(tagValue);
       }
     },
     removeTag: (state, action) => {

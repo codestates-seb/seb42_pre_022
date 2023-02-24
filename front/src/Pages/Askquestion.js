@@ -6,7 +6,8 @@ import { SearchInput } from "../Components/SearchBar";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { askquestionActions } from "../Reducers/askquestionReducer";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { ReactComponent as ErrorIcon } from "../assets/errorIcon.svg";
 
 // TODO: 기능 구현
 // DONE 1. 글자 수 조건이 맞아야 다음 칸 작성 가능(tag는 생각해보기)
@@ -186,10 +187,12 @@ const PostDiv = styled.div`
 `
 
 function Askquestion() {
+  const state = useSelector(state => state.askquestionReducer);
+  const navigate = useNavigate();
   // 작성 가능 상태를 제어하는 상태는 useState 활용
   const [titleDone, setTitleDone] = useState(() => {
     const titleDoneData = localStorage.getItem("titleDone");
-    if (titleDoneData !== null) {
+    if (titleDoneData !== null && state.titleValue !== "") {
       return JSON.parse(titleDoneData);
     } else {
       return false;
@@ -197,28 +200,55 @@ function Askquestion() {
   })
   const [questionDone, setQuestionDone] = useState(() => {
     const questionDoneData = localStorage.getItem("questionDone");
-    if (questionDoneData !== null) {
+    if (questionDoneData !== null && state.questionValue.replaceAll(/<[^>]*>/g, '') !== "") {
       return JSON.parse(questionDoneData);
     } else {
       return false;
     }
   });
-  const [tagStart, setTagStart] = useState(() => {
-    const tagStartData = localStorage.getItem("tagStart");
-    if (tagStartData !== null) {
-      return JSON.parse(tagStartData);
-    } else {
-      return false;
-    }
-  });
-  const state = useSelector(state => state.askquestionReducer);
+  const [tagStart, setTagStart] = useState(false);
+
+  // invalid css를 위한 상태 설정
+  const [titleValid, setTitleValid] = useState(true);
+  const [questionValid, setQuestionValid] = useState(true);
+
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const discardPost = () => {
     if (window.confirm("Are you sure you want to discard this question?")) {
       localStorage.removeItem("titleValue"); localStorage.removeItem("questionValue"); localStorage.removeItem("titleDone"); localStorage.removeItem("questionDone"); localStorage.removeItem("tagStart");
-      navigate("/");
+      window.location.reload();
+      window.scrollTo(0,0);
+    }
+  }
+
+  const postButtonHandler = (e) => {
+    e.preventDefault();
+    if ((state.titleValue === "" || state.titleValue === null) || (state.questionValue === null || state.questionValue.replaceAll(/<[^>]*>/g, '').length < 20)) {
+      if (state.titleValue === "" || state.titleValue === null) {
+        setTitleValid(false);
+      } else {
+        setTitleValid(true);
+      };
+
+      if (state.questionValue === null || state.questionValue.replaceAll(/<[^>]*>/g, '').length < 20) {
+        setQuestionValid(false);
+      } else {
+        setQuestionValid(true);
+      };
+    } else {
+      if (window.confirm("Are you sure you want to post this question?")) {
+        const req = {
+          "userId": "",
+          "title": state.titleValue,
+          "body": state.questionValue,
+          "tags": state.tags
+        }
+        console.log(req);
+        // TODO: 서버에 req 객체 담아 POST 요청 보내기
+        // TODO: 200 OK 시 상태 모두 비우고 alert 질문 등록 완료 / error 시 alert 오류 발생 -> 원래 자리로 돌아오기
+        // navigate("/");
+      }
     }
   }
 
@@ -244,8 +274,8 @@ function Askquestion() {
   const questionInputHandler = (question) => {
     const data = question;
     const originData = data.replaceAll(/<[^>]*>/g, '');
-    dispatch(askquestionActions.changeQuestionValue({data}));
-    if(originData.length >= 20) {
+    dispatch(askquestionActions.changeQuestionValue({ data }));
+    if (originData.length >= 20) {
       setQuestionDone(true);
       localStorage.setItem("questionDone", true)
     } else {
@@ -282,7 +312,17 @@ function Askquestion() {
           <label htmlFor="title" className="form-title">Title</label>
           <div>Be specific and imagine you’re asking a question to another person.</div>
         </div>
-        <FormInput type="text" id="title" placeholder="e.g Is there an R function for finding the index of an element in a vector?" value={state.titleValue} onChange={titleInputHandler} />
+        <div className="invalid-wrap">
+          <FormInput type="text" id="title" placeholder="e.g Is there an R function for finding the index of an element in a vector?"
+            value={state.titleValue} onChange={titleInputHandler}
+            className={titleValid ? "" : "invalid"} />
+          {titleValid ? null : <ErrorIcon className="error-icon" />}
+        </div>
+        {titleValid ? null : (
+          <div className="invalid-notice">
+            Title is missing.
+          </div>
+        )}
         <BasicBlueButton className="button" onClick={titleNextHandler}>Next</BasicBlueButton>
       </FormDiv>
       <FormDiv className={titleDone ? "" : "disabled"}>
@@ -290,7 +330,12 @@ function Askquestion() {
           <div className="form-title">What are the details of your problem?</div>
           <div>Introduce the problem and expand on what you put in the title. Minimum 20 characters.</div>
         </div>
-        <WriteBoard postBody={state.questionValue} inputHandler={questionInputHandler}/>
+        <WriteBoard postBody={state.questionValue} inputHandler={questionInputHandler} />
+        {questionValid ? null : (
+          <div className="invalid-notice">
+            Question must be at least 20 characters.
+          </div>
+        )}
         {titleDone ? (<BasicBlueButton className={questionDone ? "button" : "button button-disabled"} onClick={questionNextHandler}>Next</BasicBlueButton>) : null}
       </FormDiv>
       <FormDiv className={(titleDone && tagStart) ? "" : "disabled"}>
@@ -322,7 +367,7 @@ function Askquestion() {
         </TagInput>
       </FormDiv>
       <PostDiv>
-        <BasicBlueButton>Post your question</BasicBlueButton>
+        <BasicBlueButton onClick={postButtonHandler}>Post your question</BasicBlueButton>
         <div className="discard" onClick={discardPost}>Discard draft</div>
       </PostDiv>
     </AskContainer>
