@@ -3,6 +3,7 @@ package com.teambj.stackoverflow.domain.user.dto;
 import com.teambj.stackoverflow.domain.user.entity.Reputation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
