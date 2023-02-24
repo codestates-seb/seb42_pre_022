@@ -2,10 +2,15 @@ import styled from "styled-components";
 import QuestionsList from "../Components/QuestionsList";
 import { BasicBlueButton } from "../Styles/Buttons";
 import Aside from "../Components/Aside";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ExpandableFilterform from "../Components/ExpandableFilterForm";
 import { useSelector, useDispatch } from "react-redux";
 import { filteringBy } from "../Reducers/filterquestionReducer";
+import useGET from "../util/useGET";
+import axios from "axios";
+import PaginationLeft from "../Components/PaginationLeft";
+import PaginationRight from "../Components/PaginationRight";
+import { setTotalPage } from "../Reducers/paginationReducer";
 
 const QuestionsContainer = styled.div`
   >div:nth-child(1){
@@ -168,6 +173,7 @@ const QuestionsContent = styled.div`
 
 function Questions() {
   const filter = useSelector((state)=> state.filter);
+  const pages = useSelector((state)=> state.pages);
   const dispatch = useDispatch();
   const [isFilterOpen, setFilterOpen] = useState(false);
   const filterOpenHandler = () => {
@@ -177,6 +183,75 @@ function Questions() {
     dispatch(filteringBy(keyword))
   }
 
+  const [allquestions, setallquesitons] = useState([
+    {
+        "questionId": 1,
+        "userId": null,
+        "title": "Extracting output from Postman using Python",
+        "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
+        "displayName": null,
+        "answerCount": 3,
+        "viewCount": 0,
+        "createdAt": new Date(),
+        "modifiedAt": null,
+        "closedAt": null
+    },
+    {
+      "questionId": 2,
+      "userId": null,
+      "title": "Extracting output from Postman using Python",
+      "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
+      "displayName": null,
+      "answerCount": 0,
+      "viewCount": 0,
+      "createdAt": new Date(),
+      "modifiedAt": null,
+      "closedAt": null
+  },
+  {
+    "questionId": 3,
+    "userId": null,
+    "title": "Extracting output from Postman using Python",
+    "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
+    "displayName": null,
+    "answerCount": 0,
+    "viewCount": 0,
+    "createdAt": new Date(),
+    "modifiedAt": null,
+    "closedAt": null
+  },
+  {
+    "questionId": 4,
+    "userId": null,
+    "title": "Extracting output from Postman using Python",
+    "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
+    "displayName": null,
+    "answerCount": 0,
+    "viewCount": 0,
+    "createdAt": new Date(),
+    "modifiedAt": null,
+    "closedAt": null
+  },
+  ]);
+
+  useEffect(()=>{
+    dispatch(setTotalPage(allquestions.length))
+  },[]);
+  
+// const authHandler = () => {
+//   axios
+//     .get('')
+//     .then((res) => {
+//       setallquesitons(res.data);
+//     })
+//     .catch((err) => {
+//       console.log(err)
+//     });
+// };
+
+// useEffect(() => {
+//   authHandler();
+// }, []);
 
   return (
     <div className="content">
@@ -209,13 +284,12 @@ function Questions() {
             <ExpandableFilterform isFilterOpen={isFilterOpen} filter={filter} dispatch={dispatch}/> 
           </div>
           <QuestionsContent>
-            <QuestionsList />
-            <QuestionsList />
-            <QuestionsList />
-            <QuestionsList />
-            <QuestionsList />
-            <QuestionsList />
+            {allquestions.map(ele=>{
+              return <QuestionsList key={ele.questionId} title={ele.title} body={ele.body} createdAt={ele.createdAt} viewCount={ele.viewCount} answerCount={ele.answerCount}/>
+            })}
           </QuestionsContent>
+          <PaginationLeft />
+          <PaginationRight />
         </div>
         <Aside />
       </QuestionsContainer>
