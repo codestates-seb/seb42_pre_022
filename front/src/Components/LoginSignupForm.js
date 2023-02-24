@@ -52,32 +52,6 @@ export const FormNoticeDiv = styled.div`
 
 const LoginFormDiv = styled.div`
   margin-top: 24px;
-  .invalid {
-    border: 1px solid var(--red-400);
-    input {
-      padding-right: 32px;
-    }
-    :focus {
-    box-shadow: 0 0 0 4px var(--focus-ring-error);
-    }
-  }
-  .invalid-wrap {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    .error-icon {
-      position: absolute;
-      top: 50%;
-      right: 0.7em;
-      margin-top: -9px;
-      pointer-events: none;
-    }
-  }
-  .invalid-notice {
-    color: var(--red-400);
-    font-size: 12px;
-  }
   .invalid-password {
     margin-bottom: 12px;
   }
@@ -169,11 +143,16 @@ function LoginSignupForm() {
     } else {
       setEmailValid(true);
       setPasswordValid(true);
+      const req = {
+        "username": state.loginEmail,
+        "password": state.loginPassword
+      }
+      console.log(req);
       //TODO: 서버에 POST로 로그인 요청
       const data = "";
       dispatch(signupActions.changeLoginEmail({ data }));
       dispatch(signupActions.changeLoginPassword({ data }));
-      navigate("/");
+      // navigate("/");
     }
   }
 
