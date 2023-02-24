@@ -1,5 +1,6 @@
 package com.teambj.stackoverflow.auth.mail;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,9 @@ public class ConfirmationTokenService {
 
     private final ConfirmationTokenRepository confirmationTokenRepository;
     private final MailSenderService mailSenderService;
+
+    @Value("${domain}")
+    private String domain;
 
     public ConfirmationTokenService(ConfirmationTokenRepository confirmationTokenRepository, MailSenderService mailSenderService) {
         this.confirmationTokenRepository = confirmationTokenRepository;
@@ -27,7 +31,8 @@ public class ConfirmationTokenService {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(receiverEmail);
         mailMessage.setSubject("회원가입 이메일 인증");
-        mailMessage.setText("http://localhost:8080/users/confirm-email?token=" + confirmationToken.getId());
+
+        mailMessage.setText(domain + "/users/confirm-email?token=" + confirmationToken.getId());
         mailSenderService.sendEmail(mailMessage);
     }
 

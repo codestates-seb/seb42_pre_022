@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 public class AnswerDto {
     @Getter
+    @AllArgsConstructor
     public static class Post {
         @Positive
         private Long questionId;
@@ -26,6 +27,7 @@ public class AnswerDto {
     }
 
     @Getter
+    @AllArgsConstructor
     public static class Patch {
         @Positive
         private Long answerId;

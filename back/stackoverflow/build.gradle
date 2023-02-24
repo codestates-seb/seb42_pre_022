@@ -30,6 +30,7 @@ repositories {
 
 ext {
 	set('snippetsDir', file("build/generated-snippets"))
+	set('profile', (!project.hasProperty('profile') || !profile) ? 'local' : profile)
 }
 
 dependencies {
@@ -64,7 +65,14 @@ querydsl {
 }
 
 sourceSets {
-	main.java.srcDir querydslDir
+	main {
+		java {
+			srcDir querydslDir
+		}
+		resources {
+			srcDirs "src/main/resources-env/${profile}"
+		}
+	}
 }
 
 compileQuerydsl {

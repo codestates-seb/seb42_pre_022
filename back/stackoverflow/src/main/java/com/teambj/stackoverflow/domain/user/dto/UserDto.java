@@ -3,6 +3,7 @@ package com.teambj.stackoverflow.domain.user.dto;
 import com.teambj.stackoverflow.domain.user.entity.Reputation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -31,7 +32,6 @@ public class UserDto {
     public static class Patch{
         private Long userId;
         private String displayName;
-        private String profileImage;
 
         public void setUserId(long userId) {
             this.userId = userId;
@@ -44,6 +44,7 @@ public class UserDto {
         private long userId;
         private String email;
         private String displayName;
+        private String profileImage;
         private Reputation reputation;
 
         public int getReputation() {
