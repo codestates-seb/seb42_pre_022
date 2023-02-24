@@ -10,6 +10,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Question from "./Pages/Question";
 import Users from "./Pages/Users";
 import EditPost from "./Pages/EditPost";
+import Mypage from "./Pages/Mypage";
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
             <Route path="/users/login" element={<Login />} />
             <Route path="/users/signup" element={<Signup />} />
             <Route path="/users" element={<Users />}/>
+            <Route path="/users/mypage" element={<Mypage />}/>
           </Routes>
         </div>
       {/*배포 이후 배포한 주소 길이에 맞게 slice 변경*/}
