@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { ReactComponent as GoogleIcon } from "../assets/googleicon.svg";
+import { useLocation } from "react-router-dom";
 
 const LoginWithContainer = styled.div`
   margin-bottom: 16px;
@@ -14,6 +15,9 @@ const LoginWithContainer = styled.div`
 `
 const LoginWithButton = styled.button`
   flex: 1 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 10px;
   margin: 4px 0;
   width: 100%;
@@ -31,23 +35,19 @@ const LoginWithButton = styled.button`
   }
 `
 
-// const GoogleIcon = styled.img`
-//   width: 13px;
-//   height: 13px;
-//   margin-right: 4px;
-// `
-
 function LoginWith() {
+  const { pathname } = useLocation();
+
   return (
     <LoginWithContainer>
       <LoginWithButton hover="--black-025" font="--black">
         <GoogleIcon className="logo-icon" />
-        Log in with Google
+        {pathname === "/users/login" ? "Log in" : "Sign up"} with Google
       </LoginWithButton>
-      <LoginWithButton color="--black-750" hover="--black-800">
+      {/* <LoginWithButton color="--black-750" hover="--black-800">
         <FontAwesomeIcon icon={faGithub} className="logo-icon" />
-        Log in with Github
-      </LoginWithButton>
+        {pathname === "/users/login" ? "Log in" : "Sign up"} with Github
+      </LoginWithButton> */}
     </LoginWithContainer>
   )
 }

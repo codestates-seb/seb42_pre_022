@@ -1,13 +1,14 @@
-import UserCard from "./UserCard";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { editPostActions } from "../Reducers/editPostReducer";
 import { ReactComponent as UpVoteIcon } from "../assets/upVoteIcon.svg";
 import { ReactComponent as DownVoteIcon } from "../assets/downVoteIcon.svg";
 import { ReactComponent as BookmarkIcon } from "../assets/bookmarkIcon.svg";
 import { ReactComponent as HistoryIcon } from "../assets/historyIcon.svg";
 import styled from "styled-components";
+import UserCard from "./UserCard";
 import CommentsDiv from "./CommentsDiv";
 import TagsDiv from "./TagsDiv";
-import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
 import deleteData from "../util/deleteData";
 
 const QAWrapDiv = styled.div`
@@ -19,7 +20,10 @@ const QAWrapDiv = styled.div`
     grid-column: 1;
   }
   > div:nth-child(2) {
-    min-width: 0px;
+    > div:nth-child(2) {
+      display: ${props => props.answer? "none" : "block"};
+      margin: 24px 0 12px;
+    }
   }
 
   padding: ${props => props.answer ? "16px 0 !important" : null};
@@ -94,6 +98,7 @@ const WriterCardDiv = styled.div`
   font-size: 12px;
   margin-top: 0 !important;
   padding: 7px;
+  min-height: 64px;
 
   border-radius: ${props => props.iswriter ? "3px" : null};
   background-color: var(${props => props.iswriter ? "--powder" : null});
@@ -120,13 +125,21 @@ const QAbodydiv = styled.div`
   }
 `
 
-function QandAPost({ type, body, name, id, answerCount }) {
+function QandAPost({ question, answer }) {
   const {login} = useSelector(state => state.loginReducer);
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const post = answer ? answer : question
+  const id = answer? answer.answerId : question.questionId
+  
+  const saveAnswer = () => {
+    dispatch(editPostActions.changeNowA(answer))
+  }
+  
   const deletePost = () => {
     if (window.confirm("정말 삭제하시겠습니까?") === true) {
-      const url = type ? "answers" : "questions"
-      if (!answerCount) {
+      const url = answer ? "answers" : "questions"
+      if (!post.answerCount) {
         deleteData(`/${url}/${id}`)
         .then(()=> alert("삭제되었습니다!"))
         .then(()=> navigate("/"))
@@ -137,7 +150,7 @@ function QandAPost({ type, body, name, id, answerCount }) {
   }
 
   return (
-    <QAWrapDiv answer={type ? type : null}>
+    <QAWrapDiv answer={answer ? 1 : null}>
       <div>
         <VoteContainerDiv>
           <VoteButton><UpVoteIcon></UpVoteIcon></VoteButton>
@@ -148,26 +161,17 @@ function QandAPost({ type, body, name, id, answerCount }) {
         </VoteContainerDiv>
       </div>
       <div>
-        <QAbodydiv>
-          <p>{body}</p>
-          <p>(본문)I'm starting a new Kotlin project, and I used Gradle 7.2 to generate the project structure and the buildSrc scripts. I'm not including them here because I have not changed them - I'm just using whatever Gradle generated.</p>
-          <pre>I'm getting the following message as part of the build:</pre>
-          <p>'compileJava' task (current target is 17) and 'compileKotlin' task (current target is 1.8) jvm target compatibility should be set to the same Java version.</p>
-          <p>I can't find where in the buildSrc and the generated Gradle files the 1.8 target is set. How can I tell the Kotlin compiler to use the Java 17 target?</p>
-          <p>I'm starting a new Kotlin project, and I used Gradle 7.2 to generate the project structure and the buildSrc scripts. I'm not including them here because I have not changed them - I'm just using whatever Gradle generated.</p>
-          <p>I'm getting the following message as part of the build:</p>
-          <p>'compileJava' task (current target is 17) and 'compileKotlin' task (current target is 1.8) jvm target compatibility should be set to the same Java version.</p>
-          <p>I can't find where in the buildSrc and the generated Gradle files the 1.8 target is set. How can I tell the Kotlin compiler to use the Java 17 target?</p>
+        <QAbodydiv dangerouslySetInnerHTML={{__html: post.body}}>
         </QAbodydiv>
-        {type ? null : <TagsDiv />}
+        <TagsDiv />
         <WriterRelatedDiv writer={1}>
-          <div className="qapost"><a>Share</a>{login ? <Link to={`/${type? "answers":"questions"}/edit/${id}`}>Edit</Link> : null}<a>Follow</a>{login ? <a onClick={deletePost}>Delete</a> : null}</div>
+          <div className="qapost"><a>Share</a>{login ? <Link onClick={answer? saveAnswer : null} to={`/${answer? "answers":"questions"}/${id}/edit`}>Edit</Link> : null}<a>Follow</a>{login ? <a onClick={deletePost}>Delete</a> : null}</div>
           <WriterCardDiv className="card" iswriter={null}>
-            <span className="linktext">edited Feb 13 at 6:24</span>
+            <span className="linktext">{post.modifiedAt? `edited ${post.modifiedAt}Feb 13 at 6:24`: null}</span>
           </WriterCardDiv>
           <WriterCardDiv className="qawriter card" iswriter={1}>
-            <div>asked {"Feb 10 at 18:04"}</div>
-            <UserCard username={name} reputation="100" />
+            <div>asked {post.createdAt}Feb 10 at 18:04</div>
+            <UserCard username={post.displayName} reputation="100" />
           </WriterCardDiv>
         </WriterRelatedDiv>
       </div>
