@@ -23,11 +23,11 @@ const QuestionContainerMain = styled.main`
     > a {
       color: var(--black-700);
       text-decoration: none;
+      cursor: pointer;
     }
   }
   > div {
     display: flex;
-    align-items: baseline;
   }
   > div:nth-child(2) {
     border-bottom: 1px solid var(--black-075);
@@ -36,10 +36,11 @@ const QuestionContainerMain = styled.main`
   }
   > div:nth-child(4) {
     float: right;
+    margin-top: 15px;
   }
 
   @media only screen and (max-width: 980px) {
-    div {
+    > div {
       float: none !important;
     }
     > div:nth-child(4) {
@@ -73,6 +74,9 @@ const QuestionDiv = styled.div`
       padding: 10px 0;
       > h2 {
         font-size: 1.46rem;
+      }
+      > h1 {
+        color: var(--red);
       }
     }
     h2 {
@@ -117,6 +121,16 @@ function Question() {
     // const year = today.getFullYear() - date.getFullYear()
     return date
   }
+  // TODO Modified 가장 최근 질문 수정 혹은 답변 작성일
+  const recentModified = () => {
+    let recentDate = question.modifiedDate ? question.modifiedDate : question.createdDate
+    answers && answers.forEach(answer => {
+      const recentAnswerDate = answer.modifiedDate ? answer.modifiedDate : answer.createdDate
+      if (recentDate < recentAnswerDate) recentDate = recentAnswerDate
+    })
+    return recentDate
+  }
+  const recentModifiedDate = recentModified()
 
   useEffect(() => {
     dispatch(editPostActions.changeNowQ(question))
@@ -124,32 +138,37 @@ function Question() {
 
   return (
     <div className="content">
-      {Qerror && <div>question error</div>}
-      {(answerUrl && Aerror) && <div>answer error</div>}
+      {Qerror && <div>Question ERROR</div>}
       {question &&
         <QuestionContainerMain >
           <div>
-            <h1><a href="www.naver.com">{question.title}</a></h1>
+            <h1><a onClick={() => window.location.reload()}>{question.title}</a></h1>
             <BasicBlueButton to="/askquestion">Ask Question</BasicBlueButton>
           </div>
           <div>
-            <QuestionDetailDiv><span>Asked</span><span>{calculateDate(question.createdAt)}</span></QuestionDetailDiv>
-            {/* TODO 가장 최근에 달린 답변의 날짜 */}
-            <QuestionDetailDiv><span>Modified</span><span>{calculateDate(question.modifiedAt)}</span></QuestionDetailDiv>
+            <QuestionDetailDiv>
+              <span>Asked</span>
+              <span>{calculateDate(question.createdDate)}</span></QuestionDetailDiv>
+            <QuestionDetailDiv>
+              <span>Modified</span>
+              <span>{calculateDate(recentModifiedDate)}</span>
+            </QuestionDetailDiv>
             <QuestionDetailDiv><span>Viewed</span><span>{question.viewCount} times</span></QuestionDetailDiv>
           </div>
           <QuestionDiv>
             <div>
-              <QandAPost question={question} />
+              <QandAPost question={question} qwriter={question.userId} />
             </div>
             <div className="answerpart">
               <div>
-                {/* 서버 연결 시 answerUrl, 테스트할 때 answers로 사용 */}
-                {answerUrl ? (
-                  <h1>답변 구역</h1>
-                  // <h2>{answers.length} Answers</h2>,
-                  // answers.map(answer => <QandAPost key={answer.answerId} answer></QandAPost>)
-                  ) : null}
+                {answerUrl ?
+                  Aerror ?
+                    <h1>Answer ERROR</h1>
+                    : (
+                      <h2>{answers.length} Answers</h2>,
+                      answers.map(answer => <QandAPost key={answer.answerId} answer={answer} />)
+                    )
+                  : null}
               </div>
               <div>
                 <h2>Your Answer</h2>
