@@ -68,6 +68,7 @@ const GlobalStyle = createGlobalStyle`
   .linktext {
     color: var(--blue);
     text-decoration: none;
+    cursor: pointer;
   }
   .linktext:hover {
     color: var(--blue-500);

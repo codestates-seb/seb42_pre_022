@@ -3,6 +3,9 @@ import loginReducer from "../Reducers/loginReducer";
 import askquestionReducer from "../Reducers/askquestionReducer";
 import filterquestionReducer from "../Reducers/filterquestionReducer";
 import signupReducer from "../Reducers/signupReducer";
+import editPostReducer from "../Reducers/editPostReducer";
+import paginationReducer from "../Reducers/paginationReducer";
+
 
 const store = configureStore({
   reducer: {
@@ -10,6 +13,9 @@ const store = configureStore({
     askquestionReducer,
     filter: filterquestionReducer,
     signupReducer,
+    editPostReducer,
+    pages: paginationReducer,
+    
   }
 })
 

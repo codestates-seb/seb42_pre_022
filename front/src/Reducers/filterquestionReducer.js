@@ -4,7 +4,7 @@ let initialState = {
   newest: true,
   highestscore: false,
   unanswered: false,
-  tag: 0,
+  tag: {},
 }
 
 const filterSlice = createSlice({
@@ -17,11 +17,7 @@ const filterSlice = createSlice({
       state[action.payload]= true
     },
     customfilter: (state, action) => {
-      if(action.payload === 'newest' || action.payload === 'highestscore'){
-        state.newest = false
-        state.highestscore = false
-      }
-      state[action.payload] = !state[action.payload]
+      state = action.payload
     }
   }
 
