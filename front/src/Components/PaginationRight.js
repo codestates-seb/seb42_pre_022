@@ -20,9 +20,9 @@ function PaginationRight () {
   }
   return(
     <PageSizer>
-      <PageBtn selected={pages.pagesize===15} onClick={()=>{changePagesizeHandler(1)}}>1</PageBtn>
-      <PageBtn selected={pages.pagesize===30} onClick={()=>{changePagesizeHandler(3)}}>3</PageBtn>
-      <PageBtn selected={pages.pagesize===50} onClick={()=>{changePagesizeHandler(5)}}>5</PageBtn>
+      <PageBtn selected={pages.pagesize===1} onClick={()=>{changePagesizeHandler(1)}}>1</PageBtn>
+      <PageBtn selected={pages.pagesize===3} onClick={()=>{changePagesizeHandler(3)}}>3</PageBtn>
+      <PageBtn selected={pages.pagesize===5} onClick={()=>{changePagesizeHandler(5)}}>5</PageBtn>
       <PageBtn clear={1}>per page</PageBtn>
     </PageSizer>
   )
