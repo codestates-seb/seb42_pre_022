@@ -1,8 +1,10 @@
+running: dev
+domain: http://ec2-15-164-213-223.ap-northeast-2.compute.amazonaws.com:8080
+
 spring:
-  h2:
-    console:
-      enabled: true
-      path: /h2
+  profiles:
+    include: common
+    active: dev
   datasource:
     url: jdbc:h2:mem:testdb;NON_KEYWORDS=USER
     username: sa
@@ -15,8 +17,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        highlight_sql: true
-        use_sql_comments: true
   mail:
     host: smtp.gmail.com
     port: 587
@@ -42,44 +42,15 @@ spring:
             scope:
               - email
               - profile
-
-
-server:
-  servlet:
-    encoding:
-      force-response: true
-  error:
-    include-exception: true
-    include-stacktrace: always
-
 logging:
   level:
     org.hibernate.SQL: trace
-    org.hibernate.type.descriptor.sql.BasicBinder: trace
-
-# Cors
-#cors:
-#  allowed-origins: "*"
-#  allowed-headers: "*"
-#  allowed-methods: GET,POST,PUT,DELETE,OPTIONS
-#  max-age: 3600
-
- #Auth & OAuth
-#app:
-#  auth:
-#    tokenSecret: ${JWT_SECRET_KEY}
-#    tokenExpiry: 1800000
-#    refreshTokenExpiry: 604800000
-#  oauth2:
-#    authorizedRedirectUris:
-#      - http://localhost/recieve
 
 jwt:
   secret: ${secret_key}
   access-token-expiration-minutes: 1800000
-  refresh-token-expiration-minutes : 604800000
+  refresh-token-expiration-minutes: 604800000
 
 mail:
   address:
     admin: ${admin_mail}
-
