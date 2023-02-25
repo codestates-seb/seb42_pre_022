@@ -10,6 +10,7 @@ import UserCard from "./UserCard";
 import CommentsDiv from "./CommentsDiv";
 import TagsDiv from "./TagsDiv";
 import deleteData from "../util/deleteData";
+import { sanitize } from 'dompurify'
 
 const QAWrapDiv = styled.div`
   display: grid;
@@ -164,7 +165,7 @@ function QandAPost({ question, answer, qwriter }) {
         </VoteContainerDiv>
       </div>
       <div>
-        <QAbodydiv dangerouslySetInnerHTML={{ __html: post.body }} />
+        <QAbodydiv dangerouslySetInnerHTML={{ __html: sanitize(post.body) }} />
         <TagsDiv />
         <WriterRelatedDiv>
           <div className="qapost">

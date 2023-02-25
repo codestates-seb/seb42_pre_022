@@ -48,6 +48,9 @@ const QuestionContainerMain = styled.main`
       margin: 5px 0;
     }
   }
+  .error {
+    color: var(--red);
+  }
 `
 const QuestionDetailDiv = styled.div`
   white-space: nowrap;
@@ -74,9 +77,6 @@ const QuestionDiv = styled.div`
       padding: 10px 0;
       > h2 {
         font-size: 1.46rem;
-      }
-      > h1 {
-        color: var(--red);
       }
     }
     h2 {
@@ -138,7 +138,7 @@ function Question() {
 
   return (
     <div className="content">
-      {Qerror && <div>Question ERROR</div>}
+      {Qerror && <h1 className="error">Question ERROR</h1>}
       {question &&
         <QuestionContainerMain >
           <div>
@@ -163,7 +163,7 @@ function Question() {
               <div>
                 {answerUrl ?
                   Aerror ?
-                    <h1>Answer ERROR</h1>
+                    <h1 className="error">Answer ERROR</h1>
                     : (
                       <h2>{answers.length} Answers</h2>,
                       answers.map(answer => <QandAPost key={answer.answerId} answer={answer} />)
