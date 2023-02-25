@@ -37,14 +37,17 @@ function PaginationLeft () {
   const gotoPageHandler = (num) => {
     dispatch(selectPage(num))
   }
-  const pageNums = new Array(5).fill(pages.currentpage).map((ele,idx)=>{
+
+  const aftercurrent = pages.totalpage-pages.currentpage
+  const totalpager = pages.totalpage<5 ?pages.totalpage :5
+  const pageNums = new Array(totalpager).fill(pages.currentpage).map((ele,idx)=>{
     if(pages.currentpage<=4){
       return idx+1
-    } else if(pages.currentpage>=pages.totalpage-4){
+    } else if(aftercurrent<=3){
       return pages.totalpage-(4-idx)
     } else return ele-(2-idx)
   })
-
+  const lastNum = pageNums[pageNums.length-1]
 
   return (
     <Pager>
@@ -56,10 +59,10 @@ function PaginationLeft () {
         <PageBtn clear={1}>...</PageBtn>
       </>
       }
-      {pageNums.map((ele,idx)=>{
-        return <PageBtn key={`page${idx}`} selected={pages.currentpage===ele} onClick={()=>gotoPageHandler(ele)}>{ele}</PageBtn>
-       })}
-      {pages.currentpage < pages.totalpage-4 && <>
+      {pageNums.map((ele)=>{
+        return <PageBtn key={ele} selected={pages.currentpage===ele} onClick={()=>gotoPageHandler(ele)}>{ele}</PageBtn>
+       })} 
+      {totalpager===5 && lastNum !==pages.totalpage && <>
         <PageBtn clear={1}>...</PageBtn>
         <PageBtn className="last" onClick={()=>gotoPageHandler(pages.totalpage)}>{pages.totalpage}</PageBtn>
       </>}
