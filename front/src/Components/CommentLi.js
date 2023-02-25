@@ -5,6 +5,7 @@ import { ReactComponent as EditCommentIcon } from "../assets/editCommentIcon.svg
 import { CommentTextarea } from "../Styles/Divs";
 import deleteData from "../util/deleteData";
 import patchData from "../util/patchData";
+import dateTimeFormat from "../util/dateTimeFormat";
 
 const CmtLi = styled.li`
   padding: 6px;
@@ -90,7 +91,7 @@ function CommentLi({ comment }) {
       <CommentTextarea className={editMode ? "textarea" : "hidden"} ref={textareaRef} defaultValue={editComment} onClick={handleResizeHeight} onKeyUp={handleComment} />
       <span className={editMode ? "hidden" : ""}>{editComment}</span>
       –&nbsp;<WriterSpan className="linktext">{comment.user.displayName}</WriterSpan>
-      <DateSpan>{comment.modifiedDate ? (<>{comment.modifiedDate}<EditCommentIcon /></>) : comment.createdDate}</DateSpan>
+      <DateSpan>{comment.modifiedDate ? (<>{dateTimeFormat(comment.modifiedDate)}<EditCommentIcon /></>) : dateTimeFormat(comment.createdDate)}</DateSpan>
       {login ?
         <>
           <EditCmtSpan onClick={handleEditButton}>{editMode ? "Save" : "Edit"}</EditCmtSpan>
