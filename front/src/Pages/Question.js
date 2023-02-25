@@ -11,6 +11,7 @@ import WriteBoard from "../Components/WriteBoard";
 import LoginWith from "../Components/LoginWith";
 import useGET from "../util/useGET";
 import postData from "../util/postData";
+import dateTimeFormat from "../util/dateTimeFormat";
 
 const QuestionContainerMain = styled.main`
   display: table;
@@ -47,9 +48,6 @@ const QuestionContainerMain = styled.main`
       width: 100%;
       margin: 5px 0;
     }
-  }
-  .error {
-    color: var(--red);
   }
 `
 const QuestionDetailDiv = styled.div`
@@ -113,15 +111,7 @@ function Question() {
   const postAnswer = () => {
     postData(`/answers`, { questionId: question_id, body: createAnswer })
   }
-  // TODO 날짜 계산기 만들기 today, yesterday, 2 days ago~ 한달, 3 months ago ... */
-  const calculateDate = (date) => {
-    const today = new Date()
-    // const day = today.getDate() - date.getDate()
-    // const month = today.getMonth() - date.getMonth()
-    // const year = today.getFullYear() - date.getFullYear()
-    return date
-  }
-  // TODO Modified 가장 최근 질문 수정 혹은 답변 작성일
+
   const recentModified = () => {
     let recentDate = question.modifiedDate ? question.modifiedDate : question.createdDate
     answers && answers.forEach(answer => {
@@ -148,10 +138,11 @@ function Question() {
           <div>
             <QuestionDetailDiv>
               <span>Asked</span>
-              <span>{calculateDate(question.createdDate)}</span></QuestionDetailDiv>
+              <span>{dateTimeFormat(question.createdDate, true)}</span>
+            </QuestionDetailDiv>
             <QuestionDetailDiv>
               <span>Modified</span>
-              <span>{calculateDate(recentModifiedDate)}</span>
+              <span>{dateTimeFormat(recentModifiedDate, true)}</span>
             </QuestionDetailDiv>
             <QuestionDetailDiv><span>Viewed</span><span>{question.viewCount} times</span></QuestionDetailDiv>
           </div>

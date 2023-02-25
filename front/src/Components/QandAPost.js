@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { sanitize } from 'dompurify'
 import { editPostActions } from "../Reducers/editPostReducer";
 import { ReactComponent as UpVoteIcon } from "../assets/upVoteIcon.svg";
 import { ReactComponent as DownVoteIcon } from "../assets/downVoteIcon.svg";
@@ -10,7 +11,7 @@ import UserCard from "./UserCard";
 import CommentsDiv from "./CommentsDiv";
 import TagsDiv from "./TagsDiv";
 import deleteData from "../util/deleteData";
-import { sanitize } from 'dompurify'
+import dateTimeFormat from "../util/dateTimeFormat";
 
 const QAWrapDiv = styled.div`
   display: grid;
@@ -113,18 +114,6 @@ const QAbodydiv = styled.div`
   > p {
     margin-bottom: 1.1em;;
   }
-  > pre {
-    background-color: var(--highlight-bg);
-    border-radius: 5px;
-    color: var(--highlight-color);
-    font-family: var(--ff-mono);
-    font-size: 13px;
-    line-height: 1.3;
-    margin: 0;
-    overflow: auto;
-    padding: 12px;
-    margin-bottom: 1.5em;
-  }
 `
 
 function QandAPost({ question, answer, qwriter }) {
@@ -177,11 +166,11 @@ function QandAPost({ question, answer, qwriter }) {
           {post.modifiedDate ?
             <WriterCardDiv >
               <span className="linktext">
-                edited {post.modifiedDate}Feb 13 at 6:24</span>
+                edited {dateTimeFormat(post.modifiedDate)}</span>
             </WriterCardDiv>
             : null}
           <WriterCardDiv iswriter={qwriter === post.userId ? 1 : null}>
-            <div>asked {post.createdDate}Feb 10 at 18:04</div>
+            <div>asked {dateTimeFormat(post.createdDate)}</div>
             <UserCard username={post.displayName} reputation={"100"} />
           </WriterCardDiv>
         </WriterRelatedDiv>
