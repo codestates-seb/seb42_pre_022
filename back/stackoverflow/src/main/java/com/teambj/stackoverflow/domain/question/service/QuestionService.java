@@ -1,5 +1,6 @@
 package com.teambj.stackoverflow.domain.question.service;
 
+import com.teambj.stackoverflow.auth.PrincipalDetails;
 import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
 import com.teambj.stackoverflow.domain.comment.repository.CommentRepository;
 import com.teambj.stackoverflow.domain.comment.service.CommentService;
@@ -46,21 +47,23 @@ public class QuestionService {
         this.questionTagRepository = questionTagRepository;
     }
 
-    public Question createQuestion(Question question, List<String> tagName, Long userId) {
-        question.addUser(userService.getUser(userId));
+    public Question createQuestion(Question question, List<String> tagName,
+                                   @AuthenticationPrincipal PrincipalDetails userDetails) {
+        question.addUser(userService.getUser(userDetails.getUserId()));
 
         List<Tag> tags = tagService.createByTagName(tagName);
         tags.forEach(tag -> {
             new QuestionTag(question.getQuestionId(), question, tag);
         });
+
         Question saveQuestion = questionRepository.save(question);
 
         return saveQuestion;
     }
 
-    public Question updateQuestion(Question question, List<String> tagName, Long questionId) {
+    public Question updateQuestion(Question question, List<String> tagName, @AuthenticationPrincipal PrincipalDetails userDetails) {
         Question foundQuestion = findQuestion(question.getQuestionId());
-        userService.verifyUser(findVerifiedQuestionById(questionId).getUser().getUserId());
+        userService.verifyUser(findVerifiedQuestionById(question.getQuestionId()).getUser().getUserId());
 
         Optional.ofNullable(question.getTitle())
                 .ifPresent(foundQuestion::setTitle);

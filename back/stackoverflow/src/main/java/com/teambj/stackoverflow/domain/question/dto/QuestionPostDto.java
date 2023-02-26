@@ -1,5 +1,7 @@
 package com.teambj.stackoverflow.domain.question.dto;
 
+import com.teambj.stackoverflow.domain.question.entity.QuestionTag;
+import com.teambj.stackoverflow.domain.user.entity.User;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
@@ -8,9 +10,10 @@ import java.math.BigInteger;
 import java.util.List;
 
 @Getter
+@AllArgsConstructor
 public class QuestionPostDto {
-    @NotNull
-    private Long userId;
+//    @NotNull
+//    private Long userId;
 
     private String title;
 

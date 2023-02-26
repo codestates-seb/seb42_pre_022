@@ -1,10 +1,7 @@
 package com.teambj.stackoverflow.domain.tag.entity;
 
 import com.teambj.stackoverflow.domain.question.entity.QuestionTag;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,9 +19,10 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tagId;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String tagName;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
     private List<QuestionTag> questionTags = new ArrayList<>();
 
