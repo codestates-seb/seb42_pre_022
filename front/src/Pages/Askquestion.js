@@ -239,8 +239,10 @@ function Askquestion() {
       };
     } else {
       if (window.confirm("Are you sure you want to post this question?")) {
+        const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+        // TODO: tags 보내도 되는지 물어보기
         const req = {
-          "userId": "",
+          "userId": userInfo.userId,
           "title": state.titleValue,
           "body": state.questionValue,
           "tags": state.tags
