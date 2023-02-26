@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 // 이렇게 설정하면 tag빼고는 보존이 가능
 let initialState = {
-  titleValue: JSON.parse(localStorage.getItem("titleValue")),
-  questionValue: JSON.parse(localStorage.getItem("questionValue")),
+  titleValue: JSON.parse(localStorage.getItem("titleValue")) === null ? "" : JSON.parse(localStorage.getItem("titleValue")),
+  questionValue: JSON.parse(localStorage.getItem("questionValue")) === null ? "" : JSON.parse(localStorage.getItem("questionValue")),
   tags: [],
 };
 
