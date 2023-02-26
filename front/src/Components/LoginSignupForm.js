@@ -160,7 +160,7 @@ function LoginSignupForm() {
         dispatch(loginActions.setUserInfo(userInfo))
         // 이렇게 하면 상태에 저장할 수 있지만, 임의로 새로고침이 이루어질 경우 userInfo가 날아갈 수 있음
         // localStorage에 userInfo를 저장하고 꺼내쓰는 방법이 있음
-        dispatch(loginActions.changeLogin())
+        dispatch(loginActions.changeLogin(true))
       })
       .then (res => {
       const data = "";

@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import { useDispatch } from 'react-redux';
+import { Routes, Route, useLocation } from "react-router-dom";
 import GlobalStyle from "./Styles/GlobalStyle";
 import Questions from "./Pages/Questions";
 import Header from "./Components/Header";
@@ -6,23 +9,28 @@ import Nav from "./Components/Nav";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import Askquestion from "./Pages/Askquestion";
-import { Routes, Route, useLocation } from "react-router-dom";
 import Question from "./Pages/Question";
 import Users from "./Pages/Users";
 import EditPost from "./Pages/EditPost";
 import Mypage from "./Pages/Mypage";
+import { loginActions } from "./Reducers/loginReducer";
 
 function App() {
-
   const { pathname } = useLocation();
-  // console.log(pathname);
+  const dispatch = useDispatch()
 
+  useEffect(() => {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"))
+    if (userInfo) {
+      dispatch(loginActions.changeLogin(true))
+      dispatch(loginActions.setUserInfo(userInfo))
+    }
+  }, [])
   return (
     <div className="app-wrap">
       <GlobalStyle />
       <Header />
       <div className="wrap">
-        {/* {(String(window.location.href).slice(21) === "/") ? <Nav /> : null} */}
         <div className="container">
         {(pathname === "/users/login" || pathname === "/users/signup" || pathname === "/askquestion") ? null : <Nav />}
           <Routes>

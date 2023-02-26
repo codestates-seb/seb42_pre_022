@@ -6,7 +6,7 @@ const loginSlice = createSlice({
   initialState,
   reducers: {
     changeLogin: (state, action) => {
-      state.login = !state.login
+      state.login = action.payload;
     },
     setUserInfo: (state, action) => {
       state.userInfo = action.payload;
