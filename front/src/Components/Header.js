@@ -154,7 +154,7 @@ const MenubarLi = styled(HeadIconTabLi)`
 const HeadTextTabUl = styled.ul`
   padding: 2px 0;
   li:not(:nth-child(2)) {
-    display: ${props => props.login.login ? "none" : "block"};
+    display: ${props => props.login ? "none" : "block"};
     @media only screen and (max-width: 980px) {
       display: none;
     }
@@ -188,10 +188,9 @@ const IconButtonUl = styled.ul`
 
 
 function Header() {
-  const state = useSelector(state => state.loginReducer);
+  const {login, userInfo} = useSelector(state => state.loginReducer);
   const dispatch = useDispatch();
   const [menu, setMenu] = useState(false)
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
   let { pathname } = useLocation();
 
@@ -200,9 +199,8 @@ function Header() {
       // 로그아웃 버튼 -> accessToken, userInfo 비우기, login 상태 바꾸기
       localStorage.removeItem("accessToken");
       localStorage.removeItem("userInfo");
-      const userInfo = {};
-      dispatch(loginActions.setUserInfo(userInfo));
-      dispatch(loginActions.changeLogin());
+      dispatch(loginActions.setUserInfo({}));
+      dispatch(loginActions.changeLogin(false));
       window.location.reload();
     }
 
@@ -211,8 +209,7 @@ function Header() {
   const openMenu = () => {
     setMenu(!menu)
   }
-  const loginButton = state.login ? "Log out" : "Log in"
-  const loginTabList = [(<><img src={state.login ? userInfo.profileImage : null} alt="profile-icon" /><span>1</span></>), <InboxIcon />, <AchiveIcon />, <HelpIcon />, <ExchangeIcon />]
+  const loginTabList = [(<><img src={login ? userInfo.profileImage : null} alt="profile-icon" /><span>1</span></>), <InboxIcon />, <AchiveIcon />, <HelpIcon />, <ExchangeIcon />]
 
   return (
     <Containerheader>
@@ -222,7 +219,7 @@ function Header() {
           {menu ? <li className="nav"><Nav /></li> : null}
           <HeadIconTabLi><Link to="/"><HeadLogoI url={logo} /></Link></HeadIconTabLi>
         </MenuLogoUl>
-        <HeadTextTabUl login={state}>
+        <HeadTextTabUl login={login ? 1 : null}>
           <HeadTextTabLi>About</HeadTextTabLi>
           <HeadTextTabLi>Products</HeadTextTabLi>
           <HeadTextTabLi>For Teams</HeadTextTabLi>
@@ -230,9 +227,9 @@ function Header() {
         <SearchBar placeholder="Search..." />
         <IconButtonUl>
           <HeadIconTabLi><SearchIcon /></HeadIconTabLi>
-          {state.login && loginTabList.map((el, i) => <HeadIconTabLi key={i}>{el}</HeadIconTabLi>)}
-          <li><BasicBlueButton skyblue={1} to={state.login ? "/" : "/users/login"} onClick={state.login ? logoutHandler : null}>{loginButton}</BasicBlueButton></li>
-          {!state.login && <li><BasicBlueButton to="/users/signup">Sign up</BasicBlueButton></li>}
+          {login && loginTabList.map((el, i) => <HeadIconTabLi key={i}>{el}</HeadIconTabLi>)}
+          <li><BasicBlueButton skyblue={1} to={login ? "/" : "/users/login"} onClick={login ? logoutHandler : null}>{login ? "Log out" : "Log in"}</BasicBlueButton></li>
+          {!login && <li><BasicBlueButton to="/users/signup">Sign up</BasicBlueButton></li>}
         </IconButtonUl>
       </div>
     </Containerheader>

@@ -117,11 +117,13 @@ const QAbodydiv = styled.div`
 `
 
 function QandAPost({ question, answer, qwriter }) {
-  const { login } = useSelector(state => state.loginReducer);
+  const { userInfo } = useSelector(state => state.loginReducer);
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const post = answer ? answer : question
   const id = answer ? answer.answerId : question.questionId
+  const userId = answer ? answer.user.userId : question.userId
+  const displayName = answer ? answer.user.displayName : question.displayName
 
   const saveAnswerToEdit = () => {
     dispatch(editPostActions.changeNowA(answer))
@@ -159,9 +161,9 @@ function QandAPost({ question, answer, qwriter }) {
         <WriterRelatedDiv>
           <div className="qapost">
             <a>Share</a>
-            {login ? <Link onClick={answer ? saveAnswerToEdit : null} to={`/${answer ? "answers" : "questions"}/${id}/edit`}>Edit</Link> : null}
+            {userInfo.userId === userId ? <Link onClick={answer ? saveAnswerToEdit : null} to={`/${answer ? "answers" : "questions"}/${id}/edit`}>Edit</Link> : null}
             <a>Follow</a>
-            {login ? <a onClick={deletePost}>Delete</a> : null}
+            {userInfo.userId === userId ? <a onClick={deletePost}>Delete</a> : null}
           </div>
           {post.modifiedDate ?
             <WriterCardDiv >
@@ -169,9 +171,9 @@ function QandAPost({ question, answer, qwriter }) {
                 edited {dateTimeFormat(post.modifiedDate)}</span>
             </WriterCardDiv>
             : null}
-          <WriterCardDiv iswriter={qwriter === post.userId ? 1 : null}>
+          <WriterCardDiv iswriter={qwriter === userId ? 1 : null}>
             <div>asked {dateTimeFormat(post.createdDate)}</div>
-            <UserCard username={post.displayName} reputation={"100"} />
+            <UserCard username={displayName} reputation={"100"} />
           </WriterCardDiv>
         </WriterRelatedDiv>
       </div>
