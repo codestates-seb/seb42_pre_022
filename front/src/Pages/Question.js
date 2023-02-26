@@ -111,13 +111,15 @@ function Question() {
   const postAnswer = () => {
     postData(`/answers`, { questionId: question_id, body: createAnswer })
   }
-
   const recentModified = () => {
-    let recentDate = question.modifiedDate ? question.modifiedDate : question.createdDate
-    answers && answers.forEach(answer => {
-      const recentAnswerDate = answer.modifiedDate ? answer.modifiedDate : answer.createdDate
-      if (recentDate < recentAnswerDate) recentDate = recentAnswerDate
-    })
+    if (!question.createdDate) return;
+    let recentDate = question.modifiedDate ? new Date(question.modifiedDate) : new Date(question.createdDate)
+    if (answers) {
+      recentDate = answers.reduce((acc, answer) => {
+        const recentAnswerDate = answer.modifiedDate ? new Date(answer.modifiedDate) : new Date(answer.createdDate)
+        return recentAnswerDate > acc ? recentAnswerDate : acc
+      }, recentDate)
+    }
     return recentDate
   }
   const recentModifiedDate = recentModified()

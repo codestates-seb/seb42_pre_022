@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import axios from "axios";
 
 function useGET(url) {
   const [data, setData] = useState('');
   const [error, setError] = useState(null);
-  const { pathname } = useLocation()
-  // console.log(pathname)
 
   const getData = async () => {
     try {
@@ -16,10 +13,12 @@ function useGET(url) {
       setError(err)
     }
   }
-
+  
   useEffect(() => {
-    getData()
-  }, [pathname])
+    if (url) {
+      getData()
+    }
+  }, [url])
 
   return [data, error]
 }
