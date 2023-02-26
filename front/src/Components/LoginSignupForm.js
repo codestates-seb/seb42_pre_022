@@ -4,9 +4,11 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { SearchInput } from "./SearchBar";
 import { useSelector, useDispatch } from "react-redux";
 import { signupActions } from "../Reducers/signupReducer";
+import { loginActions } from "../Reducers/loginReducer";
 import { useState } from "react";
 import { ReactComponent as ErrorIcon } from "../assets/errorIcon.svg";
-// import useGET from "../util/useGET";
+import postData from "../util/postData";
+import axios from "axios";
 
 
 const LoginFormContainer = styled.div`
@@ -74,9 +76,9 @@ const LoginButton = styled(BasicBlueButton)`
 function LoginSignupForm() {
   const { pathname } = useLocation();
   const state = useSelector(state => state.signupReducer);
+  const loginState = useSelector(state => state.loginReducer);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const [data, error] = useGET("/users?page=1");
 
   // invalid css를 위한 상태 설정
   const [emailValid, setEmailValid] = useState(true);
@@ -84,11 +86,7 @@ function LoginSignupForm() {
   const emailTest = /^[a-zA-Z0-9]*[@]{1}[a-zA-Z0-9]+[a-zA-Z0-9]*[.]{1}[a-zA-Z]{1,3}$/;
   const passwordTest = /^[a-zA-Z]{1,}[0-9]{1,}|[0-9]{1,}[a-zA-Z]{1,}$/;
 
-  // TODO 1: Signup 버튼에 구현할 함수 만들기
-  // TODO 1-2: 유효성 검사를 통과하면 서버에 GET 요청 통해 회원정보 조회해 기존 회원에 있던 이메일인지 확인
-  // TODO 1-3: 기존 회원이 아니면 통과 -> 서버에 POST 요청
-
-  // TODO Question: display name 겹치면 안 되는가??? -> 지금은 가능
+  // TODO 1: Signup 버튼에 구현할 함수 만들기 -> 완료!
 
   // signup, login 버튼을 눌렀을 때 실행되는 함수 (유효성 검사, 서버 요청 실행)
   const signupButtonHandler = (e) => {
@@ -115,13 +113,12 @@ function LoginSignupForm() {
         "password": state.passwordValue
       }
       console.log(req);
-      // TODO: value 비우기 전에 서버에 먼저 POST 요청
+      postData("/users", req)
       const data = "";
       dispatch(signupActions.changeDisplaynameValue({ data }));
       dispatch(signupActions.changeEmailValue({ data }));
       dispatch(signupActions.changePasswordValue({ data }));
-      // TODO: 회원가입이 완료되었습니다 alert 띄우기
-      alert("Your Sign up is Completed!")
+      alert("Sign up Completed! Please check your email authentication in 10 minutes.")
       navigate("/users/login");
     }
   }
@@ -147,14 +144,33 @@ function LoginSignupForm() {
         "username": state.loginEmail,
         "password": state.loginPassword
       }
-      console.log(req);
-      //TODO: 서버에 POST로 로그인 요청
+      postData("/users/login", req)
+      .then(res => localStorage.setItem("accessToken", JSON.stringify(res.accessToken)))
+      // TODO: 응답에 따른 반응 설정
+      // TODO 1: 아이디 및 비밀번호를 확인해 주세요 -> 등록된 아이디가 아닐 때, 등록된 아이디인데 비밀번호 다를 때
+      // TODO 2: 이메일 인증을 진행해 주세요(10분 후 만료) -> 등록된 아이디, 비밀번호가 맞는데 이메일 인증 안 했을 때
+      // TODO -> alert로 경고창 띄운 후 return;적어서 다음으로 넘어가지 않게 함
+      // TODO 3: 로그인 성공 -> GET 요청으로 
+      .then(res => axios.get(`${process.env.REACT_APP_API_URL}/users/principal`, {headers: {"Authorization": JSON.parse(localStorage.getItem("accessToken"))}}))
+      // console.log(res.data.body.data)
+      .then(res => {
+        // userInfo를 상태에 저장
+        const userInfo = res.data.body.data;
+        localStorage.setItem("userInfo", JSON.stringify(userInfo));
+        dispatch(loginActions.setUserInfo(userInfo))
+        // 이렇게 하면 상태에 저장할 수 있지만, 임의로 새로고침이 이루어질 경우 userInfo가 날아갈 수 있음
+        // localStorage에 userInfo를 저장하고 꺼내쓰는 방법이 있음
+        dispatch(loginActions.changeLogin())
+      })
+      .then (res => {
       const data = "";
       dispatch(signupActions.changeLoginEmail({ data }));
       dispatch(signupActions.changeLoginPassword({ data }));
-      // navigate("/");
+      navigate("/");
+      })
     }
   }
+  // console.log(JSON.parse(localStorage.getItem("accessToken")))
 
   // input값을 상태로 관리하는 함수
   const displaynameInputHandler = (e) => {

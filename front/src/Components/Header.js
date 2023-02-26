@@ -191,24 +191,35 @@ function Header() {
   const state = useSelector(state => state.loginReducer);
   const dispatch = useDispatch();
   const [menu, setMenu] = useState(false)
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
   let { pathname } = useLocation();
 
-  const handleClick = () => {
-    dispatch(loginActions.changeLogin())
+  const logoutHandler = () => {
+    if (window.confirm("Are you sure you want to log out?")) {
+      // 로그아웃 버튼 -> accessToken, userInfo 비우기, login 상태 바꾸기
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("userInfo");
+      const userInfo = {};
+      dispatch(loginActions.setUserInfo(userInfo));
+      dispatch(loginActions.changeLogin());
+      window.location.reload();
+    }
+
+
   }
   const openMenu = () => {
     setMenu(!menu)
   }
   const loginButton = state.login ? "Log out" : "Log in"
-  const loginTabList = [(<><img src={`${process.env.PUBLIC_URL}/images/profileIcon.png`} /><span>1</span></>), <InboxIcon />, <AchiveIcon />, <HelpIcon />, <ExchangeIcon />]
+  const loginTabList = [(<><img src={state.login ? userInfo.profileImage : null} alt="profile-icon" /><span>1</span></>), <InboxIcon />, <AchiveIcon />, <HelpIcon />, <ExchangeIcon />]
 
   return (
     <Containerheader>
       <div>
         <MenuLogoUl>
-          <MenubarLi onClick={openMenu} isopen={menu ? 1 : null} nowparams={pathname && pathname.slice(-3) === "ask" ? 1 : null}><div><i/></div></MenubarLi>
-          {menu? <li className="nav"><Nav /></li> : null}
+          <MenubarLi onClick={openMenu} isopen={menu ? 1 : null} nowparams={pathname && pathname.slice(-3) === "ask" ? 1 : null}><div><i /></div></MenubarLi>
+          {menu ? <li className="nav"><Nav /></li> : null}
           <HeadIconTabLi><Link to="/"><HeadLogoI url={logo} /></Link></HeadIconTabLi>
         </MenuLogoUl>
         <HeadTextTabUl login={state}>
@@ -216,11 +227,11 @@ function Header() {
           <HeadTextTabLi>Products</HeadTextTabLi>
           <HeadTextTabLi>For Teams</HeadTextTabLi>
         </HeadTextTabUl>
-        <SearchBar placeholder="Search..."/>
+        <SearchBar placeholder="Search..." />
         <IconButtonUl>
           <HeadIconTabLi><SearchIcon /></HeadIconTabLi>
           {state.login && loginTabList.map((el, i) => <HeadIconTabLi key={i}>{el}</HeadIconTabLi>)}
-          <li><BasicBlueButton skyblue={1} to={state.login ? "/" : "/users/login"} onClick={handleClick}>{loginButton}</BasicBlueButton></li>
+          <li><BasicBlueButton skyblue={1} to={state.login ? "/" : "/users/login"} onClick={state.login ? logoutHandler : null}>{loginButton}</BasicBlueButton></li>
           {!state.login && <li><BasicBlueButton to="/users/signup">Sign up</BasicBlueButton></li>}
         </IconButtonUl>
       </div>
