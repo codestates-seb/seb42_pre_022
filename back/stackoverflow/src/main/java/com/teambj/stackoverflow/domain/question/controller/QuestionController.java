@@ -57,6 +57,7 @@ public class QuestionController {
     }
 
     @PatchMapping("/questions/{questionId}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity patchQuestion(@PathVariable("questionId") @Positive Long questionId,
                                         @Valid @RequestBody QuestionPatchDto questionPatchDto,
                                         @AuthenticationPrincipal PrincipalDetails userDetails) {
@@ -84,6 +85,7 @@ public class QuestionController {
     }
 
     @DeleteMapping("/questions/{questionId}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity deleteQuestion(@PathVariable("questionId") @Positive Long questionId) {
         questionService.deleteQuestion(questionId);
 
