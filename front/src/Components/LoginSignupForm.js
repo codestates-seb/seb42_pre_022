@@ -4,12 +4,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { SearchInput } from "./SearchBar";
 import { useSelector, useDispatch } from "react-redux";
 import { signupActions } from "../Reducers/signupReducer";
-import { loginInfoActions } from "../Reducers/loginInfoReducer";
 import { useState } from "react";
 import { ReactComponent as ErrorIcon } from "../assets/errorIcon.svg";
 import postData from "../util/postData";
-import axios from "axios";
-import getUserInfo from "../util/getUserInfo";
 
 
 const LoginFormContainer = styled.div`

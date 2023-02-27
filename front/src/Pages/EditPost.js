@@ -94,7 +94,7 @@ function EditPost() {
       editData.userId = post.userId
       editData.questionId = post.questionId
       editData.title = editTitle
-      patchData(`/${url}/${post.questionId}/edit`, editData)
+      patchData(`/${url}/${post.questionId}`, editData)
     } else {
       editData.answerId = post.answerId
       patchData(`/${url}`, editData)
