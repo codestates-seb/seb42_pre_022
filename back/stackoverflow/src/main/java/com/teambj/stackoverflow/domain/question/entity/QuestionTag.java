@@ -26,6 +26,11 @@ public class QuestionTag {
     @JoinColumn(name = "TAG_ID")
     private Tag tag;
 
+    public QuestionTag(Question question, Tag tag) {
+        addQuestion(question);
+        addTag(tag);
+    }
+
     public void  addQuestion(Question question) {
         this.question = question;
         question.addQuestionTag(this);
