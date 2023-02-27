@@ -74,7 +74,6 @@ const GlobalStyle = createGlobalStyle`
   .linktext:hover {
     color: var(--blue-500);
   }
-
   .invalid {
     border: 1px solid var(--red-400);
     input {
@@ -102,7 +101,28 @@ const GlobalStyle = createGlobalStyle`
     color: var(--red-400);
     font-size: 12px;
   }
-
+  .error {
+    color: var(--red);
+  }
+  blockquote {
+    border-left: 4px solid #ccc;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding-left: 16px;
+  }
+  pre {
+    background-color: var(--highlight-bg);
+    border-radius: 5px;
+    color: var(--highlight-color);
+    font-family: var(--ff-mono);
+    font-size: 13px;
+    line-height: 1.3;
+    margin: 0;
+    overflow: auto;
+    padding: 12px;
+    margin-bottom: 1.5em;
+  }
+  
   :root {
     /* color */
     --white: hsl(0,0%,100%);

@@ -11,6 +11,7 @@ import WriteBoard from "../Components/WriteBoard";
 import LoginWith from "../Components/LoginWith";
 import useGET from "../util/useGET";
 import postData from "../util/postData";
+import dateTimeFormat from "../util/dateTimeFormat";
 
 const QuestionContainerMain = styled.main`
   display: table;
@@ -75,9 +76,6 @@ const QuestionDiv = styled.div`
       > h2 {
         font-size: 1.46rem;
       }
-      > h1 {
-        color: var(--red);
-      }
     }
     h2 {
       margin: 1rem 0 0.8rem 0;
@@ -113,21 +111,15 @@ function Question() {
   const postAnswer = () => {
     postData(`/answers`, { questionId: question_id, body: createAnswer })
   }
-  // TODO 날짜 계산기 만들기 today, yesterday, 2 days ago~ 한달, 3 months ago ... */
-  const calculateDate = (date) => {
-    const today = new Date()
-    // const day = today.getDate() - date.getDate()
-    // const month = today.getMonth() - date.getMonth()
-    // const year = today.getFullYear() - date.getFullYear()
-    return date
-  }
-  // TODO Modified 가장 최근 질문 수정 혹은 답변 작성일
   const recentModified = () => {
-    let recentDate = question.modifiedDate ? question.modifiedDate : question.createdDate
-    answers && answers.forEach(answer => {
-      const recentAnswerDate = answer.modifiedDate ? answer.modifiedDate : answer.createdDate
-      if (recentDate < recentAnswerDate) recentDate = recentAnswerDate
-    })
+    if (!question.createdDate) return;
+    let recentDate = question.modifiedDate ? new Date(question.modifiedDate) : new Date(question.createdDate)
+    if (answers) {
+      recentDate = answers.reduce((acc, answer) => {
+        const recentAnswerDate = answer.modifiedDate ? new Date(answer.modifiedDate) : new Date(answer.createdDate)
+        return recentAnswerDate > acc ? recentAnswerDate : acc
+      }, recentDate)
+    }
     return recentDate
   }
   const recentModifiedDate = recentModified()
@@ -138,7 +130,7 @@ function Question() {
 
   return (
     <div className="content">
-      {Qerror && <div>Question ERROR</div>}
+      {Qerror && <h1 className="error">Question ERROR</h1>}
       {question &&
         <QuestionContainerMain >
           <div>
@@ -148,10 +140,11 @@ function Question() {
           <div>
             <QuestionDetailDiv>
               <span>Asked</span>
-              <span>{calculateDate(question.createdDate)}</span></QuestionDetailDiv>
+              <span>{dateTimeFormat(question.createdDate, true)}</span>
+            </QuestionDetailDiv>
             <QuestionDetailDiv>
               <span>Modified</span>
-              <span>{calculateDate(recentModifiedDate)}</span>
+              <span>{dateTimeFormat(recentModifiedDate, true)}</span>
             </QuestionDetailDiv>
             <QuestionDetailDiv><span>Viewed</span><span>{question.viewCount} times</span></QuestionDetailDiv>
           </div>
@@ -163,7 +156,7 @@ function Question() {
               <div>
                 {answerUrl ?
                   Aerror ?
-                    <h1>Answer ERROR</h1>
+                    <h1 className="error">Answer ERROR</h1>
                     : (
                       <h2>{answers.length} Answers</h2>,
                       answers.map(answer => <QandAPost key={answer.answerId} answer={answer} />)

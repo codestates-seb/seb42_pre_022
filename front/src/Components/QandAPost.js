@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { sanitize } from 'dompurify'
 import { editPostActions } from "../Reducers/editPostReducer";
 import { ReactComponent as UpVoteIcon } from "../assets/upVoteIcon.svg";
 import { ReactComponent as DownVoteIcon } from "../assets/downVoteIcon.svg";
@@ -10,6 +11,7 @@ import UserCard from "./UserCard";
 import CommentsDiv from "./CommentsDiv";
 import TagsDiv from "./TagsDiv";
 import deleteData from "../util/deleteData";
+import dateTimeFormat from "../util/dateTimeFormat";
 
 const QAWrapDiv = styled.div`
   display: grid;
@@ -112,26 +114,16 @@ const QAbodydiv = styled.div`
   > p {
     margin-bottom: 1.1em;;
   }
-  > pre {
-    background-color: var(--highlight-bg);
-    border-radius: 5px;
-    color: var(--highlight-color);
-    font-family: var(--ff-mono);
-    font-size: 13px;
-    line-height: 1.3;
-    margin: 0;
-    overflow: auto;
-    padding: 12px;
-    margin-bottom: 1.5em;
-  }
 `
 
 function QandAPost({ question, answer, qwriter }) {
-  const { login } = useSelector(state => state.loginReducer);
+  const { userInfo } = useSelector(state => state.loginReducer);
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const post = answer ? answer : question
   const id = answer ? answer.answerId : question.questionId
+  const userId = answer ? answer.user.userId : question.userId
+  const displayName = answer ? answer.user.displayName : question.displayName
 
   const saveAnswerToEdit = () => {
     dispatch(editPostActions.changeNowA(answer))
@@ -164,24 +156,24 @@ function QandAPost({ question, answer, qwriter }) {
         </VoteContainerDiv>
       </div>
       <div>
-        <QAbodydiv dangerouslySetInnerHTML={{ __html: post.body }} />
+        <QAbodydiv dangerouslySetInnerHTML={{ __html: sanitize(post.body) }} />
         <TagsDiv />
         <WriterRelatedDiv>
           <div className="qapost">
             <a>Share</a>
-            {login ? <Link onClick={answer ? saveAnswerToEdit : null} to={`/${answer ? "answers" : "questions"}/${id}/edit`}>Edit</Link> : null}
+            {userInfo.userId === userId ? <Link onClick={answer ? saveAnswerToEdit : null} to={`/${answer ? "answers" : "questions"}/${id}/edit`}>Edit</Link> : null}
             <a>Follow</a>
-            {login ? <a onClick={deletePost}>Delete</a> : null}
+            {userInfo.userId === userId ? <a onClick={deletePost}>Delete</a> : null}
           </div>
           {post.modifiedDate ?
             <WriterCardDiv >
               <span className="linktext">
-                edited {post.modifiedDate}Feb 13 at 6:24</span>
+                edited {dateTimeFormat(post.modifiedDate)}</span>
             </WriterCardDiv>
             : null}
-          <WriterCardDiv iswriter={qwriter === post.userId ? 1 : null}>
-            <div>asked {post.createdDate}Feb 10 at 18:04</div>
-            <UserCard username={post.displayName} reputation={"100"} />
+          <WriterCardDiv iswriter={qwriter === userId ? 1 : null}>
+            <div>asked {dateTimeFormat(post.createdDate)}</div>
+            <UserCard username={displayName} reputation={"100"} />
           </WriterCardDiv>
         </WriterRelatedDiv>
       </div>

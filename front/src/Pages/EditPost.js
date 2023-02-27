@@ -7,9 +7,10 @@ import { SearchInput } from "../Components/SearchBar";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { BasicBlueButton } from "../Styles/Buttons";
 import patchData from "../util/patchData";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { editPostActions } from "../Reducers/editPostReducer";
+import { sanitize } from 'dompurify'
 
 const EditContainerMain = styled.main`
   width: 100%;
@@ -74,14 +75,15 @@ const EditPostDiv = styled.div`
   }
 `
 function EditPost() {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
   const { pathname } = useLocation()
   const isAnswer = pathname.includes("answers")
   const { editPost } = useSelector(state => state.editPostReducer);
   const { nowQ: question, nowA: answer } = editPost
-  const [editTitle, setEditTitle] = useState('')
-  const [editBody, setEditBody] = useState('')
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const post = isAnswer ? answer : question
+  const [editTitle, setEditTitle] = useState(post?.title)
+  const [editBody, setEditBody] = useState(post?.body)
 
   const patchPost = () => {
     const url = isAnswer ? "answers" : "questions"
@@ -89,57 +91,52 @@ function EditPost() {
       body: editBody
     }
     if (!isAnswer) {
-      editData.userId = question.userId
-      editData.questionId = question.questionId
+      editData.userId = post.userId
+      editData.questionId = post.questionId
       editData.title = editTitle
-      // TODO 서버 연결 후 path 수정 /questions/1/edit
-      patchData(`/${url}/${question.questionId}`, editData)
+      patchData(`/${url}/${post.questionId}/edit`, editData)
     } else {
-      editData.answerId = answer.answerId
+      editData.answerId = post.answerId
       patchData(`/${url}`, editData)
     }
     dispatch(editPostActions.deleteNowQA())
   }
 
-  useEffect(() => {
-    if (!isAnswer) {
-      setEditTitle(question.title)
-      setEditBody(question.body)
-    } else {
-      setEditBody(answer.body)
-    }
-  }, [editPost])
-
   return (
     <div className="content">
-      <EditContainerMain>
-        <EditPostDiv>
-          {isAnswer ?
-            <div className="hardQuestion">
-              <h2><a onClick={() => navigate(-1)} className="linktext">{question.title}</a></h2>
-              <div dangerouslySetInnerHTML={{ __html: question.body }}></div>
+      {!question && !answer ? <h1 className="error">Page Not Found</h1>
+        :
+        <EditContainerMain>
+          <EditPostDiv>
+            {isAnswer ?
+              <div className="hardQuestion">
+                <h2><a onClick={() => navigate(-1)} className="linktext">{question.title}</a></h2>
+                <div dangerouslySetInnerHTML={{ __html: sanitize(question.body) }}></div>
+              </div>
+              : <div>
+                <label htmlFor="title">Title</label>
+                <SearchInput id="title" defaultValue={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
+              </div>}
+            <div>
+              <label htmlFor="body">Body</label>
+              <WriteBoard id="body" postBody={editBody} inputHandler={(p) => setEditBody(p)} />
+              <div dangerouslySetInnerHTML={{ __html: sanitize(editBody) }} />
             </div>
-            : <div>
-              <label htmlFor="title">Title</label>
-              <SearchInput id="title" defaultValue={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
-            </div>}
-          <div>
-            <label htmlFor="body">Body</label>
-            <WriteBoard id="body" postBody={editBody} inputHandler={(p) => setEditBody(p)} />
-            <div dangerouslySetInnerHTML={{ __html: editBody }} />
-          </div>
-          <div>
-            <label>Tags</label>
-            <TagsDiv />
-          </div>
-          <div className="submit">
-            <BasicBlueButton onClick={patchPost} to={`/questions/${question.questionId}`}>Save edits</BasicBlueButton>
-            <Link className="linktext" onClick={() => navigate(-1)}>Cancel</Link>
-          </div>
-          <CommentsDiv />
-        </EditPostDiv>
-        <Aside />
-      </EditContainerMain>
+            <div>
+              <label>Tags</label>
+              <TagsDiv />
+            </div>
+            <div className="submit">
+              <BasicBlueButton onClick={patchPost} to={`/questions/${question.questionId}`}>Save edits</BasicBlueButton>
+              <Link className="linktext" onClick={() => navigate(-1)}>Cancel</Link>
+            </div>
+            {post.comments?.length ?
+              <CommentsDiv comments={post.comments} questionId={isAnswer ? null : post.questionId} answerId={isAnswer ? post.answerId : null} />
+              : null}
+          </EditPostDiv>
+          <Aside />
+        </EditContainerMain>
+      }
     </div>
   )
 }
