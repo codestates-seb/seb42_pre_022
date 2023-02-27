@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import TagEditor from "./TagEditor";
 import { BasicBlueButton } from "../Styles/Buttons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { customfilter } from "../Reducers/filterquestionReducer";
+import { customfilter, filteringBy} from "../Reducers/filterquestionReducer";
+import { selectPage } from "../Reducers/paginationReducer";
 
 const FilterForm = styled.form`
   z-index: 30;
@@ -144,20 +145,35 @@ const FilterCancelBtn = styled.button`
 function ExpandableFilterform({isFilterOpen}) {
   const filter = useSelector((state)=> state.filter);
   const dispatch = useDispatch();
-  const [customOption, setCustomOption] = useState(filter)
+  const [customOption, setCustomOption] = useState({...filter})
+  const [tags, setTags] = useState(["javascript"])
   const setOptionHandler = (e) => {
-    let key= e.target.value
-    console.log(key)
-    console.log(e.target.name)
-    key !== 'tag' && setCustomOption({...customOption, key: e.target.checked})
+    let key = e.target.value
+    let changedOption = customOption
+    switch(key) {
+      case "newest" :
+        changedOption.highestscore=false;
+        changedOption[key]=e.target.checked;
+      break;
+      case "highestscore" :
+        changedOption.newest=false;
+        changedOption[key]=e.target.checked;       
+      break;  
+      default:
+        changedOption[key]=e.target.checked
+    }
+    // if(key === "newest" || "highestscore"){
+    //   changedOption.newest=false
+    //   changedOption.hignestscore=false
+    //   changedOption[key]=e.target.checked
+    // }
+    // changedOption[key]= e.target.checked
+    key !== 'tags' && setCustomOption(changedOption)
   }
   const applyFilterHandler = () => {
     dispatch(customfilter(customOption))
+    dispatch(selectPage(1))
   }
-  useEffect (()=>{
-    console.log(customOption)
-  },[customOption])
-
   return (
     <FilterForm>
       <div className={isFilterOpen ?"filter-open" :"filter-close"}>
@@ -167,22 +183,22 @@ function ExpandableFilterform({isFilterOpen}) {
               <div>
                 <fieldset>
                   <legend>Filter by</legend>
-                  <div><Checkbox><div><input type="checkbox" id="unanswered" value="unanswered" onChange={setOptionHandler} defaultChecked={filter.unanswered} /></div><label for="unanswered">No answers</label></Checkbox></div>
+                  <div><Checkbox><div><input type="checkbox" id="unanswered" value="unanswered" onClick={setOptionHandler} defaultChecked={filter.unanswered} /></div><label htmlFor="unanswered">No answers</label></Checkbox></div>
                 </fieldset>
               </div>
               <div>
                 <fieldset>
                   <legend>Sorted by</legend>
-                  <div><Checkbox><div><input type="radio" name="sort" id="newest" value="newest" onChange={setOptionHandler} defaultChecked={filter.newest}/></div><label for="newest">Newest</label></Checkbox></div>
-                  <div><Checkbox><div><input type="radio" name="sort" id="highestscore" value="highestscore" onChange={setOptionHandler} defaultChecked={filter.hignestscore}/></div><label for="highestscore">Highest score</label></Checkbox></div>
+                  <div><Checkbox><div><input type="radio" name="sort" id="newest" value="newest" onClick={setOptionHandler} defaultChecked={filter.newest}/></div><label htmlFor="newest">Newest</label></Checkbox></div>
+                  <div><Checkbox><div><input type="radio" name="sort" id="highestscore" value="highestscore" onClick={setOptionHandler} defaultChecked={filter.hignestscore}/></div><label htmlFor="highestscore">Highest score</label></Checkbox></div>
                 </fieldset>
               </div>
               <div>
                 <fieldset>
                   <legend>Tagged with</legend>
-                  <div><Checkbox><div><input type="radio" name="tag" id="thefollowingtags" value="tag" onChange={setOptionHandler} defaultChecked={Object.keys(filter.tag).length}/></div><label for="thefollowingtags">The following tags</label></Checkbox></div>
+                  <div><Checkbox><div><input type="checkbox" name="tags" id="thefollowingtags" value="tags" onClick={setOptionHandler} defaultChecked={!!Object.keys(filter.tags).length}/></div><label htmlFor="thefollowingtags">The following tags</label></Checkbox></div>
                 </fieldset>
-                <TagEditor />
+                <TagEditor tags={tags} setTags={setTags} />
               </div>
             </Forms>
           </div>
