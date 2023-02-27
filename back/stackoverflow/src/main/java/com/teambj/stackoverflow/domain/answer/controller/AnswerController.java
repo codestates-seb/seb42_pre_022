@@ -16,6 +16,7 @@ import com.teambj.stackoverflow.utils.UriUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.net.URI;
+import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,7 +33,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @RequestMapping("/answers")
 public class AnswerController {
-    public static final String DEFAULT_URI = "/answer";
+    public static final String DEFAULT_URI = "/answers";
 
     private final UserService userService;
     private final QuestionService questionService;
@@ -58,6 +60,14 @@ public class AnswerController {
         return ResponseEntity.created(uri).body(ApiResponse.created());
     }
 
+    @GetMapping("{answer-id}")
+    public ResponseEntity<?> getAnswer(@PathVariable("answer-id") Long answerId) {
+        Answer answer = answerService.findAnswer(answerId);
+        AnswerDto.Response response = answerMapper.answerToAnswerResponseDto(answer);
+
+        return ResponseEntity.ok().body(ApiResponse.ok("data", response));
+    }
+
     @GetMapping
     public ResponseEntity<?> getAnswers(@Positive @RequestParam Long questionId) {
         List<Answer> answers = answerService.findAnswers(questionId);
@@ -73,6 +83,7 @@ public class AnswerController {
         @AuthenticationPrincipal PrincipalDetails userDetails
     ) {
         Answer findAnswer = answerService.findAnswer(answerDto.getAnswerId());
+
         if (!Objects.equals(findAnswer.getUser().getUserId(), userDetails.getUserId()))
             throw new RuntimeException("수정 권한이 없습니다.");
 

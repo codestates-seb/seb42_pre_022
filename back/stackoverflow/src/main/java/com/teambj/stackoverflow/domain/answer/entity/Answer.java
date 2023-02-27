@@ -4,6 +4,7 @@ import com.teambj.stackoverflow.audit.Auditable;
 import com.teambj.stackoverflow.domain.comment.entity.Comment;
 import com.teambj.stackoverflow.domain.question.entity.Question;
 import com.teambj.stackoverflow.domain.user.entity.User;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Answer extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
