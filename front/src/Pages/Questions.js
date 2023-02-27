@@ -10,8 +10,9 @@ import useGET from "../util/useGET";
 import axios from "axios";
 import PaginationLeft from "../Components/PaginationLeft";
 import PaginationRight from "../Components/PaginationRight";
-import { filteringposts } from "../util/filteringposts";
-import { setTotalposts } from "../Reducers/paginationReducer";
+import { allquestions, filteringposts, sortingposts } from "../util/filteringposts";
+import { selectPage, setTotalposts } from "../Reducers/paginationReducer";
+import { Link } from "react-router-dom";
 
 
 const QuestionsContainer = styled.div`
@@ -182,35 +183,25 @@ function Questions() {
   }
   const filteringHandler = (keyword) => {
     dispatch(filteringBy(keyword))
+    dispatch(selectPage(1))
   }
 
-  const [posts, error] = useGET('/questions')
-  const [filteredposts, setFilteredposts] = useState(allquestions);
-  const getData = async () => {
-    try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}${url}`)
-      setData(response.data.body.data)
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
+  const [filterNsortedposts, setFilterNsortedposts] = useState([]);
+  // const [posts, error] = useGET('/questions')
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}${url}`)
-      .then((allquestions)=>{
-
-
-      })
-    setFilteredposts(filteringposts(data,filter))
-    dispatch(setTotalposts(data.length))
-  }, []);
-  // const filteredposts = useMemo(
-  //   () => filteringposts(data, filter),
-  //   [filter]
-  // );
+    let filtered = filteringposts(allquestions,filter)
+    console.log(filtered)
+    let sorted = sortingposts(filtered,filter)
+    console.log(sorted)
+    setFilterNsortedposts(sorted)
+    // 왜 filtered 말고 상태 불러오면 0이지..
+    dispatch(setTotalposts(filtered.length))
+    setFilterOpen(false)
+    console.log("렌더링중")
+      },[filter])
   const start=(pages.currentpage-1)*pages.pagesize
   const end=start+pages.pagesize
-  const onepage = filteredposts.slice(start, end)
+  const onepage = filterNsortedposts.slice(start, end)
   return (
     <div className="content">
       <QuestionsContainer>
@@ -218,7 +209,7 @@ function Questions() {
           <PageHeader>
             <h1>All Questions</h1>
             <div>
-              <BasicBlueButton>Ask Questions</BasicBlueButton>
+              <BasicBlueButton to="/askquestion">Ask Questions</BasicBlueButton>
             </div>
           </PageHeader>
           <div>
@@ -239,11 +230,10 @@ function Questions() {
                 </DataControllerBox>
               </div>
             </QuestionsH2>
-            <ExpandableFilterform isFilterOpen={isFilterOpen} filter={filter} dispatch={dispatch}/> 
+            <ExpandableFilterform isFilterOpen={isFilterOpen} filter={filter}/> 
           </div>
           <QuestionsContent>
-          {/* fetch전에도 랜더링 되게 하는게 맞을까 초기값 null 로두고 랜더링 안되게하는게 좋을까... */}
-            {onepage.map(ele=>{
+            {!!onepage && onepage.map(ele=>{
               return <QuestionsList key={ele.questionId} title={ele.title} body={ele.body} createdAt={ele.createdAt} viewCount={ele.viewCount} answerCount={ele.answerCount}/>
             })}
           </QuestionsContent>
