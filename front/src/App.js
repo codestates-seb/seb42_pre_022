@@ -13,22 +13,25 @@ import Question from "./Pages/Question";
 import Users from "./Pages/Users";
 import EditPost from "./Pages/EditPost";
 import Mypage from "./Pages/Mypage";
-import { loginInfoActions } from "./Reducers/loginInfoReducer";
 import HelmetTitle from "./Components/HelmetTitle";
+import { loginInfoActions } from "./Reducers/loginInfoReducer";
+import getUserInfo from "./util/getUserInfo";
 
 function App() {
   const { pathname } = useLocation();
   const dispatch = useDispatch()
 
   useEffect(() => {
-    const accessToken = sessionStorage.getItem("accessToken")
+    const accessToken = JSON.parse(sessionStorage.getItem("accessToken"))
     if (accessToken) {
-      const actions = {
-        login: true,
-        userInfo: JSON.parse(sessionStorage.getItem("userInfo"))
-      }
-      dispatch(loginInfoActions.saveAccessToken(accessToken))
-      dispatch(loginInfoActions.changeLoginInfo(actions))
+      getUserInfo(accessToken)
+      .then(userInfo => {
+        const actions = {
+          login: true,
+          userInfo
+        }
+        dispatch(loginInfoActions.changeLoginInfo(actions))
+      })
     }
   }, [])
   return (

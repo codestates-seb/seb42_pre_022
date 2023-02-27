@@ -9,6 +9,7 @@ import { useState } from "react";
 import { ReactComponent as ErrorIcon } from "../assets/errorIcon.svg";
 import postData from "../util/postData";
 import axios from "axios";
+import getUserInfo from "../util/getUserInfo";
 
 
 const LoginFormContainer = styled.div`
@@ -147,7 +148,6 @@ function LoginSignupForm() {
       .then(res => {
         const accessToken = res.accessToken
         sessionStorage.setItem("accessToken", JSON.stringify(accessToken))
-        dispatch(loginInfoActions.saveAccessToken(accessToken))
 
         return accessToken
       })
@@ -157,12 +157,9 @@ function LoginSignupForm() {
       // TODO -> alert로 경고창 띄운 후 return;적어서 다음으로 넘어가지 않게 함
       // TODO 3: 로그인 성공 -> GET 요청으로 
       .then(accessToken => {
-        axios.get(`${process.env.REACT_APP_API_URL}/users/principal`, {headers: {"Authorization": accessToken}})
-        .then(res => {
+        getUserInfo(accessToken)
+        .then(userInfo => {
           // userInfo를 상태에 저장
-          const userInfo = res.data.body.data;
-          sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
-
           const actions = {
             login: true,
             userInfo
