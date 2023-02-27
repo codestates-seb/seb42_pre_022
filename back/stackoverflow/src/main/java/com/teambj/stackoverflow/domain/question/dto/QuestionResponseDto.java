@@ -7,12 +7,13 @@ import com.teambj.stackoverflow.domain.tag.dto.TagResponseDto;
 import com.teambj.stackoverflow.domain.user.dto.UserDto;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@Builder
+@Setter
 public class QuestionResponseDto {
     private Long questionId;
     private UserDto.Response user;
@@ -20,9 +21,8 @@ public class QuestionResponseDto {
     private String body;
     private Long answerCount;
     private Long viewCount;
-    private List<QuestionTag> tagList;
+    private List<TagResponseDto> tagList;
     private List<CommentDto.Response> comments;
-    private List<AnswerDto.Response> answerList;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 }

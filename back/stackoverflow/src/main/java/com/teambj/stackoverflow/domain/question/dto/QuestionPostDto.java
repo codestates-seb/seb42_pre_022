@@ -20,5 +20,5 @@ public class QuestionPostDto {
     @NotBlank
     private String body;
 
-    private List<String> tagNameList;
+    private List<String> tagList;
 }
