@@ -22,10 +22,10 @@ const CardDiv = styled.div`
   }
 `
 function UserCard({ userimg, username, reputation }) {
-
+  if (userimg === undefined) userimg = `${process.env.PUBLIC_URL}/images/profileIcon.png`
   return (
     < CardDiv className="profile" >
-      <img src={`${process.env.PUBLIC_URL}/images/profileIcon.png`} alt=""/>
+      <img src={`${userimg}`} alt=""/>
       <div>
         <p className="linktext">{username}</p>
         <p className="reputation">{reputation}</p>
