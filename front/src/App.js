@@ -24,7 +24,7 @@ function App() {
   const { login } = useSelector(state => state.loginInfoReducer);
 
   useEffect(() => {
-    const accessToken = JSON.parse(sessionStorage.getItem("accessToken"))
+    const accessToken = sessionStorage.getItem("accessToken");
     if (accessToken && !login) {
       getUserInfo()
       .then(userInfo => {

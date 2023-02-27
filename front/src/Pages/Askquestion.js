@@ -6,6 +6,7 @@ import { SearchInput } from "../Components/SearchBar";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { askquestionActions } from "../Reducers/askquestionReducer";
+import { loginInfoActions } from "../Reducers/loginInfoReducer";
 import { useState } from "react";
 import { ReactComponent as ErrorIcon } from "../assets/errorIcon.svg";
 import postData from "../util/postData";
@@ -189,6 +190,7 @@ const PostDiv = styled.div`
 
 function Askquestion() {
   const state = useSelector(state => state.askquestionReducer);
+  const loginState = useSelector(state => state.loginInfoReducer);
   const navigate = useNavigate();
   // 작성 가능 상태를 제어하는 상태는 useState 활용
   const [titleDone, setTitleDone] = useState(() => {
@@ -241,7 +243,7 @@ function Askquestion() {
       };
     } else {
       if (window.confirm("Are you sure you want to post this question?")) {
-        const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+        const userInfo = loginState.userInfo;
         // TODO: tags 보내도 되는지 물어보기
         const req = {
           "userId": userInfo.userId,
@@ -263,10 +265,10 @@ function Askquestion() {
           })
         // TODO: 서버에 req 객체 담아 POST 요청 보내기
         // TODO: 200 OK 시 상태 모두 비우고 alert 질문 등록 완료 / error 시 alert 오류 발생 -> 원래 자리로 돌아오기
-        // navigate("/");
       }
     }
   }
+
 
   // 제목 관련 함수 -> 입력 값 상태 관리, 다음으로 넘어가기
   const titleInputHandler = (e) => {
