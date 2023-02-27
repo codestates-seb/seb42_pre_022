@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { customfilter, filteringBy} from "../Reducers/filterquestionReducer";
 import { selectPage } from "../Reducers/paginationReducer";
 
-const FilterForm = styled.form`
+const FilterForm = styled.div`
   z-index: 30;
   position: relative;
   align-items: flex-start;
@@ -146,33 +146,41 @@ function ExpandableFilterform({isFilterOpen}) {
   const filter = useSelector((state)=> state.filter);
   const dispatch = useDispatch();
   const [customOption, setCustomOption] = useState({...filter})
-  const [tags, setTags] = useState(["javascript"])
+  const [tags, setTags] = useState([])
+  const [tagsChecked, setTagsChecked] = useState(false)
   const setOptionHandler = (e) => {
     let key = e.target.value
     let changedOption = customOption
     switch(key) {
       case "newest" :
-        changedOption.highestscore=false;
-        changedOption[key]=e.target.checked;
+        // changedOption.highestscore=false;
+        // changedOption[key]=e.target.checked;
+        setCustomOption({...customOption,highestscore: false, newest: e.target.checked})
       break;
       case "highestscore" :
-        changedOption.newest=false;
-        changedOption[key]=e.target.checked;       
-      break;  
+        // changedOption.newest=false;
+        // changedOption[key]=e.target.checked; 
+        setCustomOption({...customOption,highestscore: e.target.checked, newest: false})      
+      break;
+      case "tags" :
+        console.log(tags)
+        if(e.target.checked){
+          setCustomOption({...customOption,tags:tags})
+        } else setCustomOption({...customOption,tags:[]})
+      break;
       default:
         changedOption[key]=e.target.checked
+        setCustomOption(changedOption)
     }
-    // if(key === "newest" || "highestscore"){
-    //   changedOption.newest=false
-    //   changedOption.hignestscore=false
-    //   changedOption[key]=e.target.checked
-    // }
-    // changedOption[key]= e.target.checked
-    key !== 'tags' && setCustomOption(changedOption)
   }
   const applyFilterHandler = () => {
+    console.log(customOption)
     dispatch(customfilter(customOption))
     dispatch(selectPage(1))
+  }
+  const checktagsHandler = (e) => {
+    setTagsChecked(!tagsChecked)
+    setOptionHandler(e)
   }
   return (
     <FilterForm>
@@ -196,9 +204,9 @@ function ExpandableFilterform({isFilterOpen}) {
               <div>
                 <fieldset>
                   <legend>Tagged with</legend>
-                  <div><Checkbox><div><input type="checkbox" name="tags" id="thefollowingtags" value="tags" onClick={setOptionHandler} defaultChecked={!!Object.keys(filter.tags).length}/></div><label htmlFor="thefollowingtags">The following tags</label></Checkbox></div>
+                  <div><Checkbox><div><input type="checkbox" name="tags" id="thefollowingtags" value="tags" onClick={checktagsHandler} checked={tagsChecked} defaultChecked={!!Object.keys(filter.tags).length}/></div><label htmlFor="thefollowingtags">The following tags</label></Checkbox></div>
                 </fieldset>
-                <TagEditor tags={tags} setTags={setTags} />
+                <TagEditor tags={tags} setTags={setTags} setTagsChecked={setTagsChecked} customOption={customOption} setCustomOption={setCustomOption}/>
               </div>
             </Forms>
           </div>
