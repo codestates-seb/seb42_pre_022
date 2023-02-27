@@ -14,16 +14,18 @@ import Users from "./Pages/Users";
 import EditPost from "./Pages/EditPost";
 import Mypage from "./Pages/Mypage";
 import HelmetTitle from "./Components/HelmetTitle";
+import { useSelector } from "react-redux";
 import { loginInfoActions } from "./Reducers/loginInfoReducer";
 import getUserInfo from "./util/getUserInfo";
 
 function App() {
   const { pathname } = useLocation();
   const dispatch = useDispatch()
+  const { login } = useSelector(state => state.loginInfoReducer);
 
   useEffect(() => {
     const accessToken = JSON.parse(sessionStorage.getItem("accessToken"))
-    if (accessToken) {
+    if (accessToken && !login) {
       getUserInfo()
       .then(userInfo => {
         const actions = {
@@ -33,11 +35,12 @@ function App() {
         dispatch(loginInfoActions.changeLoginInfo(actions))
       })
     }
-  }, [])
+  }, [pathname])
+  
   return (
     <div className="app-wrap">
       <GlobalStyle />
-      <HelmetTitle title="(작업중) Stack Overflow - Where Developers Learn, Share, & Build Careers"/>
+      <HelmetTitle title="(작업중) Stack Overflow - Where Developers Learn, Share, & Build Careers" />
       <Header />
       <div className="wrap">
         <div className="container">
