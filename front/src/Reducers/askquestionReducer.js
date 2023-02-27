@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 // 이렇게 설정하면 tag빼고는 보존이 가능
 let initialState = {
-  titleValue: JSON.parse(localStorage.getItem("titleValue")) === null ? "" : JSON.parse(localStorage.getItem("titleValue")),
-  questionValue: JSON.parse(localStorage.getItem("questionValue")) === null ? "" : JSON.parse(localStorage.getItem("questionValue")),
+  titleValue: JSON.parse(sessionStorage.getItem("titleValue")) === null ? "" : JSON.parse(sessionStorage.getItem("titleValue")),
+  questionValue: JSON.parse(sessionStorage.getItem("questionValue")) === null ? "" : JSON.parse(sessionStorage.getItem("questionValue")),
   tags: [],
 };
 
@@ -11,12 +11,12 @@ const askquestionSlice = createSlice({
   initialState,
   reducers: {
     changeTitleValue: (state, action) => {
-      localStorage.setItem("titleValue", JSON.stringify(action.payload.data));
-      state.titleValue = JSON.parse(localStorage.getItem("titleValue"));
+      sessionStorage.setItem("titleValue", JSON.stringify(action.payload.data));
+      state.titleValue = JSON.parse(sessionStorage.getItem("titleValue"));
     },
     changeQuestionValue: (state, action) => {
-      localStorage.setItem("questionValue", JSON.stringify(action.payload.data));
-      state.questionValue = JSON.parse(localStorage.getItem("questionValue"));
+      sessionStorage.setItem("questionValue", JSON.stringify(action.payload.data));
+      state.questionValue = JSON.parse(sessionStorage.getItem("questionValue"));
     },
     addTag: (state, action) => {
       const tagValue = action.payload.data;

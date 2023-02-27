@@ -1,8 +1,9 @@
 import styled from "styled-components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGithub } from "@fortawesome/free-brands-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { ReactComponent as GoogleIcon } from "../assets/googleicon.svg";
 import { useLocation } from "react-router-dom";
+import postData from "../util/postData";
 
 const LoginWithContainer = styled.div`
   margin-bottom: 16px;
@@ -37,6 +38,11 @@ const LoginWithButton = styled.button`
 
 function LoginWith() {
   const { pathname } = useLocation();
+
+  // 구글 로그인 -> POST 요청
+  // const googleHandler = () => {
+  //   postData("/oauth2/authorization/google")
+  // }
 
   return (
     <LoginWithContainer>

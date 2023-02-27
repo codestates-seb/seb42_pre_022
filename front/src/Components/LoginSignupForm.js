@@ -146,7 +146,7 @@ function LoginSignupForm() {
       postData("/users/login", req)
       .then(res => {
         const accessToken = res.accessToken
-        localStorage.setItem("accessToken", JSON.stringify(accessToken))
+        sessionStorage.setItem("accessToken", JSON.stringify(accessToken))
         dispatch(loginInfoActions.saveAccessToken(accessToken))
 
         return accessToken
@@ -161,7 +161,7 @@ function LoginSignupForm() {
         .then(res => {
           // userInfo를 상태에 저장
           const userInfo = res.data.body.data;
-          localStorage.setItem("userInfo", JSON.stringify(userInfo));
+          sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
 
           const actions = {
             login: true,
