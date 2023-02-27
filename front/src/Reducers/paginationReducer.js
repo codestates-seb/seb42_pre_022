@@ -27,14 +27,7 @@ const pageSlice = createSlice({
       state.currentpage -= 1
     },
     setTotalposts: (state, action) => {
-      console.log('전체포스트수')
-      console.log(action.payload)
       state.totalposts = action.payload
-      console.log('페이지사이즈')
-      console.log(state.pagesize)
-      console.log('전체 페이지수')
-      console.log(action.payload/state.pagesize)
-      console.log(Math.ceil(action.payload/state.pagesize))
       state.totalpage = Math.ceil(action.payload/state.pagesize)
     }
   }
