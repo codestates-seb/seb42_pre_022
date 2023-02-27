@@ -4,7 +4,7 @@ let initialState = {
   currentpage : 1,
   pagesize : 3,
   totalpage : 30,
-  totalposts: 0,
+  totalposts: 1,
 }
 
 
@@ -14,9 +14,8 @@ const pageSlice = createSlice({
   reducers : {
     selectPagesize : (state, action) => {
       state.pagesize = action.payload
-      state.totalpage = Math.floor(state.totalposts/action.payload)
+      state.totalpage = Math.ceil(state.totalposts/action.payload)
       state.currentpage = 1
-      
     },
     selectPage : (state, action) => {
       state.currentpage = action.payload
@@ -28,8 +27,15 @@ const pageSlice = createSlice({
       state.currentpage -= 1
     },
     setTotalposts: (state, action) => {
+      console.log('전체포스트수')
+      console.log(action.payload)
       state.totalposts = action.payload
-      state.totalpage = action.payload/state.pagesize
+      console.log('페이지사이즈')
+      console.log(state.pagesize)
+      console.log('전체 페이지수')
+      console.log(action.payload/state.pagesize)
+      console.log(Math.ceil(action.payload/state.pagesize))
+      state.totalpage = Math.ceil(action.payload/state.pagesize)
     }
   }
 })

@@ -71,7 +71,6 @@ function PaginationLeft () {
       }
     </Pager>
   )
-
 }
 
 export default PaginationLeft
