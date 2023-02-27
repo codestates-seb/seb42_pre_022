@@ -1,21 +1,24 @@
 package com.teambj.stackoverflow.domain.question.dto;
 
+import com.teambj.stackoverflow.domain.question.entity.QuestionTag;
+import com.teambj.stackoverflow.domain.user.entity.User;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigInteger;
+import java.util.List;
 
 @Getter
+@AllArgsConstructor
 public class QuestionPostDto {
 //    @NotNull
-    private Long userId;
+//    private Long userId;
 
-    @NotBlank
     private String title;
 
     @NotBlank
     private String body;
 
-//    태그 추가 예정
+    private List<String> tagNameList;
 }
