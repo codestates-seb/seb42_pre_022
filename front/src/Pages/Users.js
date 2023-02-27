@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import SearchBar from "../Components/SearchBar";
 import UserCard from "../Components/UserCard";
+import HelmetTitle from "../Components/HelmetTitle";
 
 const UsersContainer = styled.div`
   width: calc(100%);
@@ -90,6 +91,7 @@ const UserCardsDiv = styled.div`
 function Users() {
   return (
     <div className="content">
+      <HelmetTitle title="Users - Stack Overflow"/>
       <UsersContainer>
         <UsersH1>Users</UsersH1>
         <SearchFilterDiv>

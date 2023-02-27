@@ -117,7 +117,7 @@ const QAbodydiv = styled.div`
 `
 
 function QandAPost({ question, answer, qwriter }) {
-  const { userInfo } = useSelector(state => state.loginReducer);
+  const { userInfo } = useSelector(state => state.loginInfoReducer);
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const post = answer ? answer : question

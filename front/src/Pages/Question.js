@@ -9,6 +9,7 @@ import QandAPost from "../Components/QandAPost";
 import TagsDiv from "../Components/TagsDiv";
 import WriteBoard from "../Components/WriteBoard";
 import LoginWith from "../Components/LoginWith";
+import HelmetTitle from "../Components/HelmetTitle";
 import useGET from "../util/useGET";
 import postData from "../util/postData";
 import dateTimeFormat from "../util/dateTimeFormat";
@@ -105,7 +106,7 @@ function Question() {
   const [question, Qerror] = useGET(`/questions/${question_id}`)
   const answerUrl = question.answerCount ? `/answers?questionId=${question_id}` : null
   const [answers, Aerror] = useGET(answerUrl)
-  const { login } = useSelector(state => state.loginReducer);
+  const { login } = useSelector(state => state.loginInfoReducer);
   const [createAnswer, setCreateAnswer] = useState('')
   const dispatch = useDispatch()
   const postAnswer = () => {
@@ -130,6 +131,7 @@ function Question() {
 
   return (
     <div className="content">
+      <HelmetTitle title={`태그1 - ${question.title}`}/>
       {Qerror && <h1 className="error">Question ERROR</h1>}
       {question &&
         <QuestionContainerMain >
