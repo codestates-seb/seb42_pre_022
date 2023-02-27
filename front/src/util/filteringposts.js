@@ -94,7 +94,6 @@ export function filteringposts (posts,filter) {
         if(filtering===false){filtering = post.tags.includes(i)}
       }
     }
-    console.log(filtering)
     return filtering
   })
   return filteredposts

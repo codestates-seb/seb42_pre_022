@@ -163,7 +163,6 @@ function ExpandableFilterform({isFilterOpen}) {
         setCustomOption({...customOption,highestscore: e.target.checked, newest: false})      
       break;
       case "tags" :
-        console.log(tags)
         if(e.target.checked){
           setCustomOption({...customOption,tags:tags})
         } else setCustomOption({...customOption,tags:[]})
@@ -174,7 +173,6 @@ function ExpandableFilterform({isFilterOpen}) {
     }
   }
   const applyFilterHandler = () => {
-    console.log(customOption)
     dispatch(customfilter(customOption))
     dispatch(selectPage(1))
   }
@@ -182,6 +180,7 @@ function ExpandableFilterform({isFilterOpen}) {
     setTagsChecked(!tagsChecked)
     setOptionHandler(e)
   }
+  console.log(filter)
   return (
     <FilterForm>
       <div className={isFilterOpen ?"filter-open" :"filter-close"}>
@@ -204,7 +203,7 @@ function ExpandableFilterform({isFilterOpen}) {
               <div>
                 <fieldset>
                   <legend>Tagged with</legend>
-                  <div><Checkbox><div><input type="checkbox" name="tags" id="thefollowingtags" value="tags" onClick={checktagsHandler} checked={tagsChecked} defaultChecked={!!Object.keys(filter.tags).length}/></div><label htmlFor="thefollowingtags">The following tags</label></Checkbox></div>
+                  <div><Checkbox><div><input type="checkbox" name="tags" id="thefollowingtags" value="tags" onChange={checktagsHandler} checked={tagsChecked}/></div><label htmlFor="thefollowingtags">The following tags</label></Checkbox></div>
                 </fieldset>
                 <TagEditor tags={tags} setTags={setTags} setTagsChecked={setTagsChecked} customOption={customOption} setCustomOption={setCustomOption}/>
               </div>

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import styled from "styled-components"
 import { TagInput } from "../Pages/Askquestion"
 
@@ -6,8 +6,7 @@ const TagEditorBox = styled.div`
   width: calc((97.2307692rem/12)*2);
   position: relative;
   margin: 8px 0 0 24px;
-  display: block;
-  input{
+  /* input{
     -webkit-appearance: none;
     width: 100%;
     margin: 0;
@@ -17,11 +16,10 @@ const TagEditorBox = styled.div`
     background-color: var(--white);
     color: var(--fc-dark);
     font-size: 13px;
-  }
+  } */
 `
 const TagEditorInput = styled.div`
   padding: 2px 9.1px 2px 2px;
-  padding-left: 2px;
   box-sizing: border-box;
   margin-top: 0px;
   margin-bottom: 0px;
@@ -41,7 +39,6 @@ const TagEditorInput = styled.div`
   font-size: 13px;
   input {
     width: 19px;
-    min-width: 100%;
     padding: 0;
     padding-left: calc(0.7em - 2px) ;
     height: 29px;
@@ -52,15 +49,26 @@ const TagEditorInput = styled.div`
     background-color: transparent;
   }
   >input::placeholder{
-    color: var(--black-200)
+    color: var(--black-200);
+  }
+  >input:placeholder-shown {
+    min-width: 100%;
+  }
+  >input:focus{
+    width: auto;
+  }
+
+  :focus-within{
+    border-color: var(--blue-300);
+    box-shadow: 0 0 0 4px hsla(206, 100%, 40%, .15);
   }
 `
 const TagsinEditor = styled.span`
   list-style: none;
-  display: flex;
   align-items: center;
   margin-right: 6px;
   cursor: text;
+  white-space: normal;
   >span{
     margin: 2px;
     font-size: 12px;
@@ -107,29 +115,46 @@ const TagsinEditor = styled.span`
 
 
 function TagEditor ({tags, setTags, setTagsChecked, customOption, setCustomOption}) {
+  const [inputValue, setInputValue] = useState('')
+  const [isEditMode, setEditMode] = useState(false)
+  const inputEl= useRef(null)
+
   const removeTags = (indexToRemove) => {
     let removed = tags.filter((ele, index) => index !== indexToRemove)
     setTags(removed);
     setCustomOption({...customOption,tags:removed})
   };
   const addTags = (e) => {
-    const filtered = tags.filter((el) => el === e.target.value);
-    if (e.target.value !== '' && filtered.length === 0) {
+    const filtered = tags.filter((el) => el === inputValue);
+    if (inputValue !== "" && filtered.length === 0) {
       setTagsChecked(true)
-      setTags([...tags, e.target.value]);
-      setCustomOption({...customOption,tags:[...tags, e.target.value]})
-      e.target.value = '';
+      setTags([...tags, inputValue]);
+      setCustomOption({...customOption,tags:[...tags, inputValue]})
     } 
+    setInputValue('')
   };
-
+  const inputChangeHander = (e) => {
+    setInputValue(e.target.value)
+  }
+  const handleBlur = (e) => {
+    addTags(e)
+    setEditMode(false)
+  }
+  const handleClick = () => {
+    setEditMode(true)
+  }
+  useEffect(()=>{
+    if(isEditMode){
+      inputEl.current.focus();
+    }
+  },[isEditMode])
   return(
-
     <TagEditorBox>
-      <TagEditorInput>
+      <TagEditorInput onClick={handleClick}>
        <TagsinEditor>
          {tags.map((tag, index) => (
             <span key={index} className='tag'>
-              <span className='tag-title'>{tag}</span>
+              {tag}
               <button className='tag-close-icon' onClick={() => removeTags(index)}>
                 <svg viewBox="0 0 14 14">
                   <path d="M12 3.41L10.59 2 7 5.59 3.41 2 2 3.41 5.59 7 2 10.59 3.41 12 7 8.41 10.59 12 12 10.59 8.41 7z"/>
@@ -138,8 +163,11 @@ function TagEditor ({tags, setTags, setTagsChecked, customOption, setCustomOptio
             </span>
           ))}
         </TagsinEditor>
-        <input type="text" placeholder={ !tags.length ?"e.g. javascript or python" :null} 
-          // value={inputValue}
+        <input type="text" placeholder={!tags.length ?"e.g. javascript or python" :null}
+          value={inputValue}
+          ref={inputEl}
+          onChange={inputChangeHander}
+          onBlur={handleBlur}
           onKeyDown={(e) => {
           if (e.key === "Enter") {
             addTags(e)
@@ -149,27 +177,6 @@ function TagEditor ({tags, setTags, setTagsChecked, customOption, setCustomOptio
         <span />
       </TagEditorInput>
     </TagEditorBox>
-
-
-
-    // <TagInput>
-    //     <ul>
-    //       {tags.map((tag, index) => (
-    //         <li key={index}>
-    //           <span>{tag}
-    //             <button onClick={() => {removeTags(index)}}>&times;</button>
-    //           </span>
-    //         </li>
-    //       ))}
-    //     </ul>
-    //     <input type="text" id="tags" placeholder={ !tags.length ?"e.g. javascript or python" :null}
-    //       onKeyUp={(event) => {
-    //         if (event.key === "Enter") {
-    //           addTags(event)
-    //         }
-    //       }} 
-    //       />
-    //   </TagInput>
   )
 
 }

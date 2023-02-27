@@ -114,7 +114,7 @@ const FormInput = styled(SearchInput)`
   ::placeholder {color: var(--black-200)}
 `
 
-const TagInput = styled.div`
+export const TagInput = styled.div`
   flex: 1;
   display: flex;
   width: 100%;

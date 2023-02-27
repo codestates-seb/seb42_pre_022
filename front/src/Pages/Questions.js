@@ -218,9 +218,9 @@ function Questions() {
               <div>
                 <DataControllerBox>
                   <DataController>
-                    <DataControllerBtn onClick={()=>filteringHandler('newest')} start={1} selected={filter.newest}><div>Newest</div></DataControllerBtn>
-                    <DataControllerBtn onClick={()=>filteringHandler('unanswered')} middle="true" selected={filter.unanswered} ><div>Unanswered</div></DataControllerBtn>
-                    <DataControllerBtn end="true" >More</DataControllerBtn>
+                    <DataControllerBtn onClick={()=>filteringHandler('newest')} start={1} selected={filter.newest && !filter.unanswered}><div>Newest</div></DataControllerBtn>
+                    <DataControllerBtn onClick={()=>filteringHandler('unanswered')} middle="true" selected={filter.unanswered && !filter.newest} ><div>Unanswered</div></DataControllerBtn>
+                    <DataControllerBtn end="true" selected={filter.unanswered && filter.newest} >More</DataControllerBtn>
                   </DataController>
                   <Dropdown />
                   <FilterBtn onClick={filterOpenHandler}>
