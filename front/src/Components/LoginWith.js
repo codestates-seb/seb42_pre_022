@@ -2,8 +2,11 @@ import styled from "styled-components";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { ReactComponent as GoogleIcon } from "../assets/googleicon.svg";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import postData from "../util/postData";
+import axios from "axios";
+import { loginInfoActions } from "../Reducers/loginInfoReducer";
 
 const LoginWithContainer = styled.div`
   margin-bottom: 16px;
@@ -38,15 +41,41 @@ const LoginWithButton = styled.button`
 
 function LoginWith() {
   const { pathname } = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // 구글 로그인 -> POST 요청
-  // const googleHandler = () => {
-  //   postData("/oauth2/authorization/google")
-  // }
+  const googleHandler = (e) => {
+    e.preventDefault();
+    return window.location.assign(
+      "http://ec2-15-164-213-223.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/google"
+    );
+      // .then(res => {
+      //   const accessToken = res.accessToken;
+      //   sessionStorage.setItem("accessToken", JSON.stringify(accessToken));
+      //   dispatch(loginInfoActions.saveAccessToken(accessToken));
+      //   return accessToken
+      // })
+      // .then(accessToken => {
+      //   axios.get(`${process.env.REACT_APP_API_URL}/users/principal`, { headers: { "Authorization": accessToken } })
+      //     .then(res => {
+      //       const userInfo = res.data.body.data;
+      //       sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
+      //       const actions = {
+      //         login: true,
+      //         userInfo
+      //       }
+      //       dispatch(loginInfoActions.changeLoginInfo(actions))
+      //     })
+      //     .then(res => {
+      //       navigate("/");
+      //     })
+      // })
+  }
 
   return (
     <LoginWithContainer>
-      <LoginWithButton hover="--black-025" font="--black">
+      <LoginWithButton hover="--black-025" font="--black" onClick={googleHandler}>
         <GoogleIcon className="logo-icon" />
         {pathname === "/users/login" ? "Log in" : "Sign up"} with Google
       </LoginWithButton>
