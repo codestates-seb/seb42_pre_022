@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import { TagInput } from "../Pages/Askquestion"
 
 const TagEditorBox = styled.div`
   width: calc((97.2307692rem/12)*2);
@@ -53,16 +54,82 @@ const TagEditorInput = styled.div`
     color: var(--black-200)
   }
 `
+const TagsinEditor = styled.span`
+  list-style: none;
+  display: flex;
+  align-items: center;
+  margin-right: 6px;
+  cursor: text;
+  >span{
+    margin: 2px;
+    font-size: 12px;
+    background-color: var(--powder-100);
+    border: 1px solid transparent;
+    border-radius: var(--_ta-br);
+    color: var(--_ta-fc);
+    font-size: var(--_ta-fs);
+    line-height: var(--_ta-lh);
+    padding-left: var(--_ta-pl);
+    padding-right: var(--_ta-pr);
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    min-width: 0;
+    text-decoration: none;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+`
 
 
 
-function TagEditor () {
-
+function TagEditor ({tags, setTags}) {
+  const removeTags = (indexToRemove) => {
+    setTags(tags.filter((ele, index) => index !== indexToRemove));
+  };
+  const addTags = (e) => {
+    const filtered = tags.filter((el) => el === e.target.value);
+    if (e.target.value !== '' && filtered.length === 0) {
+      setTags([...tags, e.target.value]);
+      e.target.value = '';
+    }
+  };
 
   return(
+
     <TagEditorBox>
-     <TagEditorInput><span /><input type="text" placeholder="e.g. javascript or python" /><span /></TagEditorInput>
+
+      <TagEditorInput>
+       <TagsinEditor>
+         {/* {tags.map((tag, index) => (
+            <span key={index} className='tag'>
+              <span className='tag-title'>{tag}</span>
+              <span className='tag-close-icon' onClick={() => removeTags(index)}>&times;</span>
+            </span>
+          ))} */}
+        </TagsinEditor>
+        <input type="text" placeholder="e.g. javascript or python" />
+        <span />
+      </TagEditorInput>
+
     </TagEditorBox>
+    // <TagInput>
+    //     <ul>
+    //       {tags.map((tag, index) => (
+    //         <li key={index}>
+    //           <span>{tag}
+    //             <button onClick={() => {removeTags(index)}}>&times;</button>
+    //           </span>
+    //         </li>
+    //       ))}
+    //     </ul>
+    //     <input type="text" id="tags" placeholder={ !tags.length ?"e.g. javascript or python" :null}
+    //       onKeyUp={(event) => {
+    //         if (event.key === "Enter") {
+    //           addTags(event)
+    //         }
+    //       }} />
+    //   </TagInput>
   )
 
 }

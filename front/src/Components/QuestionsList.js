@@ -140,14 +140,7 @@ const UsercardInfo = styled.div`
 
 
 function QuestionsList({title, body, createdAt, viewCount, answerCount}) {
-  let tag = [
-    {
-      title: 'javascript'
-    },
-    {
-      title: 'angular'
-    }
-  ]
+
   const date = new Date(createdAt)
   const now = new Date()
   const changeDateFormat = new Intl.DateTimeFormat('en-US',{month: "short", day: "numeric", year:"numeric", timeZone:"Asia/Seoul"}).format(date)
