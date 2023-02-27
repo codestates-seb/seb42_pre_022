@@ -1,8 +1,14 @@
 import axios from "axios";
 
-async function getUserInfo(accessToken) {
+const config = {
+  headers: {
+    "Authorization": JSON.parse(sessionStorage.getItem("accessToken"))
+  }
+}
+
+async function getUserInfo() {
   try {
-    const response = await axios.get(`${process.env.REACT_APP_API_URL}/users/principal`, { headers: { "Authorization": accessToken } })
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/users/principal`, config)
     return response.data.body.data
   } catch (err) {
     console.log(err)

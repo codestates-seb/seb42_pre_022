@@ -24,7 +24,7 @@ function App() {
   useEffect(() => {
     const accessToken = JSON.parse(sessionStorage.getItem("accessToken"))
     if (accessToken) {
-      getUserInfo(accessToken)
+      getUserInfo()
       .then(userInfo => {
         const actions = {
           login: true,
