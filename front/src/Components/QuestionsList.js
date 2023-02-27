@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import TagsDiv from "./TagsDiv";
 import { format } from "timeago.js";
+import { Tag } from "../Styles/Divs";
 
 const QLiContainer = styled.div`
   background-color: transparent;
@@ -137,9 +138,34 @@ const UsercardInfo = styled.div`
     font-weight: 700;
   }
 `
+const TagsContainerDiv = styled.div`
+  align-items: center;
+  column-gap: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  row-gap: 8px;
+  >div:nth-child(1){
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    line-height: 18px;
+    float: left;
+  }
+  ul{
+    display: inline;
+    list-style: none;
+    margin-bottom: 1em;
+  }
+  li{
+    display: inline;
+    margin-right: 4px;
+  }
+`
 
 
-function QuestionsList({title, body, createdAt, viewCount, answerCount}) {
+
+function QuestionsList({title, body, createdAt, viewCount, answerCount, tags}) {
 
   const date = new Date(createdAt)
   const now = new Date()
@@ -163,7 +189,14 @@ function QuestionsList({title, body, createdAt, viewCount, answerCount}) {
         <h3 className="post-summary-title"><a>{title}</a></h3>
         <div className="post-summary-content">{body}</div>
         <div className="post-summary-meta">
-          <TagsDiv />
+          {/* <TagsDiv /> */}
+          <TagsContainerDiv>
+           <ul>
+            {tags.map((ele,idx) => {
+               return <li key={idx}><Tag>{ele}</Tag></li>
+             })}
+            </ul>
+          </TagsContainerDiv>
           <UsercardMinimal>
             <UsercardAvartar><div><img src="https://www.gravatar.com/avatar/4809af7fca6e64f604badf6dfaf01ae9?s=256&d=identicon&r=PG"></img></div></UsercardAvartar>
             <UsercardInfo><div className="uc-username">KUSHA B K</div><div className="uc-reputation">1,409</div></UsercardInfo>

@@ -12,7 +12,7 @@ export const allquestions= [
     "createdAt": "2023-01-03T09:48:00.000Z",
     "modifiedAt": null,
     "closedAt": null,
-    "tags": ["javascipt","angular"]
+    "tags": ["javascript","angular"]
   },
   {
       "questionId": 14343,
@@ -38,7 +38,7 @@ export const allquestions= [
   "createdAt": "2023-01-23T07:48:00.000Z",
   "modifiedAt": null,
   "closedAt": null,
-  "tags": ["javascipt"]
+  "tags": ["javascript"]
 },
 {
   "questionId": 341453,
@@ -64,7 +64,7 @@ export const allquestions= [
   "createdAt": "2023-01-24T18:48:00.000Z",
   "modifiedAt": null,
   "closedAt": null,
-  "tags": ["javascipt","angular"]
+  "tags": ["javascript","angular"]
 },
 {
   "questionId": 4324324,
@@ -77,7 +77,7 @@ export const allquestions= [
   "createdAt": "2023-02-27T14:48:00.000Z",
   "modifiedAt": null,
   "closedAt": null,
-  "tags": ["javascipt"]
+  "tags": ["javascript"]
 },
 ]
 
@@ -88,11 +88,13 @@ export function filteringposts (posts,filter) {
       filtering = post.answerCount === 0
     }
     if(!!filter.tags.length){
+      filtering = false
       for(let i of filter.tags){
         console.log(i)
-        filtering = post.tags.include(i)
+        if(filtering===false){filtering = post.tags.includes(i)}
       }
     }
+    console.log(filtering)
     return filtering
   })
   return filteredposts
