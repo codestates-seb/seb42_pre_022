@@ -73,15 +73,16 @@ public class QuestionService {
                 .stream()
                 .collect(Collectors.toList());
 
-        if (!tagName.isEmpty()) {
-            List<Tag> tagByString = tagService.createByTagName(tagName);
-            List<QuestionTag> addTags = tagByString.stream()
-                    .map(tag -> new QuestionTag(foundQuestion, tag))
-                    .collect(Collectors.toList());
-            foundQuestion.setQuestionTags(addTags);
-        }
-
-        questionTagRepository.deleteAll(questionTags);
+/* 요청으로 인해 주석 처리 */
+//        if (!tagName.isEmpty()) {
+//            List<Tag> tagByString = tagService.createByTagName(tagName);
+//            List<QuestionTag> addTags = tagByString.stream()
+//                    .map(tag -> new QuestionTag(foundQuestion, tag))
+//                    .collect(Collectors.toList());
+//            foundQuestion.setQuestionTags(addTags);
+//        }
+//
+//        questionTagRepository.deleteAll(questionTags);
 
         return foundQuestion;
     }
