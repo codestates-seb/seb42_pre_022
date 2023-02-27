@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Aside from "../Components/Aside";
 import TagsDiv from "../Components/TagsDiv";
@@ -5,13 +8,11 @@ import CommentsDiv from "../Components/CommentsDiv";
 import WriteBoard from "../Components/WriteBoard";
 import HelmetTitle from "../Components/HelmetTitle";
 import { SearchInput } from "../Components/SearchBar";
-import { useLocation, Link, useNavigate } from "react-router-dom";
 import { BasicBlueButton } from "../Styles/Buttons";
-import patchData from "../util/patchData";
-import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { editPostActions } from "../Reducers/editPostReducer";
 import { sanitize } from 'dompurify'
+import patchData from "../util/patchData";
+
 const EditContainerMain = styled.main`
   width: 100%;
   > div:nth-child(2) {
@@ -86,25 +87,28 @@ function EditPost() {
   const [editBody, setEditBody] = useState(post?.body)
 
   const patchPost = () => {
-    const url = isAnswer ? "answers" : "questions"
-    const editData = {
-      body: editBody
+    if (editBody === post.body && editTitle === post.title) alert("변경 사항이 없습니다")
+    else if (window.confirm("질문/답변을 수정합니다") === true) {
+      const url = isAnswer ? "/answers" : `/questions/${question.questionId}`
+      const editData = {
+        body: editBody
+      }
+      if (!isAnswer) {
+        editData.userId = post.userId
+        editData.questionId = post.questionId
+        editData.title = editTitle
+      } else {
+        editData.answerId = post.answerId
+      }
+      patchData(url, editData)
+      .then(() => {dispatch(editPostActions.deleteNowQA())})
+      .then(() => navigate(`/questions/${question.questionId}`)) 
     }
-    if (!isAnswer) {
-      editData.userId = post.userId
-      editData.questionId = post.questionId
-      editData.title = editTitle
-      patchData(`/${url}/${post.questionId}`, editData)
-    } else {
-      editData.answerId = post.answerId
-      patchData(`/${url}`, editData)
-    }
-    dispatch(editPostActions.deleteNowQA())
   }
 
   return (
     <div className="content">
-      <HelmetTitle title={"Edit - Stack Overflow"}/>
+      <HelmetTitle title={"Edit - Stack Overflow"} />
       {!question && !answer ? <h1 className="error">Page Not Found</h1>
         :
         <EditContainerMain>
@@ -128,7 +132,7 @@ function EditPost() {
               <TagsDiv />
             </div>
             <div className="submit">
-              <BasicBlueButton onClick={patchPost} to={`/questions/${question.questionId}`}>Save edits</BasicBlueButton>
+              <BasicBlueButton onClick={patchPost}>Save edits</BasicBlueButton>
               <Link className="linktext" onClick={() => navigate(-1)}>Cancel</Link>
             </div>
             {post.comments?.length ?

@@ -38,15 +38,18 @@ function CommentsDiv({ comments, answerId, questionId }) {
   }
   const handleWriteButton = () => {
     if (writeMode) {
-      const data = { body: writeComment }
-      if (answerId) {
-        data.answerId = answerId
-      } else {
-        data.questionId = questionId
-      }
-      postData("/comments", data)
+      if (writeComment.length === 0) alert("코멘트를 입력하세요")
+      else if (window.confirm("코멘트를 등록합니다") === true) {
+        const data = { body: writeComment }
+        if (answerId) {
+          data.answerId = answerId
+        } else {
+          data.questionId = questionId
+        }
+        postData("/comments", data)
         .then(() => setWriteMode(false))
         .then(() => window.location.reload())
+      }
     } else {
       setWriteMode(true)
     }
@@ -61,9 +64,11 @@ function CommentsDiv({ comments, answerId, questionId }) {
   }
   return (
     <CmtDiv>
-      <ul>
-        {comments.map(comment => <CommentLi key={comment.commentId} comment={comment} />)}
-      </ul>
+      {comments.length !== 0 &&
+        <ul>
+          {comments.map(comment => <CommentLi key={comment.commentId} comment={comment} />)}
+        </ul>
+      }
       {writeMode ?
         <CommentTextarea ref={textarea} onClick={handleResizeHeight} onKeyUp={handleComment} />
         : null}

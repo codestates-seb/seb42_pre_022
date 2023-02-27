@@ -171,14 +171,12 @@ function QandAPost({ question, answer, qwriter }) {
             : null}
           <WriterCardDiv iswriter={qwriter === post.user.userId ? 1 : null}>
             <div>asked {dateTimeFormat(post.createdDate)}</div>
-            <UserCard username={post.user.displayName} reputation={post.user.reputation} />
+            <UserCard username={post.user.displayName} reputation={post.user.reputation} userimg={post.user.profileImage} />
           </WriterCardDiv>
         </WriterRelatedDiv>
       </div>
       <span />
-      {post.comments?.length ?
-        <CommentsDiv comments={post.comments} questionId={answer ? null : id} answerId={answer ? id : null} />
-        : null}
+      <CommentsDiv comments={post?.comments} questionId={answer ? null : id} answerId={answer ? id : null} />
     </QAWrapDiv>
   )
 }
