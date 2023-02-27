@@ -10,7 +10,7 @@ import useGET from "../util/useGET";
 import axios from "axios";
 import PaginationLeft from "../Components/PaginationLeft";
 import PaginationRight from "../Components/PaginationRight";
-import { allquestions, filteringposts } from "../util/filteringposts";
+import { filteringposts } from "../util/filteringposts";
 import { setTotalposts } from "../Reducers/paginationReducer";
 
 
@@ -183,20 +183,24 @@ function Questions() {
   const filteringHandler = (keyword) => {
     dispatch(filteringBy(keyword))
   }
-  const [filteredposts, setFilteredposts] = useState([]);
-  // const authHandler = () => {
-  // axios
-  //   .get('http://ec2-15-164-213-223.ap-northeast-2.compute.amazonaws.com:8080/questions')
-  //   .then((res) => {
-  //     console.log(res.data.body.data)
-  //   })
-  //   .catch((err) => {
-  //     console.log(err)
-  //   });
-  // };
+
+  const [posts, error] = useGET('/questions')
+  const [filteredposts, setFilteredposts] = useState(allquestions);
+  const getData = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}${url}`)
+      setData(response.data.body.data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   useEffect(() => {
-    const data=allquestions
+    axios.get(`${process.env.REACT_APP_API_URL}${url}`)
+      .then((allquestions)=>{
+
+
+      })
     setFilteredposts(filteringposts(data,filter))
     dispatch(setTotalposts(data.length))
   }, []);

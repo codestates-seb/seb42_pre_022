@@ -15,6 +15,7 @@ const pageSlice = createSlice({
     selectPagesize : (state, action) => {
       state.pagesize = action.payload
       state.totalpage = Math.floor(state.totalposts/action.payload)
+      state.currentpage = 1
       
     },
     selectPage : (state, action) => {

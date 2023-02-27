@@ -147,16 +147,11 @@ function ExpandableFilterform({isFilterOpen}) {
   const [customOption, setCustomOption] = useState(filter)
   const setOptionHandler = (e) => {
     let key= e.target.value
-    console.log(key)
-    console.log(e.target.name)
     key !== 'tag' && setCustomOption({...customOption, key: e.target.checked})
   }
   const applyFilterHandler = () => {
     dispatch(customfilter(customOption))
   }
-  useEffect (()=>{
-    console.log(customOption)
-  },[customOption])
 
   return (
     <FilterForm>
@@ -174,7 +169,7 @@ function ExpandableFilterform({isFilterOpen}) {
                 <fieldset>
                   <legend>Sorted by</legend>
                   <div><Checkbox><div><input type="radio" name="sort" id="newest" value="newest" onChange={setOptionHandler} defaultChecked={filter.newest}/></div><label for="newest">Newest</label></Checkbox></div>
-                  <div><Checkbox><div><input type="radio" name="sort" id="highestscore" value="highestscore" onChange={setOptionHandler} defaultChecked={filter.hignestscore}/></div><label for="highestscore">Highest score</label></Checkbox></div>
+                  <div><Checkbox><div><input type="radio" name="sort" id="highestscore" value="highestscore" checked={filter.hignestscore} onChange={setOptionHandler} defaultChecked={filter.hignestscore}/></div><label for="highestscore">Highest score</label></Checkbox></div>
                 </fieldset>
               </div>
               <div>
