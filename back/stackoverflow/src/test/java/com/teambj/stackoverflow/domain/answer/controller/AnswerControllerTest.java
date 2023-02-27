@@ -21,8 +21,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.restdocs.snippet.Attributes;
-import org.springframework.restdocs.snippet.Attributes.Attribute;
+import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,12 +30,15 @@ import java.util.Map;
 
 import static com.teambj.stackoverflow.restdocs.custom.CustomRequestFieldsSnippet.customRequestFields;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AnswerController.class)
 class AnswerControllerTest extends ControllerTest {
+    private final String DEFAULT_URL = "/answers";
+
     @MockBean
     UserService userService;
 
@@ -48,8 +50,6 @@ class AnswerControllerTest extends ControllerTest {
 
     @MockBean
     AnswerMapper answerMapper;
-
-    private final String ANSWER_URI = "/answers";
 
     private Map<String, Object> userResource;
     private Answer answer;
@@ -65,9 +65,7 @@ class AnswerControllerTest extends ControllerTest {
         CommentDto.Response commentDtoResponse =
             new CommentDto.Response((UserDto.Response) userResource.get("UserDtoResponse"), 1L, "Comment body", now, now);
 
-        List<CommentDto.Response> commentList = new ArrayList<>() {{
-            add(commentDtoResponse);
-        }};
+        List<CommentDto.Response> commentList = new ArrayList<>() {{ add(commentDtoResponse); }};
 
         answer = new Answer(1L, "Answer Body", new Question(), (User) userResource.get("User"), new ArrayList<>());
         answerDtoResponse = new AnswerDto.Response((UserDto.Response) userResource.get("UserDtoResponse"), 1L, "Answer Body", now, now, commentList);
@@ -91,9 +89,23 @@ class AnswerControllerTest extends ControllerTest {
         given(answerService.createAnswer(Mockito.any(Answer.class)))
             .willReturn(answer);
 
-        postResource(ANSWER_URI, new AnswerDto.Post(1L, "Answer Body"))
+        ConstrainedFields constrainedFields = new ConstrainedFields(AnswerDto.Post.class);
+
+        postResource(DEFAULT_URL, new AnswerDto.Post(1L, "Answer Body"))
             .andExpect(status().isCreated())
-            .andExpect(header().exists("Location"));
+            .andExpect(header().exists("Location"))
+            .andDo(restDocs.document(
+                customRequestFields(
+                    "custom-request",
+                    List.of(
+                        constrainedFields.withPath("questionId").type(JsonFieldType.NUMBER).description("질문 식별자"),
+                        constrainedFields.withPath("body").type(JsonFieldType.STRING).description("답변 본문 내용")
+                    ).toArray(FieldDescriptor[]::new)
+                ),
+                responseHeaders(
+                    headerWithName("Location").description("질문 리소스 생성 위치")
+                )
+            ));
     }
 
     @Test
@@ -105,7 +117,7 @@ class AnswerControllerTest extends ControllerTest {
         given(answerMapper.answerListToAnswerResponseDtoList(answerList))
             .willReturn(answerListResponse);
 
-        getResource(ANSWER_URI + "?questionId={questionId}", 1)
+        getResource(DEFAULT_URL + "?questionId={questionId}", 1)
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.body.data[*].answerId").isNotEmpty())
             .andExpect(jsonPath("$.body.data[*].body").isNotEmpty())
@@ -113,19 +125,28 @@ class AnswerControllerTest extends ControllerTest {
                     requestParameters(
                         parameterWithName("questionId").description("질문 식별자")
                     ),
-                    relaxedResponseFields(
-                        beneathPath("body.data[]").withSubsectionId("data"),
-                        List.of(
-                            fieldWithPath("user").type(JsonFieldType.OBJECT).description("회원 데이터"),
-                            fieldWithPath("answerId").type(JsonFieldType.NUMBER).description("답변 식별자"),
-                            fieldWithPath("body").type(JsonFieldType.STRING).description("답변 내용"),
-                            fieldWithPath("createdDate").type(JsonFieldType.STRING).description("답변 내용"),
-                            fieldWithPath("modifiedDate").type(JsonFieldType.STRING).description("답변 생성 일자"),
-                            fieldWithPath("comments[]").type(JsonFieldType.ARRAY).description("답변 댓글 데이터")
-                        )
-                    )
+                    genRelaxedResponseFields("body.data[]")
                 )
             );
+    }
+
+    @Test
+    @DisplayName("[테스트] 답변 개별 조회")
+    void getAnswerTest() throws Exception {
+        given(answerService.findAnswer(Mockito.anyLong()))
+            .willReturn(answer);
+
+        given(answerMapper.answerToAnswerResponseDto(Mockito.any(Answer.class)))
+            .willReturn(answerDtoResponse);
+
+        getResource(DEFAULT_URL + "/{answer-id}", 1)
+            .andExpect(status().isOk())
+            .andDo(restDocs.document(
+                pathParameters(
+                    parameterWithName("answer-id").description("답변 식별자")
+                ),
+                genRelaxedResponseFields("body.data")
+            ));
     }
 
     @Test
@@ -146,7 +167,7 @@ class AnswerControllerTest extends ControllerTest {
 
         ConstrainedFields constrainedFields = new ConstrainedFields(AnswerDto.Patch.class);
 
-        patchResource(ANSWER_URI, new AnswerDto.Patch(1L, "Modified"))
+        patchResource(DEFAULT_URL, new AnswerDto.Patch(1L, "Modified"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.body.data.answerId").isNotEmpty())
             .andExpect(jsonPath("$.body.data.body").isNotEmpty())
@@ -158,15 +179,37 @@ class AnswerControllerTest extends ControllerTest {
                         constrainedFields.withPath("body").type(JsonFieldType.STRING).description("답변 본문 내용")
                     ).toArray(FieldDescriptor[]::new)
                 ),
-                relaxedResponseFields(
-                    beneathPath("body.data").withSubsectionId("data"),
-                    fieldWithPath("user").type(JsonFieldType.OBJECT).description("회원 데이터"),
-                    fieldWithPath("answerId").type(JsonFieldType.NUMBER).description("답변 식별자"),
-                    fieldWithPath("body").type(JsonFieldType.STRING).description("답변 본문 내용"),
-                    fieldWithPath("createdDate").type(JsonFieldType.STRING).description("답변 내용"),
-                    fieldWithPath("modifiedDate").type(JsonFieldType.STRING).description("답변 생성 일자"),
-                    fieldWithPath("comments[]").type(JsonFieldType.ARRAY).description("답변 댓글 데이터")
+                genRelaxedResponseFields("body.data")
+            ));
+    }
+
+    @Test
+    @WithMockUserCustom
+    @DisplayName("[테스트] 답변 삭제")
+    void deleteAnswerTest() throws Exception {
+        given(answerService.findAnswer(Mockito.anyLong()))
+            .willReturn(answer);
+
+        Mockito.doNothing().when(answerService).deleteAnswer(Mockito.anyLong());
+
+        deleteResource(DEFAULT_URL + "/{answer-id}", 1)
+            .andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                pathParameters(
+                    parameterWithName("answer-id").description("답변 식별자")
                 )
             ));
+    }
+
+    private ResponseFieldsSnippet genRelaxedResponseFields(String beneath) {
+        return relaxedResponseFields(
+            beneathPath(beneath).withSubsectionId("data"),
+            fieldWithPath("user").type(JsonFieldType.OBJECT).description("회원 데이터"),
+            fieldWithPath("answerId").type(JsonFieldType.NUMBER).description("답변 식별자"),
+            fieldWithPath("body").type(JsonFieldType.STRING).description("답변 본문 내용"),
+            fieldWithPath("createdDate").type(JsonFieldType.STRING).description("답변 내용"),
+            fieldWithPath("modifiedDate").type(JsonFieldType.STRING).description("답변 생성 일자"),
+            fieldWithPath("comments[]").type(JsonFieldType.ARRAY).description("답변 댓글 데이터")
+        );
     }
 }

@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 
 public class AnswerDto {
     @Getter
-    @NoArgsConstructor
     @AllArgsConstructor
     public static class Post {
         @Positive
@@ -28,7 +27,6 @@ public class AnswerDto {
     }
 
     @Getter
-    @NoArgsConstructor
     @AllArgsConstructor
     public static class Patch {
         @Positive

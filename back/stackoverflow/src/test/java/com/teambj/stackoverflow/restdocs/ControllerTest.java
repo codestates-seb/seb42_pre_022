@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.snippet.Attributes;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -55,15 +56,6 @@ public abstract class ControllerTest {
                            .build();
     }
 
-    // # defined Attribute
-    public static Attributes.Attribute defineField(final String key, final String value) {
-        return new Attributes.Attribute(key, value);
-    }
-
-    public static Attributes.Attribute defineConstraint(final String value) {
-        return new Attributes.Attribute("constraints", value);
-    }
-
     public Map<String, Object> userResource() {
         Map<String, Object> userMap = new HashMap<>();
 
@@ -83,7 +75,7 @@ public abstract class ControllerTest {
 
     protected <T> ResultActions postResource(String url, T body) throws Exception {
         return mockMvc.perform(
-            post(url)
+            RestDocumentationRequestBuilders.post(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(gson.toJson(body))
@@ -92,7 +84,7 @@ public abstract class ControllerTest {
 
     protected ResultActions getResource(String url, Object... pathVariables) throws Exception {
         return mockMvc.perform(
-            get(url, pathVariables)
+            RestDocumentationRequestBuilders.get(url, pathVariables)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
         );
@@ -100,7 +92,7 @@ public abstract class ControllerTest {
 
     protected ResultActions getResources(String url, MultiValueMap<String, String> parameters) throws Exception {
         return mockMvc.perform(
-            get(url)
+            RestDocumentationRequestBuilders.get(url)
                 .params(parameters)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -109,7 +101,7 @@ public abstract class ControllerTest {
 
     protected ResultActions patchResource(String url, Object... pathVariables) throws Exception {
         return mockMvc.perform(
-            patch(url, pathVariables)
+            RestDocumentationRequestBuilders.patch(url, pathVariables)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
         );
@@ -117,7 +109,7 @@ public abstract class ControllerTest {
 
     protected <T> ResultActions patchResource(String url, T body) throws Exception {
         return mockMvc.perform(
-            patch(url)
+            RestDocumentationRequestBuilders.patch(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(gson.toJson(body))
@@ -126,7 +118,7 @@ public abstract class ControllerTest {
 
     protected <T> ResultActions deleteResource(String url, Object... pathVariables) throws Exception {
         return mockMvc.perform(
-            delete(url, pathVariables)
+            RestDocumentationRequestBuilders.delete(url, pathVariables)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
         );

@@ -1,13 +1,11 @@
 package com.teambj.stackoverflow.domain.answer.controller;
 
 import com.teambj.stackoverflow.auth.PrincipalDetails;
-import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
 import com.teambj.stackoverflow.domain.answer.dto.AnswerDto;
 import com.teambj.stackoverflow.domain.answer.entity.Answer;
 import com.teambj.stackoverflow.domain.answer.mapper.AnswerMapper;
 import com.teambj.stackoverflow.domain.answer.service.AnswerService;
 import com.teambj.stackoverflow.domain.question.entity.Question;
-import com.teambj.stackoverflow.domain.question.mapper.QuestionMapper;
 import com.teambj.stackoverflow.domain.question.service.QuestionService;
 import com.teambj.stackoverflow.domain.user.entity.User;
 import com.teambj.stackoverflow.domain.user.service.UserService;
@@ -16,7 +14,6 @@ import com.teambj.stackoverflow.utils.UriUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.net.URI;
-import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 
