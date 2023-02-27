@@ -13,40 +13,52 @@ import Question from "./Pages/Question";
 import Users from "./Pages/Users";
 import EditPost from "./Pages/EditPost";
 import Mypage from "./Pages/Mypage";
-import { loginActions } from "./Reducers/loginReducer";
+import HelmetTitle from "./Components/HelmetTitle";
+import { useSelector } from "react-redux";
+import { loginInfoActions } from "./Reducers/loginInfoReducer";
+import getUserInfo from "./util/getUserInfo";
 
 function App() {
   const { pathname } = useLocation();
   const dispatch = useDispatch()
+  const { login } = useSelector(state => state.loginInfoReducer);
 
   useEffect(() => {
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"))
-    if (userInfo) {
-      dispatch(loginActions.changeLogin(true))
-      dispatch(loginActions.setUserInfo(userInfo))
+    const accessToken = sessionStorage.getItem("accessToken");
+    if (accessToken && !login) {
+      getUserInfo()
+      .then(userInfo => {
+        const actions = {
+          login: true,
+          userInfo
+        }
+        dispatch(loginInfoActions.changeLoginInfo(actions))
+      })
     }
-  }, [])
+  }, [pathname])
+  
   return (
     <div className="app-wrap">
       <GlobalStyle />
+      <HelmetTitle title="(작업중) Stack Overflow - Where Developers Learn, Share, & Build Careers" />
       <Header />
       <div className="wrap">
         <div className="container">
-        {(pathname === "/users/login" || pathname === "/users/signup" || pathname === "/askquestion") ? null : <Nav />}
+          {(pathname === "/users/login" || pathname === "/users/signup" || pathname === "/askquestion") ? null : <Nav />}
           <Routes>
-            <Route path="/" element={<Questions />}/>
+            <Route path="/" element={<Questions />} />
             <Route path="/questions/:question_id" element={<Question />} />
-            <Route path="/questions/:id/edit" element={<EditPost />}/>
-            <Route path="/answers/:id/edit" element={<EditPost />}/>
+            <Route path="/questions/:id/edit" element={<EditPost />} />
+            <Route path="/answers/:id/edit" element={<EditPost />} />
             <Route path="/askquestion" element={<Askquestion />} />
             <Route path="/users/login" element={<Login />} />
             <Route path="/users/signup" element={<Signup />} />
-            <Route path="/users" element={<Users />}/>
-            <Route path="/users/mypage" element={<Mypage />}/>
+            <Route path="/users" element={<Users />} />
+            <Route path="/users/mypage" element={<Mypage />} />
           </Routes>
         </div>
-      {/*배포 이후 배포한 주소 길이에 맞게 slice 변경*/}
-      {(pathname === "/users/login" || pathname === "/users/signup") ? null : <Footer />}
+        {/*배포 이후 배포한 주소 길이에 맞게 slice 변경*/}
+        {(pathname === "/users/login" || pathname === "/users/signup") ? null : <Footer />}
       </div>
     </div>
   );

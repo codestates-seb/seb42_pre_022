@@ -9,6 +9,7 @@ import QandAPost from "../Components/QandAPost";
 import TagsDiv from "../Components/TagsDiv";
 import WriteBoard from "../Components/WriteBoard";
 import LoginWith from "../Components/LoginWith";
+import HelmetTitle from "../Components/HelmetTitle";
 import useGET from "../util/useGET";
 import postData from "../util/postData";
 import dateTimeFormat from "../util/dateTimeFormat";
@@ -105,11 +106,17 @@ function Question() {
   const [question, Qerror] = useGET(`/questions/${question_id}`)
   const answerUrl = question.answerCount ? `/answers?questionId=${question_id}` : null
   const [answers, Aerror] = useGET(answerUrl)
-  const { login } = useSelector(state => state.loginReducer);
+  const { login } = useSelector(state => state.loginInfoReducer);
   const [createAnswer, setCreateAnswer] = useState('')
   const dispatch = useDispatch()
   const postAnswer = () => {
-    postData(`/answers`, { questionId: question_id, body: createAnswer })
+    if (createAnswer.length === 0) alert("답변 내용을 입력하세요")
+    else if (window.confirm("답변을 등록합니다") === true) {
+      postData(`/answers`, { questionId: question_id, body: createAnswer })
+        .then(() => {
+          window.location.reload()
+        })
+    }
   }
   const recentModified = () => {
     if (!question.createdDate) return;
@@ -130,6 +137,7 @@ function Question() {
 
   return (
     <div className="content">
+      <HelmetTitle title={`태그1 - ${question.title}`} />
       {Qerror && <h1 className="error">Question ERROR</h1>}
       {question &&
         <QuestionContainerMain >
@@ -150,17 +158,17 @@ function Question() {
           </div>
           <QuestionDiv>
             <div>
-              <QandAPost question={question} qwriter={question.userId} />
+              <QandAPost question={question} qwriter={question.user.userId} />
             </div>
             <div className="answerpart">
               <div>
                 {answerUrl ?
                   Aerror ?
                     <h1 className="error">Answer ERROR</h1>
-                    : (
-                      <h2>{answers.length} Answers</h2>,
-                      answers.map(answer => <QandAPost key={answer.answerId} answer={answer} />)
-                    )
+                    : (<>
+                      <h2>{answers.length} Answers</h2>
+                      {answers.map(answer => <QandAPost key={answer.answerId} answer={answer} qwriter={question.user.userId} />)}
+                    </>)
                   : null}
               </div>
               <div>

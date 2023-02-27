@@ -117,13 +117,11 @@ const QAbodydiv = styled.div`
 `
 
 function QandAPost({ question, answer, qwriter }) {
-  const { userInfo } = useSelector(state => state.loginReducer);
+  const { userInfo } = useSelector(state => state.loginInfoReducer);
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const post = answer ? answer : question
   const id = answer ? answer.answerId : question.questionId
-  const userId = answer ? answer.user.userId : question.userId
-  const displayName = answer ? answer.user.displayName : question.displayName
 
   const saveAnswerToEdit = () => {
     dispatch(editPostActions.changeNowA(answer))
@@ -161,9 +159,9 @@ function QandAPost({ question, answer, qwriter }) {
         <WriterRelatedDiv>
           <div className="qapost">
             <a>Share</a>
-            {userInfo.userId === userId ? <Link onClick={answer ? saveAnswerToEdit : null} to={`/${answer ? "answers" : "questions"}/${id}/edit`}>Edit</Link> : null}
+            {userInfo?.userId === post.user.userId ? <Link onClick={answer ? saveAnswerToEdit : null} to={`/${answer ? "answers" : "questions"}/${id}/edit`}>Edit</Link> : null}
             <a>Follow</a>
-            {userInfo.userId === userId ? <a onClick={deletePost}>Delete</a> : null}
+            {userInfo?.userId === post.user.userId ? <a onClick={deletePost}>Delete</a> : null}
           </div>
           {post.modifiedDate ?
             <WriterCardDiv >
@@ -171,16 +169,14 @@ function QandAPost({ question, answer, qwriter }) {
                 edited {dateTimeFormat(post.modifiedDate)}</span>
             </WriterCardDiv>
             : null}
-          <WriterCardDiv iswriter={qwriter === userId ? 1 : null}>
+          <WriterCardDiv iswriter={qwriter === post.user.userId ? 1 : null}>
             <div>asked {dateTimeFormat(post.createdDate)}</div>
-            <UserCard username={displayName} reputation={"100"} />
+            <UserCard username={post.user.displayName} reputation={post.user.reputation} userimg={post.user.profileImage} />
           </WriterCardDiv>
         </WriterRelatedDiv>
       </div>
       <span />
-      {post.comments?.length ?
-        <CommentsDiv comments={post.comments} questionId={answer ? null : id} answerId={answer ? id : null} />
-        : null}
+      <CommentsDiv comments={post?.comments} questionId={answer ? null : id} answerId={answer ? id : null} />
     </QAWrapDiv>
   )
 }

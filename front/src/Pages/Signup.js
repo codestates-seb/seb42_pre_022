@@ -6,6 +6,7 @@ import { ReactComponent as SignupBubbleIcon } from "../assets/signupbubbleicon.s
 import { ReactComponent as SignupUnlockIcon } from "../assets/signupunlockicon.svg";
 import { ReactComponent as SignupTagIcon } from "../assets/signuptagicon.svg";
 import { ReactComponent as SignupAchieveIcon } from "../assets/signupachieveicon.svg";
+import HelmetTitle from "../Components/HelmetTitle";
 
 const SignupContainer = styled.div`
   width: 100%;
@@ -68,38 +69,41 @@ const SignupFormNotice = styled(FormNoticeDiv)`
 
 function Signup() {
   return (
-    <SignupContainer>
-      <NoticeDiv>
-        <h1>Join the Stack Overflow community</h1>
-        <CommunityDiv>
-          <SignupBubbleIcon className="signup-icon" />
-          Get unstuck — ask a question
-        </CommunityDiv>
-        <CommunityDiv>
-          <SignupUnlockIcon className="signup-icon" />
-          Unlock new privileges like voting and commenting
-        </CommunityDiv>
-        <CommunityDiv>
-          <SignupTagIcon className="signup-icon" />
-          Save your favorite tags, filters, and jobs
-        </CommunityDiv>
-        <CommunityDiv>
-          <SignupAchieveIcon className="signup-icon" />
-          Earn reputation and badges
-        </CommunityDiv>
-        <SignupFormNotice>
-          {`Collaborate and share knowledge with a private group for FREE.\n`}
-          <span>Get Stack Overflow for Teams free for up to 50 users</span>.
-        </SignupFormNotice>
-      </NoticeDiv>
-      <SignupFormDiv>
-        <ShortNoticeDiv>
-          <div className="shortnotice-title">Create your Stack Overflow account. It’s free and only takes a minute.</div>
-        </ShortNoticeDiv>
-        <LoginWith />
-        <LoginSignupForm />
-      </SignupFormDiv>
-    </SignupContainer>
+    <>
+      <HelmetTitle title="Sign Up - Stack Overflow" />
+      <SignupContainer>
+        <NoticeDiv>
+          <h1>Join the Stack Overflow community</h1>
+          <CommunityDiv>
+            <SignupBubbleIcon className="signup-icon" />
+            Get unstuck — ask a question
+          </CommunityDiv>
+          <CommunityDiv>
+            <SignupUnlockIcon className="signup-icon" />
+            Unlock new privileges like voting and commenting
+          </CommunityDiv>
+          <CommunityDiv>
+            <SignupTagIcon className="signup-icon" />
+            Save your favorite tags, filters, and jobs
+          </CommunityDiv>
+          <CommunityDiv>
+            <SignupAchieveIcon className="signup-icon" />
+            Earn reputation and badges
+          </CommunityDiv>
+          <SignupFormNotice>
+            {`Collaborate and share knowledge with a private group for FREE.\n`}
+            <span>Get Stack Overflow for Teams free for up to 50 users</span>.
+          </SignupFormNotice>
+        </NoticeDiv>
+        <SignupFormDiv>
+          <ShortNoticeDiv>
+            <div className="shortnotice-title">Create your Stack Overflow account. It’s free and only takes a minute.</div>
+          </ShortNoticeDiv>
+          <LoginWith />
+          <LoginSignupForm />
+        </SignupFormDiv>
+      </SignupContainer>
+    </>
   );
 }
 

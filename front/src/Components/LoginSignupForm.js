@@ -4,11 +4,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { SearchInput } from "./SearchBar";
 import { useSelector, useDispatch } from "react-redux";
 import { signupActions } from "../Reducers/signupReducer";
-import { loginActions } from "../Reducers/loginReducer";
 import { useState } from "react";
 import { ReactComponent as ErrorIcon } from "../assets/errorIcon.svg";
 import postData from "../util/postData";
-import axios from "axios";
 
 
 const LoginFormContainer = styled.div`
@@ -76,7 +74,6 @@ const LoginButton = styled(BasicBlueButton)`
 function LoginSignupForm() {
   const { pathname } = useLocation();
   const state = useSelector(state => state.signupReducer);
-  const loginState = useSelector(state => state.loginReducer);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -114,15 +111,16 @@ function LoginSignupForm() {
       }
       console.log(req);
       postData("/users", req)
+      const email = req.email;
       const data = "";
       dispatch(signupActions.changeDisplaynameValue({ data }));
       dispatch(signupActions.changeEmailValue({ data }));
       dispatch(signupActions.changePasswordValue({ data }));
-      alert("Sign up Completed! Please check your email authentication in 10 minutes.")
+      alert(`Registration email sent to ${email}. Open this email to finish signup.`)
       navigate("/users/login");
     }
   }
-  
+
   const loginButtonHandler = (e) => {
     e.preventDefault();
     if (!emailTest.test(state.loginEmail) || !passwordTest.test(state.loginPassword)) {
@@ -145,32 +143,39 @@ function LoginSignupForm() {
         "password": state.loginPassword
       }
       postData("/users/login", req)
-      .then(res => localStorage.setItem("accessToken", JSON.stringify(res.accessToken)))
+        .then(res => {
+          const accessToken = res.accessToken;
+          if (accessToken) {
+            sessionStorage.setItem("accessToken", JSON.stringify(accessToken));
+            const data = "";
+            dispatch(signupActions.changeLoginEmail({ data }));
+            dispatch(signupActions.changeLoginPassword({ data }));
+            navigate("/");
+          }
+          else {
+            alert("Log in error!");
+            return;
+          }
+          //   else if (res.header.message === "등록되지 않은 이메일/비밀번호 입니다.") {
+          //   alert("Check your email and password.");
+          //   return;
+          // } else if (res.header.message === "이메일 인증이 되지 않았습니다.") {
+          //   alert("Check your registration email.");
+          //   return;
+          // } else {
+          //   alert("Log in error!");
+          //   return;
+          // }
+        })
+
       // TODO: 응답에 따른 반응 설정
       // TODO 1: 아이디 및 비밀번호를 확인해 주세요 -> 등록된 아이디가 아닐 때, 등록된 아이디인데 비밀번호 다를 때
       // TODO 2: 이메일 인증을 진행해 주세요(10분 후 만료) -> 등록된 아이디, 비밀번호가 맞는데 이메일 인증 안 했을 때
       // TODO -> alert로 경고창 띄운 후 return;적어서 다음으로 넘어가지 않게 함
       // TODO 3: 로그인 성공 -> GET 요청으로 
-      .then(res => axios.get(`${process.env.REACT_APP_API_URL}/users/principal`, {headers: {"Authorization": JSON.parse(localStorage.getItem("accessToken"))}}))
-      // console.log(res.data.body.data)
-      .then(res => {
-        // userInfo를 상태에 저장
-        const userInfo = res.data.body.data;
-        localStorage.setItem("userInfo", JSON.stringify(userInfo));
-        dispatch(loginActions.setUserInfo(userInfo))
-        // 이렇게 하면 상태에 저장할 수 있지만, 임의로 새로고침이 이루어질 경우 userInfo가 날아갈 수 있음
-        // localStorage에 userInfo를 저장하고 꺼내쓰는 방법이 있음
-        dispatch(loginActions.changeLogin(true))
-      })
-      .then (res => {
-      const data = "";
-      dispatch(signupActions.changeLoginEmail({ data }));
-      dispatch(signupActions.changeLoginPassword({ data }));
-      navigate("/");
-      })
+
     }
   }
-  // console.log(JSON.parse(localStorage.getItem("accessToken")))
 
   // input값을 상태로 관리하는 함수
   const displaynameInputHandler = (e) => {
@@ -218,29 +223,29 @@ function LoginSignupForm() {
           </label>
           <div className="invalid-wrap">
             <LoginInput id="email" value={(pathname === "/users/signup") ? state.emailValue : state.loginEmail}
-            onChange={(pathname === "/users/signup") ? emailInputHandler : loginEmailHandler} className={emailValid ? "" : "invalid"} />
+              onChange={(pathname === "/users/signup") ? emailInputHandler : loginEmailHandler} className={emailValid ? "" : "invalid"} />
             {emailValid ? null : <ErrorIcon className="error-icon" />}
           </div>
           {emailValid ? null : (
-              <div className="invalid-notice">
-                Not a valid email address.
-              </div>
-            )}
+            <div className="invalid-notice">
+              Not a valid email address.
+            </div>
+          )}
         </LoginFormDiv>
         <LoginFormDiv>
           <label htmlFor="password" className="login-title">
             Password
           </label>
           <div className="invalid-wrap">
-          <LoginInput type="password" id="password" value={(pathname === "/users/signup") ? state.passwordValue : state.loginPassword}
-          onChange={(pathname === "/users/signup") ? passwordInputHandler : loginPasswordHandler} className={passwordValid ? "" : "invalid"} />
-          {passwordValid ? null : <ErrorIcon className="error-icon" />}
+            <LoginInput type="password" id="password" value={(pathname === "/users/signup") ? state.passwordValue : state.loginPassword}
+              onChange={(pathname === "/users/signup") ? passwordInputHandler : loginPasswordHandler} className={passwordValid ? "" : "invalid"} />
+            {passwordValid ? null : <ErrorIcon className="error-icon" />}
           </div>
           {passwordValid ? null : (
-              <div className="invalid-notice invalid-password">
-                Not a valid password.
-              </div>
-            )}
+            <div className="invalid-notice invalid-password">
+              Not a valid password.
+            </div>
+          )}
         </LoginFormDiv>
         {(pathname === "/users/signup") ? (
           <FormNoticeDiv>

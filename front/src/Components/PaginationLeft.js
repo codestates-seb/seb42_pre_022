@@ -2,7 +2,7 @@ import styled from "styled-components"
 import { gotoPrev, gotoNext, selectPage } from "../Reducers/paginationReducer";
 import { useSelector, useDispatch } from "react-redux";
 
-const Pager = styled.div`
+export const Pager = styled.div`
   margin: 20px 0;
   float: left;
   display: flex;

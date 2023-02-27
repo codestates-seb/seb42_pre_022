@@ -13,7 +13,7 @@ function useGET(url) {
       setError(err)
     }
   }
-  
+
   useEffect(() => {
     if (url) {
       getData()

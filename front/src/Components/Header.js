@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
-import { loginActions } from "../Reducers/loginReducer";
+import { loginInfoActions } from "../Reducers/loginInfoReducer";
 import { BasicBlueButton } from "../Styles/Buttons"
 import SearchBar from "./SearchBar";
 import Nav from "./Nav";
@@ -188,8 +188,9 @@ const IconButtonUl = styled.ul`
 
 
 function Header() {
-  const {login, userInfo} = useSelector(state => state.loginReducer);
+  const { login, userInfo } = useSelector(state => state.loginInfoReducer);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [menu, setMenu] = useState(false)
 
   let { pathname } = useLocation();
@@ -197,10 +198,13 @@ function Header() {
   const logoutHandler = () => {
     if (window.confirm("Are you sure you want to log out?")) {
       // 로그아웃 버튼 -> accessToken, userInfo 비우기, login 상태 바꾸기
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("userInfo");
-      dispatch(loginActions.setUserInfo({}));
-      dispatch(loginActions.changeLogin(false));
+      sessionStorage.removeItem("accessToken");
+      const actions = {
+        login: false,
+        userInfo: null
+      }
+      dispatch(loginInfoActions.changeLoginInfo(actions))
+      navigate("/");
       window.location.reload();
     }
 
@@ -209,7 +213,7 @@ function Header() {
   const openMenu = () => {
     setMenu(!menu)
   }
-  const loginTabList = [(<><img src={login ? userInfo.profileImage : null} alt="profile-icon" /><span>1</span></>), <InboxIcon />, <AchiveIcon />, <HelpIcon />, <ExchangeIcon />]
+  const loginTabList = [(<><img src={login ? userInfo?.profileImage : null} alt="profile-icon" /><span>1</span></>), <InboxIcon />, <AchiveIcon />, <HelpIcon />, <ExchangeIcon />]
 
   return (
     <Containerheader>

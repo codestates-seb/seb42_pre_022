@@ -3,6 +3,7 @@ import { LogoDiv } from "../Components/Footer";
 import sprites from "../assets/sprites.svg";
 import LoginWith from "../Components/LoginWith";
 import LoginSignupForm from "../Components/LoginSignupForm";
+import HelmetTitle from "../Components/HelmetTitle";
 
 //TODO: Footer에 있는 LogoDiv Styles로 옮기고 경로 수정하기
 
@@ -23,6 +24,8 @@ const LoginContainer = styled.div`
 function Login() {
 
   return (
+    <>
+    <HelmetTitle title="Log In - Stack Overflow" />
     <LoginContainer>
       <div className="login-logo">
         <LogoDiv url={sprites} />
@@ -30,6 +33,7 @@ function Login() {
       <LoginWith />
       <LoginSignupForm />
     </LoginContainer>
+    </>
   );
 }
 
