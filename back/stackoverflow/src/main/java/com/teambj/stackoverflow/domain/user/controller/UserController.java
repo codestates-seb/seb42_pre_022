@@ -79,9 +79,11 @@ public class UserController {
     @GetMapping
     public ResponseEntity<?> getUsers(@Positive @RequestParam int page) {
         Page<User> userList = userService.getUserList(page - 1);
+        int totalPage = userList.getTotalPages();
+
         List<UserDto.Response> userResponseList = userMapper.userListToUserResponseList(userList);
 
-        return ResponseEntity.ok().body(ApiResponse.ok("data", userResponseList, "pageNumber", page));
+        return ResponseEntity.ok().body(ApiResponse.ok("data", userResponseList, "totalPages", totalPage));
     }
 
     /*
@@ -90,7 +92,6 @@ public class UserController {
     @GetMapping("/{user-id}")
     public ResponseEntity<?> getUser(@Positive @PathVariable("user-id") Long userId) {
         User user = userService.getUser(userId);
-        log.info("getUser");
 
         return ResponseEntity.ok().body(ApiResponse.ok("data", userMapper.userToUserResponse(user)));
     }

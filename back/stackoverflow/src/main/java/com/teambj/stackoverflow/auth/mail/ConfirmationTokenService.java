@@ -1,5 +1,7 @@
 package com.teambj.stackoverflow.auth.mail;
 
+import com.teambj.stackoverflow.exception.BusinessLogicException;
+import com.teambj.stackoverflow.exception.ExceptionCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
@@ -32,13 +34,14 @@ public class ConfirmationTokenService {
         mailMessage.setTo(receiverEmail);
         mailMessage.setSubject("회원가입 이메일 인증");
 
+        mailMessage.setText("아래 링크를 클릭하시면 이메일 인증이 완료돱니다.");
         mailMessage.setText(domain + "/users/confirm-email?token=" + confirmationToken.getId());
         mailSenderService.sendEmail(mailMessage);
     }
 
-    public ConfirmationToken findByIdAndExpirationDateAfterAndExpired(String confirmationTokenId) {
-        Optional<ConfirmationToken> confirmationToken = confirmationTokenRepository.findByIdAndExpirationDateAfterAndExpired(confirmationTokenId, LocalDateTime.now(),false);
-        return confirmationToken.orElseThrow(() -> new RuntimeException("Token not found"));
+    public ConfirmationToken findByIdAndExpired(String confirmationTokenId) {
+        Optional<ConfirmationToken> confirmationToken = confirmationTokenRepository.findByIdAndExpired(confirmationTokenId, false);
+        return confirmationToken.orElseThrow(() -> new BusinessLogicException(ExceptionCode.EMAIL_TOKEN_EXPIRED));
     }
 
     public void useToken(ConfirmationToken token) {
