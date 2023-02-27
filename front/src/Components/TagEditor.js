@@ -1,3 +1,4 @@
+import { useState } from "react"
 import styled from "styled-components"
 import { TagInput } from "../Pages/Askquestion"
 
@@ -65,12 +66,12 @@ const TagsinEditor = styled.span`
     font-size: 12px;
     background-color: var(--powder-100);
     border: 1px solid transparent;
-    border-radius: var(--_ta-br);
-    color: var(--_ta-fc);
-    font-size: var(--_ta-fs);
-    line-height: var(--_ta-lh);
-    padding-left: var(--_ta-pl);
-    padding-right: var(--_ta-pr);
+    border-radius: 3px;
+    color: var(--powder-700);
+    font-size: 12px;
+    line-height: 1.84615385;
+    padding-left: 4px;
+    padding-right: 4px;
     align-items: center;
     display: inline-flex;
     justify-content: center;
@@ -79,40 +80,78 @@ const TagsinEditor = styled.span`
     vertical-align: middle;
     white-space: nowrap;
   }
+  button{
+    align-self: center;
+    background-color: transparent;
+    border-width: 0;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    height: 16px;
+    justify-content: center;
+    margin-left: 4px;
+    padding: clamp(var(--su-static1), calc(var(--su-static1) * var(--su-base)), calc(var(--su-static1) * var(--su-base)));
+    width: 16px;
+  }
+  svg{
+    width: 14px;
+    height: 14px;
+    vertical-align: bottom;
+    pointer-events: none;
+  }
+  path{
+    fill: currentColor;
+  }
 `
 
 
 
-function TagEditor ({tags, setTags}) {
+function TagEditor ({tags, setTags, setTagsChecked, customOption, setCustomOption}) {
   const removeTags = (indexToRemove) => {
-    setTags(tags.filter((ele, index) => index !== indexToRemove));
+    let removed = tags.filter((ele, index) => index !== indexToRemove)
+    setTags(removed);
+    setCustomOption({...customOption,tags:removed})
   };
   const addTags = (e) => {
     const filtered = tags.filter((el) => el === e.target.value);
     if (e.target.value !== '' && filtered.length === 0) {
+      setTagsChecked(true)
       setTags([...tags, e.target.value]);
+      setCustomOption({...customOption,tags:[...tags, e.target.value]})
       e.target.value = '';
-    }
+    } 
   };
 
   return(
 
     <TagEditorBox>
-
       <TagEditorInput>
        <TagsinEditor>
-         {/* {tags.map((tag, index) => (
+         {tags.map((tag, index) => (
             <span key={index} className='tag'>
               <span className='tag-title'>{tag}</span>
-              <span className='tag-close-icon' onClick={() => removeTags(index)}>&times;</span>
+              <button className='tag-close-icon' onClick={() => removeTags(index)}>
+                <svg viewBox="0 0 14 14">
+                  <path d="M12 3.41L10.59 2 7 5.59 3.41 2 2 3.41 5.59 7 2 10.59 3.41 12 7 8.41 10.59 12 12 10.59 8.41 7z"/>
+                </svg>
+              </button>
             </span>
-          ))} */}
+          ))}
         </TagsinEditor>
-        <input type="text" placeholder="e.g. javascript or python" />
+        <input type="text" placeholder={ !tags.length ?"e.g. javascript or python" :null} 
+          // value={inputValue}
+          onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            addTags(e)
+          }
+        }}
+        />
         <span />
       </TagEditorInput>
-
     </TagEditorBox>
+
+
+
     // <TagInput>
     //     <ul>
     //       {tags.map((tag, index) => (
@@ -128,7 +167,8 @@ function TagEditor ({tags, setTags}) {
     //         if (event.key === "Enter") {
     //           addTags(event)
     //         }
-    //       }} />
+    //       }} 
+    //       />
     //   </TagInput>
   )
 

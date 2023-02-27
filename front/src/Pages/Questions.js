@@ -190,9 +190,9 @@ function Questions() {
   // const [posts, error] = useGET('/questions')
   useEffect(() => {
     let filtered = filteringposts(allquestions,filter)
-    console.log(filtered)
+    // console.log(filtered)
     let sorted = sortingposts(filtered,filter)
-    console.log(sorted)
+    // console.log(sorted)
     setFilterNsortedposts(sorted)
     // 왜 filtered 말고 상태 불러오면 0이지..
     dispatch(setTotalposts(filtered.length))
@@ -234,7 +234,7 @@ function Questions() {
           </div>
           <QuestionsContent>
             {!!onepage && onepage.map(ele=>{
-              return <QuestionsList key={ele.questionId} title={ele.title} body={ele.body} createdAt={ele.createdAt} viewCount={ele.viewCount} answerCount={ele.answerCount}/>
+              return <QuestionsList key={ele.questionId} title={ele.title} body={ele.body} tags={ele.tags} createdAt={ele.createdAt} viewCount={ele.viewCount} answerCount={ele.answerCount}/>
             })}
           </QuestionsContent>
           <PaginationLeft />
