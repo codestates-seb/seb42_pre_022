@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 let initialState = {
   titleValue: JSON.parse(sessionStorage.getItem("titleValue")) === null ? "" : JSON.parse(sessionStorage.getItem("titleValue")),
   questionValue: JSON.parse(sessionStorage.getItem("questionValue")) === null ? "" : JSON.parse(sessionStorage.getItem("questionValue")),
-  tags: [],
+  tagList: [],
 };
 
 const askquestionSlice = createSlice({
@@ -20,12 +20,12 @@ const askquestionSlice = createSlice({
     },
     addTag: (state, action) => {
       const tagValue = action.payload.data;
-      if(tagValue !== "" && !state.tags.includes(tagValue)) {
-        state.tags.push(tagValue);
+      if(tagValue !== "" && !state.tagList.includes(tagValue)) {
+        state.tagList.push(tagValue);
       }
     },
     removeTag: (state, action) => {
-      state.tags = state.tags.filter((el, idx) => idx !== action.payload.indexToRemove)
+      state.tagList = state.tagList.filter((el, idx) => idx !== action.payload.indexToRemove)
     }
   }
 })

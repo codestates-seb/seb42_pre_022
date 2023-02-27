@@ -6,26 +6,10 @@ import { SearchInput } from "../Components/SearchBar";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { askquestionActions } from "../Reducers/askquestionReducer";
-import { loginInfoActions } from "../Reducers/loginInfoReducer";
 import { useState } from "react";
 import { ReactComponent as ErrorIcon } from "../assets/errorIcon.svg";
 import postData from "../util/postData";
 import HelmetTitle from "../Components/HelmetTitle";
-
-// TODO: 기능 구현
-// DONE 1. 글자 수 조건이 맞아야 다음 칸 작성 가능(tag는 생각해보기)
-// DONE 1-1. 제목 redux 상태 관리 구현
-// DONE 1-2. 이전 작업이 적합하게 완료되어야 다음 화면 열림
-// DONE 1-3. 질문 상세 내용 redux 상태 관리 구현
-// DONE 1-4. 질문 상세 내용 20자 이상이어야 다음 화면 열림 -> 버튼 유무는 구현
-// DONE 1-5. tag 구현
-// TODO 2. 로그인 되어있고 모든 value가 작성되면 질문 등록 버튼을 눌렀을 때 질문 등록
-// -> askquestion 버튼 눌렀을 때 로그인을 체크하면 이 과정을 생략할 수 있음
-// -> 어쨌든 구현해야 함
-// DONE 3. Discard draft 눌렀을 경우 모든 value를 비우고 홈으로 이동 -> localstorage 비우기
-// DONE 3-1. Discard draft 눌렀을 때 확인창 띄우기 (alert 또는 window.confirm 활용)
-// DONE 4. 다른 페이지로 이동 시 작성 중인 데이터 저장 -> localstorage에 저장
-// DONE Question: 서버에서 질문 작성 받을 때 tags도 저장할 수 있도록
 
 const AskContainer = styled.div`
   width: 100%;
@@ -244,15 +228,14 @@ function Askquestion() {
     } else {
       if (window.confirm("Are you sure you want to post this question?")) {
         const userInfo = loginState.userInfo;
-        // TODO: tags 보내도 되는지 물어보기
         const req = {
           "userId": userInfo.userId,
           "title": state.titleValue,
           "body": state.questionValue,
-          "tags": state.tags
+          "tagList": state.tagList
         }
         console.log(req);
-        postData("/questions/add", req)
+        postData("/questions", req)
           .then(res => {
             if (res.header.code === 201) {
               alert("Question posted successfully!");
@@ -263,12 +246,9 @@ function Askquestion() {
               return;
             }
           })
-        // TODO: 서버에 req 객체 담아 POST 요청 보내기
-        // TODO: 200 OK 시 상태 모두 비우고 alert 질문 등록 완료 / error 시 alert 오류 발생 -> 원래 자리로 돌아오기
       }
     }
   }
-
 
   // 제목 관련 함수 -> 입력 값 상태 관리, 다음으로 넘어가기
   const titleInputHandler = (e) => {
@@ -364,12 +344,12 @@ function Askquestion() {
         </FormDiv>
         <FormDiv className={(titleDone && tagStart) ? "" : "disabled"}>
           <div>
-            <label htmlFor="tags" className="form-title">Tags</label>
+            <label htmlFor="tagList" className="form-title">Tags</label>
             <div>Add up to 5 tags to describe what your question is about. Start typing to see suggestions.</div>
           </div>
           <TagInput>
             <ul>
-              {state.tags.map((tag, index) => (
+              {state.tagList.map((tag, index) => (
                 <li key={index}>
                   <span>{tag}
                     <button onClick={() => {
@@ -380,7 +360,7 @@ function Askquestion() {
                 </li>
               ))}
             </ul>
-            <input type="text" id="tags" placeholder={state.tags.length === 0 ? "e.g. (ajax iphone string)" : ""}
+            <input type="text" id="tagList" placeholder={state.tagList.length === 0 ? "e.g. (ajax iphone string)" : ""}
               onKeyUp={(event) => {
                 if (event.key === "Enter") {
                   const data = event.target.value;
