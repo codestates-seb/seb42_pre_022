@@ -46,7 +46,7 @@ const EditCmtSpan = styled.span`
 `
 
 function CommentLi({ comment }) {
-  const { login } = useSelector(state => state.loginReducer);
+  const { login } = useSelector(state => state.loginInfoReducer);
   const { editPost } = useSelector(state => state.editPostReducer);
   const { nowQ } = editPost
   const [editMode, setEditMode] = useState(false)

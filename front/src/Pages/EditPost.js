@@ -3,6 +3,7 @@ import Aside from "../Components/Aside";
 import TagsDiv from "../Components/TagsDiv";
 import CommentsDiv from "../Components/CommentsDiv";
 import WriteBoard from "../Components/WriteBoard";
+import HelmetTitle from "../Components/HelmetTitle";
 import { SearchInput } from "../Components/SearchBar";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { BasicBlueButton } from "../Styles/Buttons";
@@ -11,7 +12,6 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { editPostActions } from "../Reducers/editPostReducer";
 import { sanitize } from 'dompurify'
-
 const EditContainerMain = styled.main`
   width: 100%;
   > div:nth-child(2) {
@@ -104,6 +104,7 @@ function EditPost() {
 
   return (
     <div className="content">
+      <HelmetTitle title={"Edit - Stack Overflow"}/>
       {!question && !answer ? <h1 className="error">Page Not Found</h1>
         :
         <EditContainerMain>

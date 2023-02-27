@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import loginReducer from "../Reducers/loginReducer";
+import loginInfoReducer from "../Reducers/loginInfoReducer";
 import askquestionReducer from "../Reducers/askquestionReducer";
 import filterquestionReducer from "../Reducers/filterquestionReducer";
 import signupReducer from "../Reducers/signupReducer";
@@ -9,7 +9,7 @@ import paginationReducer from "../Reducers/paginationReducer";
 
 const store = configureStore({
   reducer: {
-    loginReducer,
+    loginInfoReducer,
     askquestionReducer,
     filter: filterquestionReducer,
     signupReducer,

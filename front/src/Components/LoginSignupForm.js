@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { SearchInput } from "./SearchBar";
 import { useSelector, useDispatch } from "react-redux";
 import { signupActions } from "../Reducers/signupReducer";
-import { loginActions } from "../Reducers/loginReducer";
+import { loginInfoActions } from "../Reducers/loginInfoReducer";
 import { useState } from "react";
 import { ReactComponent as ErrorIcon } from "../assets/errorIcon.svg";
 import postData from "../util/postData";
@@ -76,7 +76,6 @@ const LoginButton = styled(BasicBlueButton)`
 function LoginSignupForm() {
   const { pathname } = useLocation();
   const state = useSelector(state => state.signupReducer);
-  const loginState = useSelector(state => state.loginReducer);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -145,28 +144,39 @@ function LoginSignupForm() {
         "password": state.loginPassword
       }
       postData("/users/login", req)
-      .then(res => localStorage.setItem("accessToken", JSON.stringify(res.accessToken)))
+      .then(res => {
+        const accessToken = res.accessToken
+        localStorage.setItem("accessToken", JSON.stringify(accessToken))
+        dispatch(loginInfoActions.saveAccessToken(accessToken))
+
+        return accessToken
+      })
       // TODO: 응답에 따른 반응 설정
       // TODO 1: 아이디 및 비밀번호를 확인해 주세요 -> 등록된 아이디가 아닐 때, 등록된 아이디인데 비밀번호 다를 때
       // TODO 2: 이메일 인증을 진행해 주세요(10분 후 만료) -> 등록된 아이디, 비밀번호가 맞는데 이메일 인증 안 했을 때
       // TODO -> alert로 경고창 띄운 후 return;적어서 다음으로 넘어가지 않게 함
       // TODO 3: 로그인 성공 -> GET 요청으로 
-      .then(res => axios.get(`${process.env.REACT_APP_API_URL}/users/principal`, {headers: {"Authorization": JSON.parse(localStorage.getItem("accessToken"))}}))
-      // console.log(res.data.body.data)
-      .then(res => {
-        // userInfo를 상태에 저장
-        const userInfo = res.data.body.data;
-        localStorage.setItem("userInfo", JSON.stringify(userInfo));
-        dispatch(loginActions.setUserInfo(userInfo))
-        // 이렇게 하면 상태에 저장할 수 있지만, 임의로 새로고침이 이루어질 경우 userInfo가 날아갈 수 있음
-        // localStorage에 userInfo를 저장하고 꺼내쓰는 방법이 있음
-        dispatch(loginActions.changeLogin(true))
-      })
-      .then (res => {
-      const data = "";
-      dispatch(signupActions.changeLoginEmail({ data }));
-      dispatch(signupActions.changeLoginPassword({ data }));
-      navigate("/");
+      .then(accessToken => {
+        axios.get(`${process.env.REACT_APP_API_URL}/users/principal`, {headers: {"Authorization": accessToken}})
+        .then(res => {
+          // userInfo를 상태에 저장
+          const userInfo = res.data.body.data;
+          localStorage.setItem("userInfo", JSON.stringify(userInfo));
+
+          const actions = {
+            login: true,
+            userInfo
+          }
+          dispatch(loginInfoActions.changeLoginInfo(actions))
+          // 이렇게 하면 상태에 저장할 수 있지만, 임의로 새로고침이 이루어질 경우 userInfo가 날아갈 수 있음
+          // localStorage에 userInfo를 저장하고 꺼내쓰는 방법이 있음
+        })
+        .then (res => {
+        const data = "";
+        dispatch(signupActions.changeLoginEmail({ data }));
+        dispatch(signupActions.changeLoginPassword({ data }));
+        navigate("/");
+        })
       })
     }
   }
