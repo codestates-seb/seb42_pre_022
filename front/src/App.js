@@ -21,11 +21,11 @@ function App() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken")
+    const accessToken = sessionStorage.getItem("accessToken")
     if (accessToken) {
       const actions = {
         login: true,
-        userInfo: JSON.parse(localStorage.getItem("userInfo"))
+        userInfo: JSON.parse(sessionStorage.getItem("userInfo"))
       }
       dispatch(loginInfoActions.saveAccessToken(accessToken))
       dispatch(loginInfoActions.changeLoginInfo(actions))
