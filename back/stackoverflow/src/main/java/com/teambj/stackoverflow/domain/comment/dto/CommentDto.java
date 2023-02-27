@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 
 public class CommentDto {
     @Getter
+    @AllArgsConstructor
     public static class Post {
         @Positive
         private Long questionId;
@@ -23,6 +24,7 @@ public class CommentDto {
     }
 
     @Getter
+    @AllArgsConstructor
     public static class Patch {
         @Positive
         private Long commentId;

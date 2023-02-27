@@ -1,18 +1,31 @@
 package com.teambj.stackoverflow.domain.question.controller;
 
+import com.teambj.stackoverflow.auth.PrincipalDetails;
 import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
+import com.teambj.stackoverflow.domain.answer.repository.AnswerRepository;
+import com.teambj.stackoverflow.domain.answer.service.AnswerService;
+import com.teambj.stackoverflow.domain.comment.repository.CommentRepository;
 import com.teambj.stackoverflow.domain.question.dto.QuestionPatchDto;
 import com.teambj.stackoverflow.domain.question.dto.QuestionPostDto;
 import com.teambj.stackoverflow.domain.question.dto.QuestionResponseDto;
 import com.teambj.stackoverflow.domain.question.entity.Question;
+import com.teambj.stackoverflow.domain.question.entity.QuestionTag;
 import com.teambj.stackoverflow.domain.question.mapper.QuestionMapper;
+import com.teambj.stackoverflow.domain.question.repository.QuestionTagRepository;
 import com.teambj.stackoverflow.domain.question.service.QuestionService;
+import com.teambj.stackoverflow.domain.tag.entity.Tag;
+import com.teambj.stackoverflow.domain.tag.service.TagService;
+import com.teambj.stackoverflow.domain.user.entity.User;
+import com.teambj.stackoverflow.domain.user.repository.UserRepository;
+import com.teambj.stackoverflow.domain.user.service.UserService;
 import com.teambj.stackoverflow.response.ApiResponse;
 import com.teambj.stackoverflow.response.ApiResponseHeader;
 import com.teambj.stackoverflow.utils.UriUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,30 +37,40 @@ import java.util.List;
 
 @RestController
 @RequestMapping
+@RequiredArgsConstructor
 @Validated
 public class QuestionController {
     private final static String DEFAULT_URI = "/question";
     private final QuestionService questionService;
     private final QuestionMapper mapper;
+    private final UserService userService;
+    private final AnswerService answerService;
+    private final TagService tagService;
+    private final AnswerRepository answerRepository;
+    private final CommentRepository commentRepository;
+    private final QuestionTagRepository questionTagRepository;
 
-    public QuestionController(QuestionService questionService, QuestionMapper mapper) {
-        this.questionService = questionService;
-        this.mapper = mapper;
-    }
+    @PostMapping("/questions")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity postQuestion(@Valid @RequestBody QuestionPostDto questionPostDto,
+                                       @AuthenticationPrincipal PrincipalDetails userDetails) {
+        Question question = mapper.questionPostDtoToQuestion(questionPostDto);
+        User user = userService.getUser(userDetails.getUserId());
+        question.setUser(user);
 
-    @PostMapping("/questions/add")
-    public ResponseEntity postQuestion(@Valid @RequestBody QuestionPostDto questionPostDto) {
-        Question question = questionService.createQuestion(mapper.questionPostDtoToQuestion(questionPostDto), questionPostDto.getUserId());
+        Question createdQuestion = questionService.createQuestion(question, questionPostDto.getTagList(), userDetails);
         URI uri = UriUtil.createUri(DEFAULT_URI, question.getQuestionId());
 
         return ResponseEntity.created(uri).body(ApiResponse.created());
     }
 
-    @PatchMapping("/questions/{questionId}/edit")
+    @PatchMapping("/questions/{questionId}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity patchQuestion(@PathVariable("questionId") @Positive Long questionId,
-                                        @Valid @RequestBody QuestionPatchDto questionPatchDto) {
+                                        @Valid @RequestBody QuestionPatchDto questionPatchDto,
+                                        @AuthenticationPrincipal PrincipalDetails userDetails) {
         questionPatchDto.setQuestionId(questionId);
-        Question question = questionService.updateQuestion(mapper.questionPatchDtoToQuestion(questionPatchDto), questionPatchDto.getUserId());
+        Question question = questionService.updateQuestion(mapper.questionPatchDtoToQuestion(questionPatchDto), questionPatchDto.getTagList(), userDetails);
 
         return ResponseEntity.ok().body(ApiResponse.ok("data", questionPatchDto));
     }
@@ -56,7 +79,7 @@ public class QuestionController {
     public ResponseEntity getQuestion(@PathVariable("questionId") @Positive Long questionId) {
     Question question = questionService.findQuestion(questionId);
     questionService.updateQuestionViewCount(question, question.getViewCount());
-    QuestionResponseDto response = mapper.questionToQuestionResponseDto(question);
+    QuestionResponseDto response = mapper.questionToQuestionResponseDto(question, answerRepository.findAnswers(questionId), commentRepository.findQuestionComments(questionId));
 
     return ResponseEntity.ok().body(ApiResponse.ok("data", response));
     }
@@ -70,6 +93,7 @@ public class QuestionController {
     }
 
     @DeleteMapping("/questions/{questionId}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity deleteQuestion(@PathVariable("questionId") @Positive Long questionId) {
         questionService.deleteQuestion(questionId);
 

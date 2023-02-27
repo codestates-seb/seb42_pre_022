@@ -1,8 +1,15 @@
 package com.teambj.stackoverflow.domain.question.service;
 
+import com.teambj.stackoverflow.auth.PrincipalDetails;
 import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
+import com.teambj.stackoverflow.domain.comment.repository.CommentRepository;
+import com.teambj.stackoverflow.domain.comment.service.CommentService;
 import com.teambj.stackoverflow.domain.question.entity.Question;
+import com.teambj.stackoverflow.domain.question.entity.QuestionTag;
 import com.teambj.stackoverflow.domain.question.repository.QuestionRepository;
+import com.teambj.stackoverflow.domain.question.repository.QuestionTagRepository;
+import com.teambj.stackoverflow.domain.tag.entity.Tag;
+import com.teambj.stackoverflow.domain.tag.service.TagService;
 import com.teambj.stackoverflow.domain.user.service.UserService;
 import com.teambj.stackoverflow.exception.BusinessLogicException;
 import com.teambj.stackoverflow.exception.ExceptionCode;
@@ -16,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -23,36 +31,69 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
     private final UserService userService;
     private final CustomBeanUtil beanUtil;
-    //Tag 관련 추가 예정
+    private TagService tagService;
+    private final CommentRepository commentRepository;
+    private final CommentService commentService;
+    private final QuestionTagRepository questionTagRepository;
 
-    public QuestionService(QuestionRepository questionRepository, UserService userService, CustomBeanUtil beanUtil) {
+    public QuestionService(QuestionRepository questionRepository, UserService userService, CustomBeanUtil beanUtil, TagService tagService, CommentRepository commentRepository, CommentService commentService,
+                           QuestionTagRepository questionTagRepository) {
         this.questionRepository = questionRepository;
         this.userService = userService;
         this.beanUtil = beanUtil;
+        this.tagService = tagService;
+        this.commentRepository = commentRepository;
+        this.commentService = commentService;
+        this.questionTagRepository = questionTagRepository;
     }
 
-    public Question createQuestion(Question question, Long userId) {
-        question.addUser(userService.getUser(userId));
+    public Question createQuestion(Question question, List<String> tagName,
+                                   @AuthenticationPrincipal PrincipalDetails userDetails) {
+        question.addUser(userService.getUser(userDetails.getUserId()));
+
+        List<Tag> tags = tagService.createByTagName(tagName);
+        tags.forEach(tag -> {
+            new QuestionTag(question, tag);
+        });
+
         Question saveQuestion = questionRepository.save(question);
 
         return saveQuestion;
     }
 
-    public Question updateQuestion(Question question, Long questionId) {
+    public Question updateQuestion(Question question, List<String> tagName, @AuthenticationPrincipal PrincipalDetails userDetails) {
         Question foundQuestion = findQuestion(question.getQuestionId());
-        userService.verifyUser(findVerifiedQuestionById(questionId).getUser().getUserId());
+        userService.verifyUser(findVerifiedQuestionById(question.getQuestionId()).getUser().getUserId());
 
         Optional.ofNullable(question.getTitle())
                 .ifPresent(foundQuestion::setTitle);
         Optional.ofNullable(question.getBody())
                 .ifPresent(foundQuestion::setBody);
-//        beanUtil.copyNonNullProperties(question, foundQuestion);
+        List<QuestionTag> questionTags = foundQuestion.getQuestionTags()
+                .stream()
+                .collect(Collectors.toList());
+
+/* 요청으로 인해 주석 처리 */
+//        if (!tagName.isEmpty()) {
+//            List<Tag> tagByString = tagService.createByTagName(tagName);
+//            List<QuestionTag> addTags = tagByString.stream()
+//                    .map(tag -> new QuestionTag(foundQuestion, tag))
+//                    .collect(Collectors.toList());
+//            foundQuestion.setQuestionTags(addTags);
+//        }
+//
+//        questionTagRepository.deleteAll(questionTags);
 
         return foundQuestion;
     }
 
+    @Transactional(readOnly = true)
     public Question findQuestion(Long questionId) {
-        return findVerifiedQuestionById(questionId);
+        Question question = findVerifiedQuestionById(questionId);
+
+        questionRepository.save(question);
+
+        return question;
     }
 
     public Page<Question> getAllQuestions(int page) {
