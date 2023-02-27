@@ -197,13 +197,12 @@ function Header() {
   const logoutHandler = () => {
     if (window.confirm("Are you sure you want to log out?")) {
       // 로그아웃 버튼 -> accessToken, userInfo 비우기, login 상태 바꾸기
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("userInfo");
+      sessionStorage.removeItem("accessToken");
+      sessionStorage.removeItem("userInfo");
       const actions = {
         login: false,
         userInfo: null
       }
-      dispatch(loginInfoActions.saveAccessToken(null))
       dispatch(loginInfoActions.changeLoginInfo(actions))
       window.location.reload();
     }
@@ -213,7 +212,7 @@ function Header() {
   const openMenu = () => {
     setMenu(!menu)
   }
-  const loginTabList = [(<><img src={login ? userInfo.profileImage : null} alt="profile-icon" /><span>1</span></>), <InboxIcon />, <AchiveIcon />, <HelpIcon />, <ExchangeIcon />]
+  const loginTabList = [(<><img src={login ? userInfo?.profileImage : null} alt="profile-icon" /><span>1</span></>), <InboxIcon />, <AchiveIcon />, <HelpIcon />, <ExchangeIcon />]
 
   return (
     <Containerheader>

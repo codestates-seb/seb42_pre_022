@@ -6,14 +6,13 @@ const config = {
   }
 }
 
-async function postData(url, data) {
+async function getUserInfo() {
   try {
-    const response = await axios.post(`${process.env.REACT_APP_API_URL}${url}`, data, config)
-    return response.data
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/users/principal`, config)
+    return response.data.body.data
   } catch (err) {
     console.log(err)
   }
 }
 
-export default postData;
-
+export default getUserInfo;

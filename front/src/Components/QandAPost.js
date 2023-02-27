@@ -161,9 +161,9 @@ function QandAPost({ question, answer, qwriter }) {
         <WriterRelatedDiv>
           <div className="qapost">
             <a>Share</a>
-            {userInfo.userId === userId ? <Link onClick={answer ? saveAnswerToEdit : null} to={`/${answer ? "answers" : "questions"}/${id}/edit`}>Edit</Link> : null}
+            {userInfo?.userId === userId ? <Link onClick={answer ? saveAnswerToEdit : null} to={`/${answer ? "answers" : "questions"}/${id}/edit`}>Edit</Link> : null}
             <a>Follow</a>
-            {userInfo.userId === userId ? <a onClick={deletePost}>Delete</a> : null}
+            {userInfo?.userId === userId ? <a onClick={deletePost}>Delete</a> : null}
           </div>
           {post.modifiedDate ?
             <WriterCardDiv >
