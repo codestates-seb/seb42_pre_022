@@ -2,12 +2,16 @@ package com.teambj.stackoverflow.domain.question.controller;
 
 import com.teambj.stackoverflow.auth.PrincipalDetails;
 import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
+import com.teambj.stackoverflow.domain.answer.repository.AnswerRepository;
+import com.teambj.stackoverflow.domain.answer.service.AnswerService;
+import com.teambj.stackoverflow.domain.comment.repository.CommentRepository;
 import com.teambj.stackoverflow.domain.question.dto.QuestionPatchDto;
 import com.teambj.stackoverflow.domain.question.dto.QuestionPostDto;
 import com.teambj.stackoverflow.domain.question.dto.QuestionResponseDto;
 import com.teambj.stackoverflow.domain.question.entity.Question;
 import com.teambj.stackoverflow.domain.question.entity.QuestionTag;
 import com.teambj.stackoverflow.domain.question.mapper.QuestionMapper;
+import com.teambj.stackoverflow.domain.question.repository.QuestionTagRepository;
 import com.teambj.stackoverflow.domain.question.service.QuestionService;
 import com.teambj.stackoverflow.domain.tag.entity.Tag;
 import com.teambj.stackoverflow.domain.tag.service.TagService;
@@ -40,7 +44,11 @@ public class QuestionController {
     private final QuestionService questionService;
     private final QuestionMapper mapper;
     private final UserService userService;
+    private final AnswerService answerService;
     private final TagService tagService;
+    private final AnswerRepository answerRepository;
+    private final CommentRepository commentRepository;
+    private final QuestionTagRepository questionTagRepository;
 
     @PostMapping("/questions")
     @PreAuthorize("isAuthenticated()")
@@ -50,7 +58,7 @@ public class QuestionController {
         User user = userService.getUser(userDetails.getUserId());
         question.setUser(user);
 
-        Question createdQuestion = questionService.createQuestion(question, questionPostDto.getTagNameList(), userDetails);
+        Question createdQuestion = questionService.createQuestion(question, questionPostDto.getTagList(), userDetails);
         URI uri = UriUtil.createUri(DEFAULT_URI, question.getQuestionId());
 
         return ResponseEntity.created(uri).body(ApiResponse.created());
@@ -62,7 +70,7 @@ public class QuestionController {
                                         @Valid @RequestBody QuestionPatchDto questionPatchDto,
                                         @AuthenticationPrincipal PrincipalDetails userDetails) {
         questionPatchDto.setQuestionId(questionId);
-        Question question = questionService.updateQuestion(mapper.questionPatchDtoToQuestion(questionPatchDto), questionPatchDto.getTagNameList(), userDetails);
+        Question question = questionService.updateQuestion(mapper.questionPatchDtoToQuestion(questionPatchDto), questionPatchDto.getTagList(), userDetails);
 
         return ResponseEntity.ok().body(ApiResponse.ok("data", questionPatchDto));
     }
@@ -71,7 +79,7 @@ public class QuestionController {
     public ResponseEntity getQuestion(@PathVariable("questionId") @Positive Long questionId) {
     Question question = questionService.findQuestion(questionId);
     questionService.updateQuestionViewCount(question, question.getViewCount());
-    QuestionResponseDto response = mapper.questionToQuestionResponseDto(question);
+    QuestionResponseDto response = mapper.questionToQuestionResponseDto(question, answerRepository.findAnswers(questionId), commentRepository.findQuestionComments(questionId));
 
     return ResponseEntity.ok().body(ApiResponse.ok("data", response));
     }

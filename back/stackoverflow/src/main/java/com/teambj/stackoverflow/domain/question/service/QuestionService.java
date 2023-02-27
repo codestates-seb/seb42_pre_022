@@ -53,7 +53,7 @@ public class QuestionService {
 
         List<Tag> tags = tagService.createByTagName(tagName);
         tags.forEach(tag -> {
-            new QuestionTag(question.getQuestionId(), question, tag);
+            new QuestionTag(question, tag);
         });
 
         Question saveQuestion = questionRepository.save(question);
@@ -69,25 +69,31 @@ public class QuestionService {
                 .ifPresent(foundQuestion::setTitle);
         Optional.ofNullable(question.getBody())
                 .ifPresent(foundQuestion::setBody);
-//        beanUtil.copyNonNullProperties(question, foundQuestion);
         List<QuestionTag> questionTags = foundQuestion.getQuestionTags()
                 .stream()
                 .collect(Collectors.toList());
 
-        if (!tagName.isEmpty()) {
-            List<Tag> tagByString = tagService.createByTagName(tagName);
-            List<QuestionTag> addTags = tagByString.stream()
-                    .map(tag -> new QuestionTag(foundQuestion.getQuestionId(), foundQuestion, tag))
-                    .collect(Collectors.toList());
-        }
-
-        questionTagRepository.deleteAll(questionTags);
+/* 요청으로 인해 주석 처리 */
+//        if (!tagName.isEmpty()) {
+//            List<Tag> tagByString = tagService.createByTagName(tagName);
+//            List<QuestionTag> addTags = tagByString.stream()
+//                    .map(tag -> new QuestionTag(foundQuestion, tag))
+//                    .collect(Collectors.toList());
+//            foundQuestion.setQuestionTags(addTags);
+//        }
+//
+//        questionTagRepository.deleteAll(questionTags);
 
         return foundQuestion;
     }
 
+    @Transactional(readOnly = true)
     public Question findQuestion(Long questionId) {
-        return findVerifiedQuestionById(questionId);
+        Question question = findVerifiedQuestionById(questionId);
+
+        questionRepository.save(question);
+
+        return question;
     }
 
     public Page<Question> getAllQuestions(int page) {
