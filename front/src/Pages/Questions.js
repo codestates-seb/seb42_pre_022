@@ -2,8 +2,18 @@ import styled from "styled-components";
 import QuestionsList from "../Components/QuestionsList";
 import { BasicBlueButton } from "../Styles/Buttons";
 import Aside from "../Components/Aside";
-import { useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import ExpandableFilterform from "../Components/ExpandableFilterForm";
+import { useSelector, useDispatch } from "react-redux";
+import { filteringBy } from "../Reducers/filterquestionReducer";
+import useGET from "../util/useGET";
+import axios from "axios";
+import PaginationLeft from "../Components/PaginationLeft";
+import PaginationRight from "../Components/PaginationRight";
+import { allquestions, filteringposts, sortingposts } from "../util/filteringposts";
+import { selectPage, setTotalposts } from "../Reducers/paginationReducer";
+import { Link } from "react-router-dom";
+
 
 const QuestionsContainer = styled.div`
   >div:nth-child(1){
@@ -73,6 +83,7 @@ const DataController = styled.div`
 `
 
 const DataControllerBtn = styled.a`
+  display: ${(props) => props.end ? "inline-block" : "flex"};
   border: 1px solid transparent;
   border-radius: ${(props) => props.middle ? "0" : "3px"};
   border-top-left-radius: ${(props) => props.end ? "0" : null};
@@ -89,6 +100,7 @@ const DataControllerBtn = styled.a`
   white-space: nowrap;
   font-size: 12px;
   padding: 0.8em;
+  padding-right: ${(props) => props.end ? "calc(.8em * 2.5)" : null};
   cursor: pointer;
   line-height: 15/13;
   position: relative;
@@ -96,6 +108,18 @@ const DataControllerBtn = styled.a`
   text-align: center;
   text-decoration: none;
   user-select: none;
+  :nth-child(3):after{
+    border-color: currentColor transparent;
+    border-style: solid;
+    border-width: 4px;
+    border-bottom-width: 0;
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    right: 0.8em;
+    top: calc(50% - 2px);
+    z-index: 30;
+  }
 `
 
 
@@ -150,10 +174,34 @@ const QuestionsContent = styled.div`
 
 
 function Questions() {
+  const filter = useSelector((state)=> state.filter);
+  const pages = useSelector((state)=> state.pages);
+  const dispatch = useDispatch();
   const [isFilterOpen, setFilterOpen] = useState(false);
   const filterOpenHandler = () => {
     setFilterOpen(!isFilterOpen)
   }
+  const filteringHandler = (keyword) => {
+    dispatch(filteringBy(keyword))
+    dispatch(selectPage(1))
+  }
+
+  const [filterNsortedposts, setFilterNsortedposts] = useState([]);
+  // const [posts, error] = useGET('/questions')
+  useEffect(() => {
+    let filtered = filteringposts(allquestions,filter)
+    // console.log(filtered)
+    let sorted = sortingposts(filtered,filter)
+    // console.log(sorted)
+    setFilterNsortedposts(sorted)
+    // 왜 filtered 말고 상태 불러오면 0이지..
+    dispatch(setTotalposts(filtered.length))
+    setFilterOpen(false)
+    console.log("렌더링중")
+      },[filter])
+  const start=(pages.currentpage-1)*pages.pagesize
+  const end=start+pages.pagesize
+  const onepage = filterNsortedposts.slice(start, end)
   return (
     <div className="content">
       <QuestionsContainer>
@@ -161,7 +209,7 @@ function Questions() {
           <PageHeader>
             <h1>All Questions</h1>
             <div>
-              <BasicBlueButton>Ask Questions</BasicBlueButton>
+              <BasicBlueButton to="/askquestion">Ask Questions</BasicBlueButton>
             </div>
           </PageHeader>
           <div>
@@ -170,10 +218,9 @@ function Questions() {
               <div>
                 <DataControllerBox>
                   <DataController>
-                    <DataControllerBtn start={1} selected={true}><div>Newest</div></DataControllerBtn>
-                    <DataControllerBtn middle="true" ><div>Active</div></DataControllerBtn>
-                    <DataControllerBtn middle="true" ><div>Unanswered</div></DataControllerBtn>
-                    <DataControllerBtn end="true" ><div>More</div></DataControllerBtn>
+                    <DataControllerBtn onClick={()=>filteringHandler('newest')} start={1} selected={filter.newest}><div>Newest</div></DataControllerBtn>
+                    <DataControllerBtn onClick={()=>filteringHandler('unanswered')} middle="true" selected={filter.unanswered} ><div>Unanswered</div></DataControllerBtn>
+                    <DataControllerBtn end="true" >More</DataControllerBtn>
                   </DataController>
                   <Dropdown />
                   <FilterBtn onClick={filterOpenHandler}>
@@ -183,16 +230,15 @@ function Questions() {
                 </DataControllerBox>
               </div>
             </QuestionsH2>
-            {/* <ExpandableFilterform /> */} 
+            <ExpandableFilterform isFilterOpen={isFilterOpen} filter={filter}/> 
           </div>
           <QuestionsContent>
-            <QuestionsList />
-            <QuestionsList />
-            <QuestionsList />
-            <QuestionsList />
-            <QuestionsList />
-            <QuestionsList />
+            {!!onepage && onepage.map(ele=>{
+              return <QuestionsList key={ele.questionId} title={ele.title} body={ele.body} tags={ele.tags} createdAt={ele.createdAt} viewCount={ele.viewCount} answerCount={ele.answerCount}/>
+            })}
           </QuestionsContent>
+          <PaginationLeft />
+          <PaginationRight />
         </div>
         <Aside />
       </QuestionsContainer>

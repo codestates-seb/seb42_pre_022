@@ -23,6 +23,7 @@ const GlobalStyle = createGlobalStyle`
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    flex: 1 0 auto;
   }
   .container{
     position: relative;
@@ -68,11 +69,60 @@ const GlobalStyle = createGlobalStyle`
   .linktext {
     color: var(--blue);
     text-decoration: none;
+    cursor: pointer;
   }
   .linktext:hover {
     color: var(--blue-500);
   }
-
+  .invalid {
+    border: 1px solid var(--red-400);
+    input {
+      padding-right: 32px;
+    }
+    :focus {
+    box-shadow: 0 0 0 4px var(--focus-ring-error);
+    }
+  }
+  .invalid-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    .error-icon {
+      position: absolute;
+      top: 50%;
+      right: 0.7em;
+      margin-top: -9px;
+      pointer-events: none;
+    }
+  }
+  .invalid-notice {
+    color: var(--red-400);
+    font-size: 12px;
+  }
+  .error {
+    color: var(--red);
+  }
+  blockquote {
+    border-left: 4px solid #ccc;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding-left: 16px;
+  }
+  pre {
+    background-color: var(--highlight-bg);
+    border-radius: 5px;
+    color: var(--highlight-color);
+    font-family: var(--ff-mono);
+    font-size: 13px;
+    line-height: 1.3;
+    margin: 0;
+    overflow: auto;
+    padding: 12px;
+    margin-bottom: 1.5em;
+  }
+  
   :root {
     /* color */
     --white: hsl(0,0%,100%);
