@@ -49,12 +49,6 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         response.setHeader("Refresh", refreshToken);
     }
 
-    private User saveUser(String email) {
-        User user = new User(email);
-        user.setReputation(new Reputation());
-        return user;
-    }
-
 
     private String delegateAccessToken(Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
@@ -90,7 +84,7 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
                 .newInstance()
                 .scheme("http")
                 .host("localhost")
-//                .port(3000)
+                .port(3000)
                 .path("/oauth2/redirect")
                 .queryParams(queryParams)
                 .build()

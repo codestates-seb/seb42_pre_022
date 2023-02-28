@@ -52,10 +52,4 @@ public class User extends Auditable {
     @Column
     private Boolean emailVerified = false;
 
-    private String refreshToken;
-
-    public void updateRefreshToken(String newToken) {
-        this.refreshToken = newToken;
-    }
-
 }
