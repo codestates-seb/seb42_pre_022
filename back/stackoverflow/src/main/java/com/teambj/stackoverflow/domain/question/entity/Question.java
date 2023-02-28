@@ -53,7 +53,7 @@ public class Question extends Auditable {
     private User user;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
-    private List<Answer> answer = new ArrayList<>();
+    private List<Answer> answers = new ArrayList<>();
 
     public void addUser(User user) {
         this.user = user;
@@ -64,7 +64,7 @@ public class Question extends Auditable {
     }
 
     public void setAnswerCount(int answerCount) {
-        this.answerCount = answerCount;
+        this.answerCount = answers.size();
     }
 
     public void setViewCount(int viewCount) {
