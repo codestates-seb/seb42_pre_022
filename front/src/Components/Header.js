@@ -12,7 +12,9 @@ import { ReactComponent as AchiveIcon } from "../assets/achiveIcon.svg";
 import { ReactComponent as HelpIcon } from "../assets/helpIcon.svg";
 import { ReactComponent as ExchangeIcon } from "../assets/exchangeIcon.svg";
 import logo from "../assets/sprites.svg"
-import SearchGuide from "./SearchGuide";
+import { customfilter } from "../Reducers/filterquestionReducer";
+import { selectPage } from "../Reducers/paginationReducer";
+
 
 const Containerheader = styled.header`
   display: flex;
@@ -216,13 +218,14 @@ function Header() {
   }
   const loginTabList = [(<><img src={login ? userInfo?.profileImage : null} alt="profile-icon" /><span>1</span></>), <InboxIcon />, <AchiveIcon />, <HelpIcon />, <ExchangeIcon />]
   const isFollowGuide = (text) => {
-    
+    text.slice(0,6) === "[tag]" && dispatch(customfilter({tags: text.slice(6,text.length)}))
+    text.slice(0,6) === "user:" && dispatch(customfilter({user: text.slice(6,text.length)}))
+    text.slice(0,8) === "answer:" && dispatch(customfilter({answerCount: text.slice(8,text.length)}))
   }
   const searchbarInputHandler=(e)=>{
     if(e.key==="Enter"){
-      
-      // dispatch(customfilter(customOption))
-      // dispatch(selectPage(1))
+      isFollowGuide(e.target.value)
+      dispatch(selectPage(1))
 
     } else{
       setSearchInputValue(e.target.value)
@@ -244,7 +247,6 @@ function Header() {
           <HeadTextTabLi>For Teams</HeadTextTabLi>
         </HeadTextTabUl>
         <SearchBar placeholder="Search..." inputHandler={setSearchInputValue}/>
-        {/* <SearchGuide /> */}
         <IconButtonUl>
           <HeadIconTabLi><SearchIcon /></HeadIconTabLi>
           {login && loginTabList.map((el, i) => <HeadIconTabLi key={i}>{el}</HeadIconTabLi>)}
