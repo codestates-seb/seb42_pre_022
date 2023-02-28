@@ -155,7 +155,7 @@ function QandAPost({ question, answer, qwriter }) {
       </div>
       <div>
         <QAbodydiv dangerouslySetInnerHTML={{ __html: sanitize(post.body) }} />
-        <TagsDiv />
+        {!answer && <TagsDiv tags={post?.tagList}/>}
         <WriterRelatedDiv>
           <div className="qapost">
             <a>Share</a>

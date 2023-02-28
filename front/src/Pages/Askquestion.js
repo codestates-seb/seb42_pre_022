@@ -105,7 +105,7 @@ export const TagInput = styled.div`
   flex: 1;
   display: flex;
   width: 100%;
-  padding: 0.6em 0.5em;
+  padding: 0.5em;
   color: var(--black-700);
   line-height: calc(15/13);
   border: 1px solid var(--black-200);
@@ -113,8 +113,13 @@ export const TagInput = styled.div`
   font-size: 13px;
   background-color: var(--white);
   input {
+    margin: 4px 0;
     border-style: none;
     outline: none;
+    width: 100%;
+  }
+  .tag-box {
+    display: flex;
   }
   :focus-within {
     border-color: var(--blue-300);
@@ -128,13 +133,13 @@ export const TagInput = styled.div`
   }
   li {
     margin: 0 4px;
-    padding: 4px;
+    /* padding: 4px; */
     background-color: var(--powder-100);
     border-radius: 3px;
     color: var(--powder-700);
   }
   span {
-    padding: 4px;
+    padding: 3px;
   }
   button {
     padding: 0 4px;
@@ -351,7 +356,8 @@ function Askquestion() {
             <ul>
               {state.tagList.map((tag, index) => (
                 <li key={index}>
-                  <span>{tag}
+                  <span className="tag-box">
+                    <span>{tag}</span>
                     <button onClick={() => {
                       const indexToRemove = index;
                       dispatch(askquestionActions.removeTag({ indexToRemove }))
