@@ -36,7 +36,6 @@ public class Comment extends Auditable {
     @JoinColumn(name = "ANSWER_ID")
     private Answer answer;
 
-//     ! 질문 코멘트 조회 연동 개발시 주석 해제
      public void addQuestion(Question question) {
          this.question = question;
 
