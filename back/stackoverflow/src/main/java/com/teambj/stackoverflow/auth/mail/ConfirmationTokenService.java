@@ -1,13 +1,19 @@
 package com.teambj.stackoverflow.auth.mail;
 
+import com.teambj.stackoverflow.exception.BusinessLogicException;
+import com.teambj.stackoverflow.exception.ExceptionCode;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class ConfirmationTokenService {
 
     private final ConfirmationTokenRepository confirmationTokenRepository;
@@ -24,21 +30,19 @@ public class ConfirmationTokenService {
     /*
     이메일 인증 토큰 생성 및 메일 전송
      */
-    public void createEmailConfirmationToken(Long userId, String receiverEmail) {
+    public void createEmailConfirmationToken(Long userId, String receiverEmail) throws MessagingException {
+
+        log.info("domain : " + domain);
         ConfirmationToken confirmationToken = ConfirmationToken.createEmailConfirmationToken(userId);
         confirmationTokenRepository.save(confirmationToken);
 
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(receiverEmail);
-        mailMessage.setSubject("회원가입 이메일 인증");
-
-        mailMessage.setText(domain + "/users/confirm-email?token=" + confirmationToken.getId());
-        mailSenderService.sendEmail(mailMessage);
+        String link = domain + "/users/confirm-email?token=" + confirmationToken.getId();
+        mailSenderService.sendEmail(receiverEmail, link);
     }
 
-    public ConfirmationToken findByIdAndExpirationDateAfterAndExpired(String confirmationTokenId) {
-        Optional<ConfirmationToken> confirmationToken = confirmationTokenRepository.findByIdAndExpirationDateAfterAndExpired(confirmationTokenId, LocalDateTime.now(),false);
-        return confirmationToken.orElseThrow(() -> new RuntimeException("Token not found"));
+    public ConfirmationToken findByIdAndExpired(String confirmationTokenId) {
+        Optional<ConfirmationToken> confirmationToken = confirmationTokenRepository.findByIdAndExpired(confirmationTokenId, false);
+        return confirmationToken.orElseThrow(() -> new BusinessLogicException(ExceptionCode.EMAIL_TOKEN_EXPIRED));
     }
 
     public void useToken(ConfirmationToken token) {

@@ -21,8 +21,7 @@ public interface CommentMapper {
         if (commentDto.getQuestionId() != null) {
             Question question = new Question();
             question.setQuestionId(commentDto.getQuestionId());
-            // ! 질문 코멘트 조회 연동 개발시 주석 해제
-            // comment.addQuestion(question);
+            comment.addQuestion(question);
         }
 
         if (commentDto.getAnswerId() != null) {

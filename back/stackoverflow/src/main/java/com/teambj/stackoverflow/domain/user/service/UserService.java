@@ -5,6 +5,8 @@ import com.teambj.stackoverflow.auth.mail.ConfirmationToken;
 import com.teambj.stackoverflow.auth.mail.ConfirmationTokenService;
 import com.teambj.stackoverflow.domain.user.entity.User;
 import com.teambj.stackoverflow.domain.user.repository.UserRepository;
+import com.teambj.stackoverflow.exception.BusinessLogicException;
+import com.teambj.stackoverflow.exception.ExceptionCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import java.util.*;
 
 @Service
@@ -32,7 +35,7 @@ public class UserService {
         this.confirmationTokenService = confirmationTokenService;
     }
 
-    public User createUser(User user) {
+    public User createUser(User user) throws MessagingException {
 
         validateDuplicateUser(user.getEmail());
 
@@ -43,10 +46,8 @@ public class UserService {
         user.setRoles(roles);
 
         User createdUser = userRepository.saveAndFlush(user);
-        log.info(user.getDisplayName());
 
         Long userId = user.getUserId();
-
         Optional<String> optional = Optional.ofNullable(user.getDisplayName());
         if (optional.isEmpty()) {
             user.setDisplayName("user"+userId);
@@ -73,32 +74,6 @@ public class UserService {
     }
 
 
-
-    public void confirmEmail(String token) {
-        ConfirmationToken findConfirmationToken = confirmationTokenService.findByIdAndExpirationDateAfterAndExpired(token);
-        Optional<User> optionalUser = userRepository.findById(findConfirmationToken.getUserId());
-
-        User user = optionalUser.orElseThrow(() ->
-                new RuntimeException("no user"));
-
-        confirmationTokenService.useToken(findConfirmationToken);
-        user.setEmailVerified(true);
-        userRepository.save(user);
-    }
-
-    private void validateDuplicateUser(String email) {
-
-        Optional<User> optional = userRepository.findByEmail(email);
-        if (optional.isPresent()) {
-            throw new RuntimeException("Exist Email");
-        }
-    }
-
-    public User verifyUser(Long userId) {
-        Optional<User> optional = userRepository.findById(userId);
-        return optional.orElseThrow(() -> new RuntimeException("No valid user"));
-    }
-
     @Transactional(readOnly = true)
     public Page<User> getUserList(int page) {
         return userRepository.findAll(PageRequest.of(page,36,Sort.by(Sort.Direction.DESC, "reputation")));
@@ -107,11 +82,30 @@ public class UserService {
     public User getUser(Long userId) {
 
         Optional<User> optional = userRepository.findById(userId);
-        return optional.orElseThrow(() -> new RuntimeException("No valid user"));
+        return optional.orElseThrow(() -> new BusinessLogicException(ExceptionCode.USERS_NOT_VALID));
     }
 
-    public User getPrincipal(Long userId) {
+    private void validateDuplicateUser(String email) {
+
+        Optional<User> optional = userRepository.findByEmail(email);
+        if (optional.isPresent()) {
+            throw new BusinessLogicException(ExceptionCode.USERS_EXISTS_EMAIL);
+        }
+    }
+
+    public void confirmEmail(String token) {
+        ConfirmationToken findConfirmationToken = confirmationTokenService.findByIdAndExpired(token);
+        Optional<User> optionalUser = userRepository.findById(findConfirmationToken.getUserId());
+
+        User user = optionalUser.orElseThrow(() -> new BusinessLogicException(ExceptionCode.USERS_NOT_VALID));
+
+        confirmationTokenService.useToken(findConfirmationToken);
+        user.setEmailVerified(true);
+        userRepository.save(user);
+    }
+
+    public User verifyUser(Long userId) {
         Optional<User> optional = userRepository.findById(userId);
-        return optional.orElseThrow(() -> new RuntimeException("No valid user"));
+        return optional.orElseThrow(() -> new BusinessLogicException(ExceptionCode.USERS_NOT_VALID));
     }
 }

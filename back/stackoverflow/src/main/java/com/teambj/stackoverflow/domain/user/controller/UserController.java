@@ -17,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.net.URI;
@@ -40,7 +41,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> postUser(@Valid @RequestBody UserDto.Post userPostDto) {
+    public ResponseEntity<?> postUser(@Valid @RequestBody UserDto.Post userPostDto) throws MessagingException {
 
         User user = userMapper.userPostToUser(userPostDto);
         user.setReputation(new Reputation());
@@ -53,10 +54,10 @@ public class UserController {
     }
 
     @GetMapping("/confirm-email")
-    public ResponseEntity<?> verifyAccount(@Valid @RequestParam String token) {
+    public String verifyAccount(@Valid @RequestParam String token) {
         userService.confirmEmail(token);
 
-        return ResponseEntity.ok().build();
+        return "이메일 인증이 완료되었습니다.";
     }
 
     /*
@@ -79,9 +80,11 @@ public class UserController {
     @GetMapping
     public ResponseEntity<?> getUsers(@Positive @RequestParam int page) {
         Page<User> userList = userService.getUserList(page - 1);
+        int totalPage = userList.getTotalPages();
+
         List<UserDto.Response> userResponseList = userMapper.userListToUserResponseList(userList);
 
-        return ResponseEntity.ok().body(ApiResponse.ok("data", userResponseList, "pageNumber", page));
+        return ResponseEntity.ok().body(ApiResponse.ok("data", userResponseList, "totalPages", totalPage));
     }
 
     /*
@@ -90,7 +93,6 @@ public class UserController {
     @GetMapping("/{user-id}")
     public ResponseEntity<?> getUser(@Positive @PathVariable("user-id") Long userId) {
         User user = userService.getUser(userId);
-        log.info("getUser");
 
         return ResponseEntity.ok().body(ApiResponse.ok("data", userMapper.userToUserResponse(user)));
     }

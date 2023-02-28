@@ -24,8 +24,6 @@ public class ConfirmationToken {
     @Column(length = 36)
     private String id;
 
-    @Column
-    private LocalDateTime expirationDate;
 
     @Column
     private Boolean expired;
@@ -35,7 +33,6 @@ public class ConfirmationToken {
 
     public static ConfirmationToken createEmailConfirmationToken(Long userId){
         ConfirmationToken confirmationToken = new ConfirmationToken();
-        confirmationToken.expirationDate = LocalDateTime.now().plusMinutes(EMAIL_TOKEN_EXPIRATION_TIME_VALUE);
         confirmationToken.userId = userId;
         confirmationToken.expired = false;
         return confirmationToken;

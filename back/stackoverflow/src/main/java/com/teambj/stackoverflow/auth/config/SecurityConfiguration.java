@@ -27,8 +27,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 
 @Configuration
 @EnableWebSecurity
@@ -44,12 +42,14 @@ public class SecurityConfiguration{
     private final JwtTokenizer jwtTokenizer;
     private final CustomUserDetailsService userDetailsService;
     private final OAuth2UserDetailsService oAuth2UserDetailsService;
+    private final OAuth2UserSuccessHandler oAuth2UserSuccessHandler;
 
 
-    public SecurityConfiguration(JwtTokenizer jwtTokenizer, CustomUserDetailsService userDetailsService, OAuth2UserDetailsService oAuth2UserDetailsService) {
+    public SecurityConfiguration(JwtTokenizer jwtTokenizer, CustomUserDetailsService userDetailsService, OAuth2UserDetailsService oAuth2UserDetailsService, OAuth2UserSuccessHandler oAuth2UserSuccessHandler) {
         this.jwtTokenizer = jwtTokenizer;
         this.userDetailsService = userDetailsService;
         this.oAuth2UserDetailsService = oAuth2UserDetailsService;
+        this.oAuth2UserSuccessHandler = oAuth2UserSuccessHandler;
     }
 
     @Bean
@@ -70,7 +70,7 @@ public class SecurityConfiguration{
                         .anyRequest().permitAll() //추후 수정
                 )
                 .oauth2Login()
-                .successHandler(new OAuth2UserSuccessHandler(jwtTokenizer))
+                .successHandler(oAuth2UserSuccessHandler)
                 .userInfoEndpoint().userService(oAuth2UserDetailsService);//후처리
         return http.build();
     }

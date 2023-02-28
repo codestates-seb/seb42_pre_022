@@ -44,6 +44,7 @@ public class OAuth2UserDetailsService extends DefaultOAuth2UserService {
 
         String profileURI = "https://source.boringavatars.com/beam/120/" + user.getUserId() + "?colors=66FFFF,8CBFE6,B380CC,D940B3,FF0099";
         user.setProfileImage(profileURI);
+        user.setEmailVerified(true);
         userRepository.save(user);
 
         return new PrincipalDetails(user, oAuth2User.getAttributes());
