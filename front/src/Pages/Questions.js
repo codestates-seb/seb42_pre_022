@@ -185,18 +185,25 @@ function Questions() {
     dispatch(filteringBy(keyword))
     dispatch(selectPage(1))
   }
-
   const [filterNsortedposts, setFilterNsortedposts] = useState([]);
-  // const [posts, error] = useGET('/questions')
+  const getData = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/questions}`)
+      let filtered = filteringposts(response.data.body.data,filter)
+      // console.log(filtered)
+      let sorted = sortingposts(filtered,filter)
+      // console.log(sorted)
+      setFilterNsortedposts(sorted)
+      // 왜 filtered 말고 상태 불러오면 0이지..
+      dispatch(setTotalposts(filtered.length))
+      setFilterOpen(false)
+
+    } catch (err) {
+      console.log(err)
+    }
+  }
   useEffect(() => {
-    let filtered = filteringposts(allquestions,filter)
-    // console.log(filtered)
-    let sorted = sortingposts(filtered,filter)
-    // console.log(sorted)
-    setFilterNsortedposts(sorted)
-    // 왜 filtered 말고 상태 불러오면 0이지..
-    dispatch(setTotalposts(filtered.length))
-    setFilterOpen(false)
+    getData().then()
     console.log("렌더링중")
       },[filter])
   const start=(pages.currentpage-1)*pages.pagesize
@@ -234,7 +241,7 @@ function Questions() {
           </div>
           <QuestionsContent>
             {!!onepage && onepage.map(ele=>{
-              return <QuestionsList key={ele.questionId} title={ele.title} body={ele.body} tags={ele.tags} createdAt={ele.createdAt} viewCount={ele.viewCount} answerCount={ele.answerCount}/>
+              return <QuestionsList key={ele.questionId} title={ele.title} body={ele.body} tags={ele.tagList} createdAt={ele.createdDate} viewCount={ele.viewCount} answerCount={ele.answerCount}/>
             })}
           </QuestionsContent>
           <PaginationLeft />
