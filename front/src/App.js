@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import { loginInfoActions } from "./Reducers/loginInfoReducer";
 import getUserInfo from "./util/getUserInfo";
 import ErrorPage from "./Pages/ErrorPage";
+import Tags from "./Pages/Tags";
 
 function App() {
   const { pathname } = useLocation();
@@ -30,11 +31,13 @@ function App() {
     if (accessToken && !login) {
       getUserInfo()
       .then(userInfo => {
-        const actions = {
-          login: true,
-          userInfo
+        if (userInfo.userId) {
+          const actions = {
+            login: true,
+            userInfo
+          }
+          dispatch(loginInfoActions.changeLoginInfo(actions))
         }
-        dispatch(loginInfoActions.changeLoginInfo(actions))
       })
     }
     window.scrollTo(0,0)
@@ -56,6 +59,7 @@ function App() {
             <Route path="/askquestion" element={<Askquestion />} />
             <Route path="/users/login" element={<Login />} />
             <Route path="/users/signup" element={<Signup />} />
+            <Route path="/tags" element={<Tags />} />
             <Route path="/users" element={<Users />} />
             <Route path="/users/mypage" element={<Mypage />} />
             <Route path="/token" element={<Token />} />
