@@ -50,27 +50,6 @@ function LoginWith() {
     return window.location.assign(
       "http://ec2-15-164-213-223.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/google"
     );
-      // .then(res => {
-      //   const accessToken = res.accessToken;
-      //   localStorage.setItem("accessToken", JSON.stringify(accessToken));
-      //   dispatch(loginInfoActions.saveAccessToken(accessToken));
-      //   return accessToken
-      // })
-      // .then(accessToken => {
-      //   axios.get(`${process.env.REACT_APP_API_URL}/users/principal`, { headers: { "Authorization": accessToken } })
-      //     .then(res => {
-      //       const userInfo = res.data.body.data;
-      //       localStorage.setItem("userInfo", JSON.stringify(userInfo));
-      //       const actions = {
-      //         login: true,
-      //         userInfo
-      //       }
-      //       dispatch(loginInfoActions.changeLoginInfo(actions))
-      //     })
-      //     .then(res => {
-      //       navigate("/");
-      //     })
-      // })
   }
 
   return (
