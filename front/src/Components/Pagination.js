@@ -1,49 +1,51 @@
 import { Pager, PageBtn } from "./PaginationLeft";
 
 function PaginationLeft({ pageInfo, setPageInfo }) {
+  const {currentPage, totalPages} = pageInfo
   const gotoPrevHandler = () => {
-    if (pageInfo.currentPage !== 1) {
-      // dispatch(gotoPrev())
+    if (currentPage !== 1) {
+      setPageInfo({...pageInfo, currentPage: currentPage-1})
     }
   }
   const gotoNextHandler = () => {
-    if (pageInfo.currentPage !== pageInfo.totalPages) {
-      // dispatch(gotoNext())
+    if (currentPage !== totalPages) {
+      setPageInfo({...pageInfo, currentPage: currentPage+1})
     }
   }
   const gotoPageHandler = (num) => {
-    // dispatch(selectPage(num))
+      setPageInfo({...pageInfo, currentPage: num})
   }
 
-  const restPages = pageInfo.totalPages - pageInfo.currentPage
-  const totalPager = pageInfo.totalPages < 5 ? pageInfo.totalPages : 5
-  const pageNums = new Array(totalPager).fill(pageInfo.currentPage).map((cur, idx) => {
+  const restPages = totalPages - currentPage
+  const totalPager = totalPages < 5 ? totalPages : 5
+  const pageNums = new Array(totalPager).fill(currentPage).map((cur, idx) => {
     if (cur <= 4) {
       return idx + 1
     } else if (restPages <= 3) {
-      return pageInfo.totalPages - 4 + idx
+      return totalPages - 4 + idx
     } else return cur - 2 + idx
   })
   const lastNum = pageNums[pageNums.length - 1]
+  console.log((pageInfo))
 
   return (
     <Pager>
-      {pageInfo.currentPage !== 1 &&
+      {currentPage !== 1 &&
         <PageBtn className="gotoprev" onClick={gotoPrevHandler} >Prev</PageBtn>
       }
-      {pageInfo.currentPage > 4 && <>
+      {currentPage > 4 && <>
         <PageBtn onClick={() => gotoPageHandler(1)}>1</PageBtn>
         <PageBtn clear={1}>...</PageBtn>
       </>
       }
       {pageNums.map((ele) => {
-        return <PageBtn key={ele} selected={pageInfo.currentPage === ele} onClick={() => gotoPageHandler(ele)}>{ele}</PageBtn>
+        return <PageBtn key={ele} selected={currentPage === ele} onClick={() => gotoPageHandler(ele)}>{ele}</PageBtn>
       })}
-      {totalPager === 5 && lastNum !== pageInfo.totalPages && <>
+      {totalPager === 5 && lastNum !== totalPages && <>
         <PageBtn clear={1}>...</PageBtn>
-        <PageBtn className="last" onClick={() => gotoPageHandler(pageInfo.totalPages)}>{pageInfo.totalPages}</PageBtn>
+        <PageBtn className="last" onClick={() => gotoPageHandler(totalPages)}>{totalPages}</PageBtn>
       </>}
-      {pageInfo.currentPage !== pageInfo.totalPages &&
+      {currentPage !== totalPages &&
         <PageBtn className="gotoprev" onClick={gotoNextHandler}>Next</PageBtn>
       }
     </Pager>

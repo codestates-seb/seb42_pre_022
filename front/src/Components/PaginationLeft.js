@@ -18,7 +18,7 @@ export const PageBtn = styled.a`
   line-height: calc(25/13);
   padding: 0 8px;
   text-decoration: none;
-  cursor: pointer;
+  cursor: ${(props) => props.clear ? "transparent" : "pointer"};
 `
 
 function PaginationLeft () {

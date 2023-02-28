@@ -91,7 +91,7 @@ function CommentLi({ comment }) {
       <CommentTextarea className={editMode ? "textarea" : "hidden"} ref={textareaRef} defaultValue={editComment} onClick={handleResizeHeight} onKeyUp={handleComment} />
       <span className={editMode ? "hidden" : ""}>{editComment}</span>
       –&nbsp;<WriterSpan className="linktext">{comment.user.displayName}</WriterSpan>
-      <DateSpan>{comment.modifiedDate ? (<>{dateTimeFormat(comment.modifiedDate)}<EditCommentIcon /></>) : dateTimeFormat(comment.createdDate)}</DateSpan>
+      <DateSpan>{comment.createdDate !== comment.modifiedDate ? (<>{dateTimeFormat(comment.modifiedDate)}<EditCommentIcon /></>) : dateTimeFormat(comment.createdDate)}</DateSpan>
       {userInfo?.userId === comment.user.userId ?
         <>
           <EditCmtSpan onClick={handleEditButton}>{editMode ? "Save" : "Edit"}</EditCmtSpan>

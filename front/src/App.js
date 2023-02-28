@@ -24,7 +24,7 @@ function App() {
   const { login } = useSelector(state => state.loginInfoReducer);
 
   useEffect(() => {
-    const accessToken = sessionStorage.getItem("accessToken");
+    const accessToken = localStorage.getItem("accessToken");
     if (accessToken && !login) {
       getUserInfo()
       .then(userInfo => {
@@ -40,7 +40,7 @@ function App() {
   return (
     <div className="app-wrap">
       <GlobalStyle />
-      <HelmetTitle title="(작업중) Stack Overflow - Where Developers Learn, Share, & Build Careers" />
+      <HelmetTitle title="Stack Overflow - Where Developers Learn, Share, & Build Careers" />
       <Header />
       <div className="wrap">
         <div className="container">

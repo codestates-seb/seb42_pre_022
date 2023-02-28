@@ -198,7 +198,7 @@ function Header() {
   const logoutHandler = () => {
     if (window.confirm("Are you sure you want to log out?")) {
       // 로그아웃 버튼 -> accessToken, userInfo 비우기, login 상태 바꾸기
-      sessionStorage.removeItem("accessToken");
+      localStorage.removeItem("accessToken");
       const actions = {
         login: false,
         userInfo: null

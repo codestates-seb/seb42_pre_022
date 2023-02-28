@@ -92,6 +92,9 @@ const Bottomdiv = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  > a {
+    font-weight: bold;
+  }
 
   @media screen and (max-width: 980px) {
     flex-direction: column;
@@ -104,7 +107,7 @@ const Bottomdiv = styled.div`
 
 function Users() {
   const [users, setUsers] = useState([]);
-  const [pageInfo, setPageInfo] = useState({ currentPage: 1, totalPages: null });
+  const [pageInfo, setPageInfo] = useState({ currentPage: 1, totalPages: 1 });
   const [error, setError] = useState(null);
 
   const getUsers = async (page) => {
@@ -119,7 +122,7 @@ function Users() {
 
   useEffect(() => {
     getUsers(pageInfo.currentPage)
-  }, [pageInfo])
+  }, [pageInfo.currentPage])
 
   return (
     <div className="content">
