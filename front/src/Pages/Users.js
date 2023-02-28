@@ -108,22 +108,30 @@ const Bottomdiv = styled.div`
 
 function Users() {
   const [users, setUsers] = useState([]);
+  const [searchKeyword, setSearchKeyword] = useState("");
   const [curPage, setCurPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [error, setError] = useState(null);
 
-  const getUsers = async (page) => {
+  const getUsers = async (url, page) => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/users?page=${page}`)
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/users?${url}=${page}`)
       setUsers(response.data.body.data)
       setTotalPages(response.data.body.totalPages)
     } catch (err) {
       setError(err)
     }
   }
-  
+  const inputHandler = (e) => {
+    if (e.key === "Enter") {
+      // getUsers("word", searchKeyword)
+      console.log(searchKeyword, "검색 구현 중")
+    } else {
+      setSearchKeyword(e.target.value)
+    }
+  }
   useEffect(() => {
-    getUsers(curPage)
+    getUsers("page", curPage)
   }, [curPage])
 
   return (
@@ -133,7 +141,7 @@ function Users() {
         <UsersContainer>
           <UsersH1>Users</UsersH1>
           <SearchFilterDiv>
-            <SearchBar placeholder="Filter by user" />
+            <SearchBar placeholder="Filter by user" inputHandler={inputHandler}/>
             <DataController>
               <DataControllerBtn start={1} selected={1}><div>Reputation</div></DataControllerBtn>
               <DataControllerBtn end={1} ><div>New users</div></DataControllerBtn>
