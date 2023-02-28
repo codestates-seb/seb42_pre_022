@@ -207,9 +207,9 @@ class AnswerControllerTest extends ControllerTest {
             fieldWithPath("user").type(JsonFieldType.OBJECT).description("회원 데이터"),
             fieldWithPath("answerId").type(JsonFieldType.NUMBER).description("답변 식별자"),
             fieldWithPath("body").type(JsonFieldType.STRING).description("답변 본문 내용"),
-            fieldWithPath("createdDate").type(JsonFieldType.STRING).description("답변 내용"),
-            fieldWithPath("modifiedDate").type(JsonFieldType.STRING).description("답변 생성 일자"),
-            fieldWithPath("comments[]").type(JsonFieldType.ARRAY).description("답변 댓글 데이터")
+            fieldWithPath("createdDate").type(JsonFieldType.STRING).description("답변 생성 일자"),
+            fieldWithPath("modifiedDate").type(JsonFieldType.STRING).description("답변 최종 수정 일자"),
+            fieldWithPath("comments[]").type(JsonFieldType.ARRAY).description("댓글 데이터")
         );
     }
 }

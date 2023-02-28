@@ -9,6 +9,8 @@ import com.teambj.stackoverflow.domain.question.entity.Question;
 import com.teambj.stackoverflow.domain.question.service.QuestionService;
 import com.teambj.stackoverflow.domain.user.entity.User;
 import com.teambj.stackoverflow.domain.user.service.UserService;
+import com.teambj.stackoverflow.exception.BusinessLogicException;
+import com.teambj.stackoverflow.exception.ExceptionCode;
 import com.teambj.stackoverflow.response.ApiResponse;
 import com.teambj.stackoverflow.utils.UriUtil;
 import lombok.RequiredArgsConstructor;
@@ -81,7 +83,7 @@ public class AnswerController {
         Answer findAnswer = answerService.findAnswer(answerDto.getAnswerId());
 
         if (!Objects.equals(findAnswer.getUser().getUserId(), userDetails.getUserId()))
-            throw new RuntimeException("수정 권한이 없습니다.");
+            throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED);
 
         Answer answer = answerService.updateAnswer(answerMapper.answerDtoPatchToAnswer(answerDto));
         AnswerDto.Response response = answerMapper.answerToAnswerResponseDto(answer);
@@ -98,7 +100,7 @@ public class AnswerController {
         Answer findAnswer = answerService.findAnswer(answerId);
 
         if (!Objects.equals(findAnswer.getUser().getUserId(), userDetails.getUserId()))
-            throw new RuntimeException("삭제 권한이 없습니다.");
+            throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED);
 
         answerService.deleteAnswer(answerId);
 

@@ -7,6 +7,8 @@ import com.teambj.stackoverflow.domain.comment.mapper.CommentMapper;
 import com.teambj.stackoverflow.domain.comment.service.CommentService;
 import com.teambj.stackoverflow.domain.user.entity.User;
 import com.teambj.stackoverflow.domain.user.service.UserService;
+import com.teambj.stackoverflow.exception.BusinessLogicException;
+import com.teambj.stackoverflow.exception.ExceptionCode;
 import com.teambj.stackoverflow.response.ApiResponse;
 import com.teambj.stackoverflow.utils.UriUtil;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +56,7 @@ public class CommentController {
     ) {
         Comment findComment = commentService.findComment(commentDto.getCommentId());
         if (!Objects.equals(findComment.getUser().getUserId(), userDetails.getUserId()))
-            throw new RuntimeException("수정 권한이 없습니다.");
+            throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED);
 
         Comment comment = commentService.updateComment(commentMapper.commentDtoPatchToComment(commentDto));
         CommentDto.Response response = commentMapper.commentToCommentResponseDto(comment);
@@ -70,7 +72,7 @@ public class CommentController {
     ) {
         Comment findComment = commentService.findComment(commentId);
         if (!Objects.equals(findComment.getUser().getUserId(), userDetails.getUserId()))
-            throw new RuntimeException("삭제 권한이 없습니다.");
+            throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED);
 
         commentService.deleteComment(commentId);
 

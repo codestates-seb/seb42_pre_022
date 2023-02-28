@@ -9,6 +9,8 @@ import com.teambj.stackoverflow.domain.question.entity.Question;
 import com.teambj.stackoverflow.domain.user.dto.UserDto;
 import com.teambj.stackoverflow.domain.user.entity.User;
 import com.teambj.stackoverflow.domain.user.service.UserService;
+import com.teambj.stackoverflow.exception.BusinessLogicException;
+import com.teambj.stackoverflow.exception.ExceptionCode;
 import com.teambj.stackoverflow.restdocs.ControllerTest;
 import com.teambj.stackoverflow.restdocs.annotations.WithMockUserCustom;
 import com.teambj.stackoverflow.restdocs.support.ConstrainedFields;
@@ -25,11 +27,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.teambj.stackoverflow.restdocs.custom.CustomRequestFieldsSnippet.customRequestFields;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CommentController.class)
@@ -61,7 +67,7 @@ class CommentControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("[테스트] 댓글 생성 :: 답변 식별자 기준")
+    @DisplayName("[테스트] 댓글 생성 :: 질문 식별자 기준")
     @WithMockUserCustom
     void postCommentTestWithQuestion() throws Exception {
         given(userService.getUser(Mockito.anyLong()))
@@ -84,7 +90,7 @@ class CommentControllerTest extends ControllerTest {
                     List.of(
                         constrainedFields.withPath("questionId").optional().type(JsonFieldType.NUMBER).description("질문 식별자"),
                         constrainedFields.withPath("answerId").optional().type(JsonFieldType.NUMBER).description("답변 식별자"),
-                        constrainedFields.withPath("body").optional().type(JsonFieldType.STRING).description("댓글 본문 내용")
+                        constrainedFields.withPath("body").type(JsonFieldType.STRING).description("댓글 본문 내용")
                     ).toArray(FieldDescriptor[]::new)
                 ),
                 responseHeaders(
@@ -117,7 +123,7 @@ class CommentControllerTest extends ControllerTest {
                     List.of(
                         constrainedFields.withPath("questionId").optional().type(JsonFieldType.NUMBER).description("질문 식별자"),
                         constrainedFields.withPath("answerId").optional().type(JsonFieldType.NUMBER).description("답변 식별자"),
-                        constrainedFields.withPath("body").optional().type(JsonFieldType.STRING).description("댓글 본문 내용")
+                        constrainedFields.withPath("body").type(JsonFieldType.STRING).description("댓글 본문 내용")
                     ).toArray(FieldDescriptor[]::new)
                 ),
                 responseHeaders(
@@ -127,10 +133,63 @@ class CommentControllerTest extends ControllerTest {
     }
 
     @Test
-    void patchCommentTest() {
+    @DisplayName("[테스트] 댓글 수정")
+    @WithMockUserCustom
+    void patchCommentTest() throws Exception {
+        given(commentService.findComment(Mockito.anyLong()))
+            .willReturn(comment);
+
+        given(commentMapper.commentDtoPatchToComment(Mockito.any(CommentDto.Patch.class)))
+            .willReturn(comment);
+
+        given(commentService.updateComment(Mockito.any(Comment.class)))
+            .willReturn(comment);
+
+        given(commentMapper.commentToCommentResponseDto(Mockito.any(Comment.class)))
+            .willReturn(commentDtoResponse);
+
+        ConstrainedFields constrainedFields = new ConstrainedFields(CommentDto.Patch.class);
+
+        patchResource(DEFALUT_URL, new CommentDto.Patch(1L, "Patch comment body"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.body.data.commentId").isNotEmpty())
+            .andExpect(jsonPath("$.body.data.body").isNotEmpty())
+            .andDo(restDocs.document(
+                customRequestFields(
+                    "custom-request",
+                    List.of(
+                        constrainedFields.withPath("commentId").type(JsonFieldType.NUMBER).description("댓글 식별자"),
+                        constrainedFields.withPath("body").type(JsonFieldType.STRING).description("댓글 본문 내용")
+                    ).toArray(FieldDescriptor[]::new)
+                ),
+                relaxedResponseFields(
+                    beneathPath("body.data").withSubsectionId("data"),
+                    List.of(
+                        fieldWithPath("user").type(JsonFieldType.OBJECT).description("회원 데이터"),
+                        fieldWithPath("commentId").type(JsonFieldType.NUMBER).description("댓글 식별자"),
+                        fieldWithPath("body").type(JsonFieldType.STRING).description("댓글 본문 내용"),
+                        fieldWithPath("createdDate").type(JsonFieldType.STRING).description("댓글 생성 일자"),
+                        fieldWithPath("modifiedDate").type(JsonFieldType.STRING).description("댓글 최종 수정 일자")
+                    )
+                )
+            ));
     }
 
     @Test
-    void deleteComment() {
+    @DisplayName("[테스트] 댓글 삭제")
+    @WithMockUserCustom
+    void deleteCommentTest() throws Exception {
+        given(commentService.findComment(Mockito.anyLong()))
+            .willReturn(comment);
+
+        doNothing().when(commentService).deleteComment(Mockito.anyLong());
+
+        deleteResource(DEFALUT_URL + "/{comment-id}", 1L)
+            .andExpect(status().isNoContent())
+            .andDo(restDocs.document(
+                pathParameters(
+                    parameterWithName("comment-id").description("댓글 식별자")
+                )
+            ));
     }
 }
