@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import CommentLi from "./CommentLi";
@@ -32,15 +32,15 @@ function CommentsDiv({ comments, answerId, questionId }) {
   const { login } = useSelector(state => state.loginInfoReducer);
   const [writeMode, setWriteMode] = useState(false)
   const [writeComment, setWriteComment] = useState('')
-  const textarea = useRef();
+  const textareaRef = useRef();
 
   const handleResizeHeight = () => {
-    textarea.current.style.height = 'auto';
-    textarea.current.style.height = textarea.current.scrollHeight + 'px'
+    textareaRef.current.style.height = 'auto';
+    textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px'
   }
   const handleWriteButton = () => {
     if (writeMode) {
-      if (writeComment.length === 0) alert("코멘트를 입력하세요")
+      if (writeComment.length === 0) setWriteMode(false)
       else if (window.confirm("코멘트를 등록합니다") === true) {
         const data = { body: writeComment }
         if (answerId) {
@@ -64,6 +64,13 @@ function CommentsDiv({ comments, answerId, questionId }) {
       handleResizeHeight();
     }
   }
+
+  useEffect(()=>{
+    if(writeMode){
+      textareaRef.current.focus();
+    }
+  },[writeMode])
+
   return (
     <CmtDiv>
       {comments.length !== 0 &&
@@ -72,7 +79,7 @@ function CommentsDiv({ comments, answerId, questionId }) {
         </ul>
       }
       {writeMode ?
-        <CommentTextarea ref={textarea} onClick={handleResizeHeight} onKeyUp={handleComment} />
+        <CommentTextarea ref={textareaRef} onClick={handleResizeHeight} onKeyUp={handleComment} />
         : null}
       <span className={writeMode ? "addCmt" : ""} onClick={handleWriteButton}>Add a comment</span>
     </CmtDiv>
