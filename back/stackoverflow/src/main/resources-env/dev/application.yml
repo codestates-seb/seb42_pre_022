@@ -42,6 +42,13 @@ spring:
             scope:
               - email
               - profile
+  thymeleaf:
+    prefix: classpath:/mail-templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    check-template-location: true
+
 logging:
   level:
     org.hibernate.SQL: trace

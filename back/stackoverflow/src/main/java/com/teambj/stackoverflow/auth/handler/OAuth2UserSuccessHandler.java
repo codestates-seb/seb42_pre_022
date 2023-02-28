@@ -1,19 +1,13 @@
 package com.teambj.stackoverflow.auth.handler;
 
-import com.teambj.stackoverflow.auth.CustomAuthorityUtils;
 import com.teambj.stackoverflow.auth.JwtTokenizer;
 import com.teambj.stackoverflow.auth.PrincipalDetails;
-import com.teambj.stackoverflow.auth.service.OAuth2UserDetailsService;
-
-import com.teambj.stackoverflow.domain.user.entity.Reputation;
-import com.teambj.stackoverflow.domain.user.entity.User;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.ServletException;
@@ -26,27 +20,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@Slf4j
 public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+
+
     private final JwtTokenizer jwtTokenizer;
+    @Value("${domain}")
+    private String domain;
 
 
     public OAuth2UserSuccessHandler(JwtTokenizer jwtTokenizer) {
         this.jwtTokenizer = jwtTokenizer;
-
     }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
         String accessToken = delegateAccessToken(authentication);
-        String refreshToken = delegateRefreshToken(authentication);
+//        String refreshToken = delegateRefreshToken(authentication);
 
-        String uri = createURI(accessToken, refreshToken).toString();
+        String uri = createURI(accessToken).toString();
         getRedirectStrategy().sendRedirect(request, response, uri);
 
 
         response.setHeader("Authorization",  "Bearer " + accessToken);
-        response.setHeader("Refresh", refreshToken);
     }
 
 
@@ -65,30 +62,31 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         return jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
     }
 
-    private String delegateRefreshToken(Authentication authentication) {
+//    private String delegateRefreshToken(Authentication authentication) {
+//
+//        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+//        String subject = principalDetails.getEmail();
+//        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
+//        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
+//
+//        return jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
+//    }
 
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        String subject = principalDetails.getEmail();
-        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
-        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
+    private URI createURI(String accessToken) {
 
-        return jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
-    }
+        String host = domain.replace(":8080", "");
+        String host2 = host.replace("http://", "");
 
-    private URI createURI(String accessToken, String refreshToken) {
-        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-        queryParams.add("Authorization", "Bearer_" + accessToken);
-        queryParams.add("Refresh", refreshToken);
 
         return UriComponentsBuilder
                 .newInstance()
                 .scheme("http")
-                .host("localhost")
+                .host(host2)
                 .port(3000)
-                .path("/oauth2/redirect")
-                .queryParams(queryParams)
-                .build()
-                .toUri();
+                .path("/token")
+                .queryParam("Authorization", "Bearer_" + accessToken)
+                .build().toUri();
     }
 
 }
+

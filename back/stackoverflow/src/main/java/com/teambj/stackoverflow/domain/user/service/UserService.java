@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import java.util.*;
 
 @Service
@@ -34,7 +35,7 @@ public class UserService {
         this.confirmationTokenService = confirmationTokenService;
     }
 
-    public User createUser(User user) {
+    public User createUser(User user) throws MessagingException {
 
         validateDuplicateUser(user.getEmail());
 
