@@ -86,6 +86,16 @@ function LoginSignupForm() {
 
   // TODO 1: Signup 버튼에 구현할 함수 만들기 -> 완료!
 
+  // axios post 함수 -> response data와 error를 모두 활용 가능
+  const postLoginForm = async (url, data) => {
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}${url}`, data)
+      return response.data;
+    } catch (err) {
+      return err;
+    }
+  }
+
   // signup, login 버튼을 눌렀을 때 실행되는 함수 (유효성 검사, 서버 요청 실행)
   const signupButtonHandler = (e) => {
     e.preventDefault();
@@ -110,24 +120,27 @@ function LoginSignupForm() {
         "email": state.emailValue,
         "password": state.passwordValue
       }
-      console.log(req);
-      postData("/users", req)
-      const email = req.email;
-      const data = "";
-      dispatch(signupActions.changeDisplaynameValue({ data }));
-      dispatch(signupActions.changeEmailValue({ data }));
-      dispatch(signupActions.changePasswordValue({ data }));
-      alert(`Registration email sent to ${email}. Open this email to finish signup.`)
-      navigate("/users/login");
-    }
-  }
-
-  const postLogin = async (url, data) => {
-    try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}${url}`, data)
-      return response.data;
-    } catch (err) {
-      return err;
+      postLoginForm("/users", req)
+        .then(res => {
+          console.log(res);
+          if (res.header) {
+            const email = req.email;
+            const data = "";
+            dispatch(signupActions.changeDisplaynameValue({ data }));
+            dispatch(signupActions.changeEmailValue({ data }));
+            dispatch(signupActions.changePasswordValue({ data }));
+            alert(`Registration email sent to ${email}. Open this email to finish signup.`)
+            navigate("/users/login");
+          }
+          else if(res.response.data.status === 409) {
+            alert("This email is already signed up.");
+            return;
+          }
+          else {
+            alert("Sign up error!");
+            return;
+          }
+        })
     }
   }
 
@@ -152,7 +165,7 @@ function LoginSignupForm() {
         "username": state.loginEmail,
         "password": state.loginPassword
       }
-      postLogin("/users/login", req)
+      postLoginForm("/users/login", req)
         .then(res => {
           if (res.accessToken) {
             localStorage.setItem("accessToken", JSON.stringify(res.accessToken));
