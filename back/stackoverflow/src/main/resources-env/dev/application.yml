@@ -1,5 +1,6 @@
 running: dev
 domain: http://ec2-15-164-213-223.ap-northeast-2.compute.amazonaws.com:8080
+S3domain: http://seb42-pre-022.s3-website.ap-northeast-2.amazonaws.com:80
 
 spring:
   profiles:
