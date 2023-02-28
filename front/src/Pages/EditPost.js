@@ -96,7 +96,7 @@ function EditPost() {
   const [editTitle, setEditTitle] = useState(post?.title)
   const [editBody, setEditBody] = useState(post?.body)
   const [editTags, setEditTags] = useState(() => {
-    return !question?.tagList ? [] : question?.tagList
+    return question?.tagList ? question?.tagList.map(tag => tag.tagName) : []
   })
   const patchPost = () => {
     if (editBody === post.body && editTitle === post.title) alert("변경 사항이 없습니다")
@@ -119,6 +119,7 @@ function EditPost() {
     }
   }
 
+  console.log(editTags)
   return (
     <div className="content">
       <HelmetTitle title={"Edit - Stack Overflow"} />
@@ -141,21 +142,19 @@ function EditPost() {
               <div dangerouslySetInnerHTML={{ __html: sanitize(editBody) }} />
             </div>
             <div className="tags">
-              <label>Tags</label>
-              {!isAnswer && 
-                <>
-                <TagEditor tags={editTags} setTags={setEditTags}/>
+              {!isAnswer && <>
+                <label>Tags</label>
+                <TagEditor tags={editTags} setTags={setEditTags} />
                 {editTags?.length === 5 && <span className="error">Please enter no more than 5 tags.</span>}
-                </>
-              }
+              </>}
             </div>
             <div className="submit">
               <BasicBlueButton onClick={patchPost}>Save edits</BasicBlueButton>
               <Link className="linktext" onClick={() => navigate(-1)}>Cancel</Link>
             </div>
-            {post.comments?.length ?
-              <CommentsDiv comments={post.comments} questionId={isAnswer ? null : post.questionId} answerId={isAnswer ? post.answerId : null} />
-              : null}
+            {post.comments?.length &&
+              <CommentsDiv comments={post.comments} questionId={!isAnswer && post.questionId} answerId={isAnswer && post.answerId} />
+            }
           </EditPostDiv>
           <Aside />
         </EditContainerMain>

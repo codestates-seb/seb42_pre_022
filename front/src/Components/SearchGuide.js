@@ -23,12 +23,35 @@ function SearchGuide() {
   >div:nth-child(1){
     position: absolute;
     left: 0px;
-    transform: translate3d(88.4px, 0px, 0px);
+    transform: translate3d(163.2px, 0px, 0px);
     display: block;
     height: 12px;
     width: 12px;
     z-index: -1;
     top: -6px;
+    color:var(--white);
+    :before{
+      content: '';
+      transform: rotate(45deg);
+      display: block;
+      height: 12px;
+      position: absolute;
+      width: 12px;
+      z-index: -1;
+    }
+    :after{
+      content: '';
+      transform: rotate(45deg);
+      box-shadow: -1px -1px 1px 0 hsla(0,0%,0%,0.12);
+      top: 1px;
+      background: currentColor;
+      border-radius: 1.5px;
+      display: block;
+      height: 12px;
+      position: absolute;
+      width: 12px;
+      z-index: -1;
+    }
   }
   >div:nth-child(2){
     display: none;
@@ -55,17 +78,20 @@ function SearchGuide() {
 const SearchHint = styled.div`
   padding: 12px;
   display: flex;
+  color: var(--fc-medium);
   >div{
     flex-basis: 50%;
     color: var(--fc-medium);
     >div{
       margin-bottom: ${(props) => props.end ? "0" : "12px"};
+      font-size: 13px;
       >span:nth-child(2){
         color: var(--black-500)
       }
     }
   }
 `
+
 
   return (
     <SearchGuideBox>
@@ -75,12 +101,10 @@ const SearchHint = styled.div`
       <div></div>
       <SearchHint>
         <div>
-          <div><span>[tag]</span><span>search within a tag</span></div>
           <div end={1}><span>answer:0</span><span>unanswered</span></div>
         </div>
         <div>
-          <div><span>[tag]</span><span>search within a tag</span></div>
-          <div end={1}><span>answer:0</span><span>unanswered</span></div>
+          <div end={1}><span>[tag]</span><span>search within a tag</span></div>
         </div>
       </SearchHint>
     </SearchGuideBox>
