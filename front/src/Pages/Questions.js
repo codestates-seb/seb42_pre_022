@@ -176,6 +176,7 @@ const QuestionsContent = styled.div`
 function Questions() {
   const filter = useSelector((state)=> state.filter);
   const pages = useSelector((state)=> state.pages);
+  const isLogin = useSelector((state)=> state.loginInfoReducer.login)
   const dispatch = useDispatch();
   const [isFilterOpen, setFilterOpen] = useState(false);
   const filterOpenHandler = () => {
@@ -188,7 +189,7 @@ function Questions() {
   const [filterNsortedposts, setFilterNsortedposts] = useState([]);
   const getData = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/questions}`)
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/questions`)
       let filtered = filteringposts(response.data.body.data,filter)
       // console.log(filtered)
       let sorted = sortingposts(filtered,filter)
@@ -216,7 +217,7 @@ function Questions() {
           <PageHeader>
             <h1>All Questions</h1>
             <div>
-              <BasicBlueButton to="/askquestion">Ask Questions</BasicBlueButton>
+              <BasicBlueButton to={isLogin ?"/askquestion" :"/users/login"}>Ask Questions</BasicBlueButton>
             </div>
           </PageHeader>
           <div>
