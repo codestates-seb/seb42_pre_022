@@ -18,6 +18,7 @@ import HelmetTitle from "./Components/HelmetTitle";
 import { useSelector } from "react-redux";
 import { loginInfoActions } from "./Reducers/loginInfoReducer";
 import getUserInfo from "./util/getUserInfo";
+import ErrorPage from "./Pages/ErrorPage";
 
 function App() {
   const { pathname } = useLocation();
@@ -36,6 +37,7 @@ function App() {
         dispatch(loginInfoActions.changeLoginInfo(actions))
       })
     }
+    window.scrollTo(0,0)
   }, [pathname])
   
   return (
@@ -57,6 +59,7 @@ function App() {
             <Route path="/users" element={<Users />} />
             <Route path="/users/mypage" element={<Mypage />} />
             <Route path="/token" element={<Token />} />
+            <Route path="/*" element={<ErrorPage />} />
           </Routes>
         </div>
         {/*배포 이후 배포한 주소 길이에 맞게 slice 변경*/}
