@@ -3,7 +3,7 @@ import axios from "axios";
 async function postData(url, data) {
   const config = {
     headers: {
-      "Authorization": JSON.parse(sessionStorage.getItem("accessToken"))
+      "Authorization": JSON.parse(localStorage.getItem("accessToken"))
     }
   }
   try {

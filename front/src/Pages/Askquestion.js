@@ -101,7 +101,7 @@ const FormInput = styled(SearchInput)`
   ::placeholder {color: var(--black-200)}
 `
 
-const TagInput = styled.div`
+export const TagInput = styled.div`
   flex: 1;
   display: flex;
   width: 100%;
@@ -178,7 +178,7 @@ function Askquestion() {
   const navigate = useNavigate();
   // 작성 가능 상태를 제어하는 상태는 useState 활용
   const [titleDone, setTitleDone] = useState(() => {
-    const titleDoneData = sessionStorage.getItem("titleDone");
+    const titleDoneData = localStorage.getItem("titleDone");
     if (titleDoneData !== null && state.titleValue !== "") {
       return JSON.parse(titleDoneData);
     } else {
@@ -186,7 +186,7 @@ function Askquestion() {
     }
   })
   const [questionDone, setQuestionDone] = useState(() => {
-    const questionDoneData = sessionStorage.getItem("questionDone");
+    const questionDoneData = localStorage.getItem("questionDone");
     if (questionDoneData !== null && state.questionValue.replaceAll(/<[^>]*>/g, '') !== "") {
       return JSON.parse(questionDoneData);
     } else {
@@ -204,7 +204,7 @@ function Askquestion() {
   // 삭제 버튼 핸들러
   const discardPost = () => {
     if (window.confirm("Are you sure you want to discard this question?")) {
-      sessionStorage.removeItem("titleValue"); sessionStorage.removeItem("questionValue"); sessionStorage.removeItem("titleDone"); sessionStorage.removeItem("questionDone"); sessionStorage.removeItem("tagStart");
+      localStorage.removeItem("titleValue"); localStorage.removeItem("questionValue"); localStorage.removeItem("titleDone"); localStorage.removeItem("questionDone"); localStorage.removeItem("tagStart");
       window.scrollTo(0, 0);
       window.location.reload();
     }
@@ -239,7 +239,7 @@ function Askquestion() {
           .then(res => {
             if (res.header.code === 201) {
               alert("Question posted successfully!");
-              sessionStorage.removeItem("titleValue"); sessionStorage.removeItem("questionValue"); sessionStorage.removeItem("titleDone"); sessionStorage.removeItem("questionDone"); sessionStorage.removeItem("tagStart");
+              localStorage.removeItem("titleValue"); localStorage.removeItem("questionValue"); localStorage.removeItem("titleDone"); localStorage.removeItem("questionDone"); localStorage.removeItem("tagStart");
               navigate("/");
             } else {
               alert("Question failed because of an error.");
@@ -259,17 +259,17 @@ function Askquestion() {
   const titleNextHandler = () => {
     if (state.titleValue.length > 0) {
       setTitleDone(true);
-      sessionStorage.setItem("titleDone", true);
+      localStorage.setItem("titleDone", true);
     } else {
       setTitleDone(false);
-      sessionStorage.setItem("titleDone", false);
+      localStorage.setItem("titleDone", false);
     }
   }
 
   // 질문 본문 관련 함수 -> 입력 값 상태 관리, 다음으로 넘어가기
   const questionNextHandler = () => {
     setTagStart(true);
-    sessionStorage.setItem("tagStart", true);
+    localStorage.setItem("tagStart", true);
   }
   const questionInputHandler = (question) => {
     const data = question;
@@ -277,10 +277,10 @@ function Askquestion() {
     dispatch(askquestionActions.changeQuestionValue({ data }));
     if (originData.length >= 20) {
       setQuestionDone(true);
-      sessionStorage.setItem("questionDone", true)
+      localStorage.setItem("questionDone", true)
     } else {
       setQuestionDone(false);
-      sessionStorage.setItem("questionDone", false)
+      localStorage.setItem("questionDone", false)
     }
   }
 

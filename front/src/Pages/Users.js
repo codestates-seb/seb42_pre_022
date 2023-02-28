@@ -1,7 +1,10 @@
+import axios from "axios";
 import styled from "styled-components";
 import SearchBar from "../Components/SearchBar";
 import UserCard from "../Components/UserCard";
 import HelmetTitle from "../Components/HelmetTitle";
+import Pagination from "../Components/Pagination";
+import { useState, useEffect } from "react";
 
 const UsersContainer = styled.div`
   width: calc(100%);
@@ -68,9 +71,6 @@ const DataControllerBtn = styled.a`
   user-select: none;
 `
 const UserCardsDiv = styled.div`
-  /* display: flex;
-  justify-content: space-between;
-  flex-flow: row wrap; */
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   > div {
@@ -87,52 +87,67 @@ const UserCardsDiv = styled.div`
     grid-template-columns: repeat(1, minmax(0, 1fr));
   }
 `
+const Bottomdiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 25px 0 10px;
+  > a {
+    font-weight: bold;
+  }
+
+  @media screen and (max-width: 980px) {
+    flex-direction: column;
+    align-items: normal;
+    > div {
+      justify-content: end;
+    }
+  }
+`
 
 function Users() {
+  const [users, setUsers] = useState([]);
+  const [curPage, setCurPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [error, setError] = useState(null);
+
+  const getUsers = async (page) => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/users?page=${page}`)
+      setUsers(response.data.body.data)
+      setTotalPages(response.data.body.totalPages)
+    } catch (err) {
+      setError(err)
+    }
+  }
+  
+  useEffect(() => {
+    getUsers(curPage)
+  }, [curPage])
+
   return (
     <div className="content">
-      <HelmetTitle title="Users - Stack Overflow"/>
-      <UsersContainer>
-        <UsersH1>Users</UsersH1>
-        <SearchFilterDiv>
-          <SearchBar placeholder="Filter by user" />
-          <DataController>
-            <DataControllerBtn start={1} selected={1}><div>Reputation</div></DataControllerBtn>
-            <DataControllerBtn end={1} ><div>New users</div></DataControllerBtn>
-          </DataController>
-        </SearchFilterDiv>
-        <UserCardsDiv>
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-          <UserCard username="이름" reputation="100" />
-        </UserCardsDiv>
-      </UsersContainer>
+      {error ? <h1 className="error">Users ERROR</h1> : <>
+        <HelmetTitle title="Users - Stack Overflow" />
+        <UsersContainer>
+          <UsersH1>Users</UsersH1>
+          <SearchFilterDiv>
+            <SearchBar placeholder="Filter by user" />
+            <DataController>
+              <DataControllerBtn start={1} selected={1}><div>Reputation</div></DataControllerBtn>
+              <DataControllerBtn end={1} ><div>New users</div></DataControllerBtn>
+            </DataController>
+          </SearchFilterDiv>
+          <UserCardsDiv>
+            {users && users.map(user => <UserCard key={user.userId} userimg={user.profileImage} username={user.displayName} reputation={user.reputation} />)}
+          </UserCardsDiv>
+          <Bottomdiv>
+            <a className="linktext">weekly / monthly / quarterly reputation leagues</a>
+            <Pagination curPage={curPage} setCurPage={setCurPage} totalPages={totalPages}/>
+          </Bottomdiv>
+        </UsersContainer>
+      </>}
     </div>
   );
 }

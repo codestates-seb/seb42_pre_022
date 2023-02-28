@@ -2,7 +2,7 @@ import styled from "styled-components"
 import { gotoPrev, gotoNext, selectPage } from "../Reducers/paginationReducer";
 import { useSelector, useDispatch } from "react-redux";
 
-const Pager = styled.div`
+export const Pager = styled.div`
   margin: 20px 0;
   float: left;
   display: flex;
@@ -18,7 +18,7 @@ export const PageBtn = styled.a`
   line-height: calc(25/13);
   padding: 0 8px;
   text-decoration: none;
-  cursor: pointer;
+  cursor: ${(props) => props.clear ? "transparent" : "pointer"};
 `
 
 function PaginationLeft () {

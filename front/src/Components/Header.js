@@ -12,6 +12,7 @@ import { ReactComponent as AchiveIcon } from "../assets/achiveIcon.svg";
 import { ReactComponent as HelpIcon } from "../assets/helpIcon.svg";
 import { ReactComponent as ExchangeIcon } from "../assets/exchangeIcon.svg";
 import logo from "../assets/sprites.svg"
+import SearchGuide from "./SearchGuide";
 
 const Containerheader = styled.header`
   display: flex;
@@ -197,8 +198,9 @@ function Header() {
 
   const logoutHandler = () => {
     if (window.confirm("Are you sure you want to log out?")) {
-      // 로그아웃 버튼 -> accessToken, userInfo 비우기, login 상태 바꾸기
-      sessionStorage.removeItem("accessToken");
+      // 로그아웃 버튼 -> accessToken, userInfo 비우기, 작성하던 질문 상태 비우기, login 상태 바꾸기
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("titleValue"); localStorage.removeItem("questionValue"); localStorage.removeItem("titleDone"); localStorage.removeItem("questionDone"); localStorage.removeItem("tagStart");
       const actions = {
         login: false,
         userInfo: null
@@ -229,6 +231,7 @@ function Header() {
           <HeadTextTabLi>For Teams</HeadTextTabLi>
         </HeadTextTabUl>
         <SearchBar placeholder="Search..." />
+        {/* <SearchGuide /> */}
         <IconButtonUl>
           <HeadIconTabLi><SearchIcon /></HeadIconTabLi>
           {login && loginTabList.map((el, i) => <HeadIconTabLi key={i}>{el}</HeadIconTabLi>)}
