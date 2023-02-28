@@ -120,16 +120,21 @@ function Question() {
   }
   const recentModified = () => {
     if (!question.createdDate) return;
-    let recentDate = question.modifiedDate ? new Date(question.modifiedDate) : new Date(question.createdDate)
+    let recentDate = question.createAnswer !== question.modifiedDate ? new Date(question.modifiedDate) : new Date(question.createdDate)
     if (answers) {
       recentDate = answers.reduce((acc, answer) => {
-        const recentAnswerDate = answer.modifiedDate ? new Date(answer.modifiedDate) : new Date(answer.createdDate)
+        const recentAnswerDate = answer.createAnswer !== answer.modifiedDate ? new Date(answer.modifiedDate) : new Date(answer.createdDate)
         return recentAnswerDate > acc ? recentAnswerDate : acc
       }, recentDate)
     }
     return recentDate
   }
   const recentModifiedDate = recentModified()
+
+  const wirteAnswer = (p) => {
+    if (!login) alert("답변을 등록하려면 로그인해야 합니다")
+    else setCreateAnswer(p)
+  }
 
   useEffect(() => {
     dispatch(editPostActions.changeNowQ(question))
@@ -143,7 +148,7 @@ function Question() {
         <QuestionContainerMain >
           <div>
             <h1><a onClick={() => window.location.reload()}>{question.title}</a></h1>
-            <BasicBlueButton to="/askquestion">Ask Question</BasicBlueButton>
+            <BasicBlueButton to={login ? "/askquestion": "/users/login"}>Ask Question</BasicBlueButton>
           </div>
           <div>
             <QuestionDetailDiv>
@@ -173,7 +178,7 @@ function Question() {
               </div>
               <div>
                 <h2>Your Answer</h2>
-                <WriteBoard postBody={createAnswer} inputHandler={(p) => setCreateAnswer(p)} />
+                <WriteBoard postBody={createAnswer} inputHandler={wirteAnswer} />
                 {login ? null : <LoginWith />}
                 <div className="postanswer">
                   <BasicBlueButton onClick={postAnswer} to={`/questions/${question_id}`}>Post your Answer</BasicBlueButton>

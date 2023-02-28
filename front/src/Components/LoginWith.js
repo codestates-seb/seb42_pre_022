@@ -52,7 +52,7 @@ function LoginWith() {
     );
       // .then(res => {
       //   const accessToken = res.accessToken;
-      //   sessionStorage.setItem("accessToken", JSON.stringify(accessToken));
+      //   localStorage.setItem("accessToken", JSON.stringify(accessToken));
       //   dispatch(loginInfoActions.saveAccessToken(accessToken));
       //   return accessToken
       // })
@@ -60,7 +60,7 @@ function LoginWith() {
       //   axios.get(`${process.env.REACT_APP_API_URL}/users/principal`, { headers: { "Authorization": accessToken } })
       //     .then(res => {
       //       const userInfo = res.data.body.data;
-      //       sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
+      //       localStorage.setItem("userInfo", JSON.stringify(userInfo));
       //       const actions = {
       //         login: true,
       //         userInfo
