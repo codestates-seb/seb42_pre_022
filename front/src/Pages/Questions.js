@@ -104,7 +104,6 @@ const DataControllerBtn = styled.a`
   cursor: pointer;
   line-height: 15/13;
   position: relative;
-  outline: none;
   text-align: center;
   text-decoration: none;
   user-select: none;
@@ -119,6 +118,10 @@ const DataControllerBtn = styled.a`
     right: 0.8em;
     top: calc(50% - 2px);
     z-index: 30;
+  }
+  :active{
+    box-shadow: 0 0 0 4px hsla(210,8%,15%,0.1);
+    outline: none;
   }
 `
 
@@ -140,6 +143,13 @@ const FilterBtn = styled.div`
   text-align: center;
   text-decoration: none;
   user-select: none;
+  &:active{
+    border-color: var(--powder-700);
+    background-color: var(--powder-300);
+    color: var(--powder-900);
+  }
+  &:focus{
+    box-shadow: 0 0 0 4px hsla(206, 100%, 40%, .15);
   }
   svg{
   width: 18px;
@@ -198,13 +208,13 @@ function Questions() {
       // 왜 filtered 말고 상태 불러오면 0이지..
       dispatch(setTotalposts(filtered.length))
       setFilterOpen(false)
-
     } catch (err) {
       console.log(err)
     }
   }
   useEffect(() => {
-    getData().then()
+    getData()
+
     console.log("렌더링중")
       },[filter])
   const start=(pages.currentpage-1)*pages.pagesize
