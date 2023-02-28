@@ -8,7 +8,7 @@ function Token() {
 
   useEffect(() => {
     const accessToken = searchParams.get("Authorization");
-    localStorage.setItem("accessToken", accessToken);
+    localStorage.setItem("accessToken", JSON.stringify(accessToken));
     navigate("/");
   }, [])
 
