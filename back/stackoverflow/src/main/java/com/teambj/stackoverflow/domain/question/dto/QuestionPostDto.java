@@ -12,9 +12,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class QuestionPostDto {
-//    @NotNull
-//    private Long userId;
-
     private String title;
 
     @NotBlank
