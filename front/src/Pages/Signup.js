@@ -7,6 +7,9 @@ import { ReactComponent as SignupUnlockIcon } from "../assets/signupunlockicon.s
 import { ReactComponent as SignupTagIcon } from "../assets/signuptagicon.svg";
 import { ReactComponent as SignupAchieveIcon } from "../assets/signupachieveicon.svg";
 import HelmetTitle from "../Components/HelmetTitle";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const SignupContainer = styled.div`
   width: 100%;
@@ -68,6 +71,17 @@ const SignupFormNotice = styled(FormNoticeDiv)`
 `
 
 function Signup() {
+  const navigate = useNavigate();
+  const { login } = useSelector(state => state.loginInfoReducer);
+  const accessToken = localStorage.getItem("accessToken");
+
+  // 로그인 되어있으면 메인 페이지로 강제 이동시키기
+  useEffect(() => {
+    if (accessToken && !login) {
+      navigate("/");
+    }
+  },[]);
+
   return (
     <>
       <HelmetTitle title="Sign Up - Stack Overflow" />

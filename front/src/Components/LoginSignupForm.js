@@ -7,6 +7,7 @@ import { signupActions } from "../Reducers/signupReducer";
 import { useState } from "react";
 import { ReactComponent as ErrorIcon } from "../assets/errorIcon.svg";
 import postData from "../util/postData";
+import axios from "axios";
 
 
 const LoginFormContainer = styled.div`
@@ -121,6 +122,15 @@ function LoginSignupForm() {
     }
   }
 
+  const postLogin = async (url, data) => {
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}${url}`, data)
+      return response.data;
+    } catch (err) {
+      return err;
+    }
+  }
+
   const loginButtonHandler = (e) => {
     e.preventDefault();
     if (!emailTest.test(state.loginEmail) || !passwordTest.test(state.loginPassword)) {
@@ -142,24 +152,18 @@ function LoginSignupForm() {
         "username": state.loginEmail,
         "password": state.loginPassword
       }
-      postData("/users/login", req)
+      postLogin("/users/login", req)
         .then(res => {
-          const accessToken = res.accessToken;
-          if (accessToken) {
-            localStorage.setItem("accessToken", JSON.stringify(accessToken));
+          if (res.accessToken) {
+            localStorage.setItem("accessToken", JSON.stringify(res.accessToken));
             const data = "";
             dispatch(signupActions.changeLoginEmail({ data }));
             dispatch(signupActions.changeLoginPassword({ data }));
             navigate(-1);
-          }
-          // else {
-          //   alert("Log in error!");
-          //   return;
-          // }
-          else if (res.header.message === "등록되지 않은 이메일/비밀번호 입니다.") {
+          } else if (res.response.data.message === "등록되지 않은 사용자입니다.") {
             alert("Check your email and password.");
             return;
-          } else if (res.header.message === "이메일 인증이 되지 않았습니다.") {
+          } else if (res.response.data.message === "이메일 인증이 되지 않았습니다.") {
             alert("Check your registration email.");
             return;
           } else {
@@ -167,13 +171,6 @@ function LoginSignupForm() {
             return;
           }
         })
-
-      // TODO: 응답에 따른 반응 설정
-      // TODO 1: 아이디 및 비밀번호를 확인해 주세요 -> 등록된 아이디가 아닐 때, 등록된 아이디인데 비밀번호 다를 때
-      // TODO 2: 이메일 인증을 진행해 주세요(10분 후 만료) -> 등록된 아이디, 비밀번호가 맞는데 이메일 인증 안 했을 때
-      // TODO -> alert로 경고창 띄운 후 return;적어서 다음으로 넘어가지 않게 함
-      // TODO 3: 로그인 성공 -> GET 요청으로 
-
     }
   }
 
