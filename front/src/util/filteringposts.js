@@ -9,10 +9,10 @@ export const allquestions= [
     "displayName": null,
     "answerCount": 5,
     "viewCount": 5,
-    "createdAt": "2023-01-03T09:48:00.000Z",
+    "createdDate": "2023-01-03T09:48:00.000Z",
     "modifiedAt": null,
     "closedAt": null,
-    "tags": ["javascript","angular"]
+    "tagList": ["javascript","angular"]
   },
   {
       "questionId": 14343,
@@ -22,10 +22,10 @@ export const allquestions= [
       "displayName": null,
       "answerCount": 0,
       "viewCount": 0,
-      "createdAt": "2023-02-24T03:48:00.000Z",
+      "createdDate": "2023-02-24T03:48:00.000Z",
       "modifiedAt": null,
       "closedAt": null,
-      "tags": ["angular"]
+      "tagList": ["angular"]
   },
 {
   "questionId": 323321,
@@ -35,10 +35,10 @@ export const allquestions= [
   "displayName": null,
   "answerCount": 2,
   "viewCount": 2,
-  "createdAt": "2023-01-23T07:48:00.000Z",
+  "createdDate": "2023-01-23T07:48:00.000Z",
   "modifiedAt": null,
   "closedAt": null,
-  "tags": ["javascript"]
+  "tagList": ["javascript"]
 },
 {
   "questionId": 341453,
@@ -51,7 +51,7 @@ export const allquestions= [
   "createdAt": "2023-01-29T20:48:00.000Z",
   "modifiedAt": null,
   "closedAt": null,
-  "tags": ["angular"]
+  "tagList": ["angular"]
 },
 {
   "questionId": 243434,
@@ -61,10 +61,10 @@ export const allquestions= [
   "displayName": null,
   "answerCount": 1,
   "viewCount": 1,
-  "createdAt": "2023-01-24T18:48:00.000Z",
+  "createdDate": "2023-01-24T18:48:00.000Z",
   "modifiedAt": null,
   "closedAt": null,
-  "tags": ["javascript","angular"]
+  "tagList": ["javascript","angular"]
 },
 {
   "questionId": 4324324,
@@ -74,10 +74,10 @@ export const allquestions= [
   "displayName": null,
   "answerCount": 4,
   "viewCount": 4,
-  "createdAt": "2023-02-27T14:48:00.000Z",
+  "createdDate": "2023-02-27T14:48:00.000Z",
   "modifiedAt": null,
   "closedAt": null,
-  "tags": ["javascript"]
+  "tagList": ["javascript"]
 },
 ]
 
@@ -91,7 +91,7 @@ export function filteringposts (posts,filter) {
       filtering = false
       for(let i of filter.tags){
         console.log(i)
-        if(filtering===false){filtering = post.tags.includes(i)}
+        if(filtering===false){filtering = post.tagList.includes(i)}
       }
     }
     return filtering
@@ -102,7 +102,7 @@ export function filteringposts (posts,filter) {
 export function sortingposts (posts,filter) {
   const sorted = posts 
   if(filter.newest){
-    sorted.sort((b,a)=>new Date(a.createdAt)-new Date(b.createdAt))
+    sorted.sort((b,a)=>new Date(a.createdDate)-new Date(b.createdDate))
   }
   return sorted
 }

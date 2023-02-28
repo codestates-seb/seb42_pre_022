@@ -180,7 +180,6 @@ function ExpandableFilterform({isFilterOpen}) {
     setTagsChecked(!tagsChecked)
     setOptionHandler(e)
   }
-  console.log(filter)
   return (
     <FilterForm>
       <div className={isFilterOpen ?"filter-open" :"filter-close"}>
