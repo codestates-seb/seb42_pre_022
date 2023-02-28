@@ -2,6 +2,9 @@ package com.teambj.stackoverflow.domain.question.service;
 
 import com.teambj.stackoverflow.auth.PrincipalDetails;
 import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
+import com.teambj.stackoverflow.domain.answer.entity.Answer;
+import com.teambj.stackoverflow.domain.answer.repository.AnswerRepository;
+import com.teambj.stackoverflow.domain.comment.entity.Comment;
 import com.teambj.stackoverflow.domain.comment.repository.CommentRepository;
 import com.teambj.stackoverflow.domain.comment.service.CommentService;
 import com.teambj.stackoverflow.domain.question.entity.Question;
@@ -35,9 +38,11 @@ public class QuestionService {
     private final CommentRepository commentRepository;
     private final CommentService commentService;
     private final QuestionTagRepository questionTagRepository;
+    private final AnswerRepository answerRepository;
 
     public QuestionService(QuestionRepository questionRepository, UserService userService, CustomBeanUtil beanUtil, TagService tagService, CommentRepository commentRepository, CommentService commentService,
-                           QuestionTagRepository questionTagRepository) {
+                           QuestionTagRepository questionTagRepository,
+                           AnswerRepository answerRepository) {
         this.questionRepository = questionRepository;
         this.userService = userService;
         this.beanUtil = beanUtil;
@@ -45,6 +50,7 @@ public class QuestionService {
         this.commentRepository = commentRepository;
         this.commentService = commentService;
         this.questionTagRepository = questionTagRepository;
+        this.answerRepository = answerRepository;
     }
 
     public Question createQuestion(Question question, List<String> tagName,
@@ -89,11 +95,20 @@ public class QuestionService {
 
     @Transactional(readOnly = true)
     public Question findQuestion(Long questionId) {
-        Question question = findVerifiedQuestionById(questionId);
+        Question findQuestion = findVerifiedQuestionById(questionId);
+        List<Question> questions = questionRepository.findQuestions(questionId);
 
-        questionRepository.save(question);
+        for (Question question : questions) {
+            List<Comment> questionComments = commentService.findQuestionComments(question.getQuestionId());
 
-        return question;
+            for (Comment comment : questionComments) {
+                comment.addQuestion(question);
+            }
+        }
+
+        questionRepository.save(findQuestion);
+
+        return findQuestion;
     }
 
     public Page<Question> getAllQuestions(int page) {
