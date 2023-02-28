@@ -18,7 +18,7 @@ const TagEditorBox = styled.div`
     font-size: 13px;
   } */
 `
-const TagEditorInput = styled.div`
+const TagEditorInputBox = styled.div`
   padding: 2px 9.1px 2px 2px;
   box-sizing: border-box;
   margin-top: 0px;
@@ -37,32 +37,29 @@ const TagEditorInput = styled.div`
   border-radius: 3px;
   color: var(--fc-dark);
   font-size: 13px;
-  input {
-    width: 19px;
-    padding: 0;
-    padding-left: calc(0.7em - 2px) ;
-    height: 29px;
-    box-sizing: content-box;
-    border: none;
-    box-shadow: none;
-    outline: 0;
-    background-color: transparent;
-  }
-  >input::placeholder{
-    color: var(--black-200);
-  }
-  >input:placeholder-shown {
-    min-width: 100%;
-  }
-  >input:focus{
-    width: auto;
-  }
-
   :focus-within{
     border-color: var(--blue-300);
     box-shadow: 0 0 0 4px hsla(206, 100%, 40%, .15);
   }
 `
+const TagsEditorInput = styled.input`
+  width:${(props) => props.width+"ch"};
+  padding: 0;
+  padding-left: calc(0.7em - 2px) ;
+  height: 29px;
+  box-sizing: content-box;
+  border: none;
+  box-shadow: none;
+  outline: 0;
+  background-color: transparent;
+  ::placeholder{
+    color: var(--black-200);
+  }
+  :placeholder-shown {
+    min-width: 100%;
+  }
+`
+
 const TagsinEditor = styled.span`
   list-style: none;
   align-items: center;
@@ -92,14 +89,19 @@ const TagsinEditor = styled.span`
     align-self: center;
     background-color: transparent;
     border-width: 0;
+    border-radius: 3px;
     color: inherit;
     cursor: pointer;
     display: flex;
     height: 16px;
     justify-content: center;
     margin-left: 4px;
-    padding: clamp(var(--su-static1), calc(var(--su-static1) * var(--su-base)), calc(var(--su-static1) * var(--su-base)));
+    padding: clamp(1px, 1px, 1px);
     width: 16px;
+    &:hover{
+      background-color: var(--powder-700);
+      color: var(--powder-100);
+    }
   }
   svg{
     width: 14px;
@@ -150,7 +152,7 @@ function TagEditor ({tags, setTags, setTagsChecked, customOption, setCustomOptio
   },[isEditMode])
   return(
     <TagEditorBox>
-      <TagEditorInput onClick={handleClick}>
+      <TagEditorInputBox onClick={handleClick}>
        <TagsinEditor>
          {tags.map((tag, index) => (
             <span key={index} className='tag'>
@@ -163,11 +165,12 @@ function TagEditor ({tags, setTags, setTagsChecked, customOption, setCustomOptio
             </span>
           ))}
         </TagsinEditor>
-        <input type="text" placeholder={!tags.length ?"e.g. javascript or python" :null}
+        <TagsEditorInput type="text" placeholder={!tags.length ?"e.g. javascript or python" :null}
           value={inputValue}
           ref={inputEl}
           onChange={inputChangeHander}
           onBlur={handleBlur}
+          width={inputValue.length+1}
           onKeyDown={(e) => {
           if (e.key === "Enter") {
             addTags(e)
@@ -175,7 +178,7 @@ function TagEditor ({tags, setTags, setTagsChecked, customOption, setCustomOptio
         }}
         />
         <span />
-      </TagEditorInput>
+      </TagEditorInputBox>
     </TagEditorBox>
   )
 
