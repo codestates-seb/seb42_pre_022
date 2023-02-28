@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { ReactComponent as EditCommentIcon } from "../assets/editCommentIcon.svg"
@@ -46,7 +46,7 @@ const EditCmtSpan = styled.span`
 `
 
 function CommentLi({ comment }) {
-  const { login, userInfo } = useSelector(state => state.loginInfoReducer);
+  const { userInfo } = useSelector(state => state.loginInfoReducer);
   const { editPost } = useSelector(state => state.editPostReducer);
   const { nowQ } = editPost
   const [editMode, setEditMode] = useState(false)
@@ -85,6 +85,11 @@ function CommentLi({ comment }) {
         .then(() => window.location.reload())
     }
   }
+  useEffect(()=>{
+    if(editMode){
+      textareaRef.current.focus();
+    }
+  },[editMode])
 
   return (
     <CmtLi writer={nowQ.userId === comment.user.userId ? 1 : null}>
