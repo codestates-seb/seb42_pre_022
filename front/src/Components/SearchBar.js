@@ -33,11 +33,11 @@ export const SearchInput = styled.input`
     box-shadow: 0 0 0 4px hsla(206, 100%, 40%, .15);
   }
 `
-function SearchBar( {placeholder} ) {
+function SearchBar( {placeholder, inputHandler} ) {
 
   return (
     <SearchBoxDiv>
-      <SearchInput type="text" maxLength={240} placeholder={placeholder} />
+      <SearchInput type="text" maxLength={240} placeholder={placeholder} onKeyUp={inputHandler}/>
       <SearchIcon />
     </SearchBoxDiv>
   )
