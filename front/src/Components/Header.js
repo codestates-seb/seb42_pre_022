@@ -12,6 +12,7 @@ import { ReactComponent as AchiveIcon } from "../assets/achiveIcon.svg";
 import { ReactComponent as HelpIcon } from "../assets/helpIcon.svg";
 import { ReactComponent as ExchangeIcon } from "../assets/exchangeIcon.svg";
 import logo from "../assets/sprites.svg"
+import SearchGuide from "./SearchGuide";
 
 const Containerheader = styled.header`
   display: flex;
@@ -229,6 +230,7 @@ function Header() {
           <HeadTextTabLi>For Teams</HeadTextTabLi>
         </HeadTextTabUl>
         <SearchBar placeholder="Search..." />
+        {/* <SearchGuide /> */}
         <IconButtonUl>
           <HeadIconTabLi><SearchIcon /></HeadIconTabLi>
           {login && loginTabList.map((el, i) => <HeadIconTabLi key={i}>{el}</HeadIconTabLi>)}

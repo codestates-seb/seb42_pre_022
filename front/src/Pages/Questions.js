@@ -176,6 +176,7 @@ const QuestionsContent = styled.div`
 function Questions() {
   const filter = useSelector((state)=> state.filter);
   const pages = useSelector((state)=> state.pages);
+  const isLogin = useSelector((state)=> state.loginInfoReducer.login)
   const dispatch = useDispatch();
   const [isFilterOpen, setFilterOpen] = useState(false);
   const filterOpenHandler = () => {
@@ -185,18 +186,25 @@ function Questions() {
     dispatch(filteringBy(keyword))
     dispatch(selectPage(1))
   }
-
   const [filterNsortedposts, setFilterNsortedposts] = useState([]);
-  // const [posts, error] = useGET('/questions')
+  const getData = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/questions`)
+      let filtered = filteringposts(response.data.body.data,filter)
+      // console.log(filtered)
+      let sorted = sortingposts(filtered,filter)
+      // console.log(sorted)
+      setFilterNsortedposts(sorted)
+      // 왜 filtered 말고 상태 불러오면 0이지..
+      dispatch(setTotalposts(filtered.length))
+      setFilterOpen(false)
+
+    } catch (err) {
+      console.log(err)
+    }
+  }
   useEffect(() => {
-    let filtered = filteringposts(allquestions,filter)
-    // console.log(filtered)
-    let sorted = sortingposts(filtered,filter)
-    // console.log(sorted)
-    setFilterNsortedposts(sorted)
-    // 왜 filtered 말고 상태 불러오면 0이지..
-    dispatch(setTotalposts(filtered.length))
-    setFilterOpen(false)
+    getData().then()
     console.log("렌더링중")
       },[filter])
   const start=(pages.currentpage-1)*pages.pagesize
@@ -209,7 +217,7 @@ function Questions() {
           <PageHeader>
             <h1>All Questions</h1>
             <div>
-              <BasicBlueButton to="/askquestion">Ask Questions</BasicBlueButton>
+              <BasicBlueButton to={isLogin ?"/askquestion" :"/users/login"}>Ask Questions</BasicBlueButton>
             </div>
           </PageHeader>
           <div>
@@ -218,9 +226,9 @@ function Questions() {
               <div>
                 <DataControllerBox>
                   <DataController>
-                    <DataControllerBtn onClick={()=>filteringHandler('newest')} start={1} selected={filter.newest}><div>Newest</div></DataControllerBtn>
-                    <DataControllerBtn onClick={()=>filteringHandler('unanswered')} middle="true" selected={filter.unanswered} ><div>Unanswered</div></DataControllerBtn>
-                    <DataControllerBtn end="true" >More</DataControllerBtn>
+                    <DataControllerBtn onClick={()=>filteringHandler('newest')} start={1} selected={filter.newest && !filter.unanswered}><div>Newest</div></DataControllerBtn>
+                    <DataControllerBtn onClick={()=>filteringHandler('unanswered')} middle="true" selected={filter.unanswered && !filter.newest} ><div>Unanswered</div></DataControllerBtn>
+                    <DataControllerBtn end="true" selected={filter.unanswered && filter.newest} >More</DataControllerBtn>
                   </DataController>
                   <Dropdown />
                   <FilterBtn onClick={filterOpenHandler}>
@@ -234,7 +242,7 @@ function Questions() {
           </div>
           <QuestionsContent>
             {!!onepage && onepage.map(ele=>{
-              return <QuestionsList key={ele.questionId} title={ele.title} body={ele.body} tags={ele.tags} createdAt={ele.createdAt} viewCount={ele.viewCount} answerCount={ele.answerCount}/>
+              return <QuestionsList key={ele.questionId} title={ele.title} body={ele.body} user={ele.user} tags={ele.tagList} createdAt={ele.createdDate} viewCount={ele.viewCount} answerCount={ele.answerCount}/>
             })}
           </QuestionsContent>
           <PaginationLeft />

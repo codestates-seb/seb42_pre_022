@@ -165,7 +165,7 @@ const TagsContainerDiv = styled.div`
 
 
 
-function QuestionsList({title, body, createdAt, viewCount, answerCount, tags}) {
+function QuestionsList({title, body, createdAt, viewCount, answerCount, user, tags}) {
 
   const date = new Date(createdAt)
   const now = new Date()
@@ -187,24 +187,23 @@ function QuestionsList({title, body, createdAt, viewCount, answerCount, tags}) {
       </PostSummaryStats>
       <PostSummaryContent>
         <h3 className="post-summary-title"><a>{title}</a></h3>
-        <div className="post-summary-content">{body}</div>
+        <div className="post-summary-content">{body.replace(/<\/?[^>]+(>|$)/g, '').slice(0,200)+"..."}</div>
         <div className="post-summary-meta">
           {/* <TagsDiv /> */}
           <TagsContainerDiv>
            <ul>
-            {tags.map((ele,idx) => {
+            {tags && tags.map((ele,idx) => {
                return <li key={idx}><Tag>{ele}</Tag></li>
              })}
             </ul>
           </TagsContainerDiv>
           <UsercardMinimal>
-            <UsercardAvartar><div><img src="https://www.gravatar.com/avatar/4809af7fca6e64f604badf6dfaf01ae9?s=256&d=identicon&r=PG"></img></div></UsercardAvartar>
-            <UsercardInfo><div className="uc-username">KUSHA B K</div><div className="uc-reputation">1,409</div></UsercardInfo>
+            <UsercardAvartar><div><img src={user.profileImage} alt="user-profile-img"></img></div></UsercardAvartar>
+            <UsercardInfo><div className="uc-username">{user.displayName}</div><div className="uc-reputation">{user.reputation}</div></UsercardInfo>
             {isWrittenin24
               ? <time>asked {timeago}</time> 
               : <time>asked {changeDateFormat} at {slicedTime}</time>
             }
-            
           </UsercardMinimal>
         </div>
       </PostSummaryContent>
