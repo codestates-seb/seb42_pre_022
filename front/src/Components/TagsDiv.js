@@ -26,8 +26,8 @@ const TagsContainerDiv = styled.div`
   }
 `
 
-function TagsDiv() {
-  let tag = [{title: 'javascript'}, {title: 'angular'}]
+function TagsDiv({ tags }) {
+  let tag = tags ? tags : [{title: 'javascript'}, {title: 'angular'}]
   return (
     <TagsContainerDiv>
       <ul>
