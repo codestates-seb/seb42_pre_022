@@ -1,5 +1,6 @@
 running: local
 domain: http://localhost:8080
+S3domain : http://localhost:3000
 
 spring:
   profiles:

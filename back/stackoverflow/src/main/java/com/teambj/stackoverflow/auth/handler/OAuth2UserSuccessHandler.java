@@ -25,8 +25,6 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
 
     private final JwtTokenizer jwtTokenizer;
-    @Value("${domain}")
-    private String domain;
 
 
     public OAuth2UserSuccessHandler(JwtTokenizer jwtTokenizer) {
@@ -74,14 +72,11 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
     private URI createURI(String accessToken) {
 
-        String host = domain.replace(":8080", "");
-        String host2 = host.replace("http://", "");
-
 
         return UriComponentsBuilder
                 .newInstance()
                 .scheme("http")
-                .host(host2)
+                .host("localhost")
                 .port(3000)
                 .path("/token")
                 .queryParam("Authorization", "Bearer_" + accessToken)
