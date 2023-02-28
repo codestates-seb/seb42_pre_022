@@ -12,6 +12,7 @@ import { BasicBlueButton } from "../Styles/Buttons";
 import { editPostActions } from "../Reducers/editPostReducer";
 import { sanitize } from 'dompurify'
 import patchData from "../util/patchData";
+import TagEditor from "../Components/TagEditor";
 
 const EditContainerMain = styled.main`
   width: 100%;
@@ -71,6 +72,15 @@ const EditPostDiv = styled.div`
       margin-right: 8px;
     }
   }
+  .tags {
+    > div {
+      width: 100%;
+      margin: 0;
+      > input {
+        width: normal;
+      }
+    }
+  }
   @media only screen and (max-width: 980px) {
     width: 100% !important;
   }
@@ -85,7 +95,9 @@ function EditPost() {
   const post = isAnswer ? answer : question
   const [editTitle, setEditTitle] = useState(post?.title)
   const [editBody, setEditBody] = useState(post?.body)
-
+  const [editTags, setEditTags] = useState(() => {
+    return !question?.tagList ? [] : question?.tagList
+  })
   const patchPost = () => {
     if (editBody === post.body && editTitle === post.title) alert("변경 사항이 없습니다")
     else if (window.confirm("질문/답변을 수정합니다") === true) {
@@ -97,12 +109,13 @@ function EditPost() {
         editData.userId = post.userId
         editData.questionId = post.questionId
         editData.title = editTitle
+        editData.tagList = editTags
       } else {
         editData.answerId = post.answerId
       }
       patchData(url, editData)
-      .then(() => {dispatch(editPostActions.deleteNowQA())})
-      .then(() => navigate(`/questions/${question.questionId}`)) 
+        .then(() => { dispatch(editPostActions.deleteNowQA()) })
+        .then(() => navigate(`/questions/${question.questionId}`))
     }
   }
 
@@ -127,9 +140,14 @@ function EditPost() {
               <WriteBoard id="body" postBody={editBody} inputHandler={(p) => setEditBody(p)} />
               <div dangerouslySetInnerHTML={{ __html: sanitize(editBody) }} />
             </div>
-            <div>
+            <div className="tags">
               <label>Tags</label>
-              <TagsDiv />
+              {!isAnswer && 
+                <>
+                <TagEditor tags={editTags} setTags={setEditTags}/>
+                {editTags?.length === 5 && <span className="error">Please enter no more than 5 tags.</span>}
+                </>
+              }
             </div>
             <div className="submit">
               <BasicBlueButton onClick={patchPost}>Save edits</BasicBlueButton>
