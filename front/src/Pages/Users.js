@@ -92,6 +92,7 @@ const Bottomdiv = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  margin: 25px 0 10px;
   > a {
     font-weight: bold;
   }
@@ -107,22 +108,23 @@ const Bottomdiv = styled.div`
 
 function Users() {
   const [users, setUsers] = useState([]);
-  const [pageInfo, setPageInfo] = useState({ currentPage: 1, totalPages: 1 });
+  const [curPage, setCurPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [error, setError] = useState(null);
 
   const getUsers = async (page) => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/users?page=${page}`)
       setUsers(response.data.body.data)
-      setPageInfo({ ...pageInfo, totalPages: response.data.body.totalPages })
+      setTotalPages(response.data.body.totalPages)
     } catch (err) {
       setError(err)
     }
   }
-
+  
   useEffect(() => {
-    getUsers(pageInfo.currentPage)
-  }, [pageInfo.currentPage])
+    getUsers(curPage)
+  }, [curPage])
 
   return (
     <div className="content">
@@ -142,7 +144,7 @@ function Users() {
           </UserCardsDiv>
           <Bottomdiv>
             <a className="linktext">weekly / monthly / quarterly reputation leagues</a>
-            <Pagination pageInfo={pageInfo} setPageInfo={setPageInfo}/>
+            <Pagination curPage={curPage} setCurPage={setCurPage} totalPages={totalPages}/>
           </Bottomdiv>
         </UsersContainer>
       </>}
