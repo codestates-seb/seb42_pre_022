@@ -13,6 +13,7 @@ import Question from "./Pages/Question";
 import Users from "./Pages/Users";
 import EditPost from "./Pages/EditPost";
 import Mypage from "./Pages/Mypage";
+import Token from "./Pages/Token";
 import HelmetTitle from "./Components/HelmetTitle";
 import { useSelector } from "react-redux";
 import { loginInfoActions } from "./Reducers/loginInfoReducer";
@@ -55,6 +56,7 @@ function App() {
             <Route path="/users/signup" element={<Signup />} />
             <Route path="/users" element={<Users />} />
             <Route path="/users/mypage" element={<Mypage />} />
+            <Route path="/token" element={<Token />} />
           </Routes>
         </div>
         {/*배포 이후 배포한 주소 길이에 맞게 slice 변경*/}
