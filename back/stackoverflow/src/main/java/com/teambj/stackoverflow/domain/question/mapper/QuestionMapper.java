@@ -6,6 +6,9 @@ import com.teambj.stackoverflow.domain.question.dto.QuestionPatchDto;
 import com.teambj.stackoverflow.domain.question.dto.QuestionPostDto;
 import com.teambj.stackoverflow.domain.question.dto.QuestionResponseDto;
 import com.teambj.stackoverflow.domain.question.entity.Question;
+import com.teambj.stackoverflow.domain.question.entity.QuestionTag;
+import com.teambj.stackoverflow.domain.tag.dto.TagResponseDto;
+import com.teambj.stackoverflow.domain.tag.entity.Tag;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -14,6 +17,6 @@ import java.util.List;
 public interface QuestionMapper {
     public Question questionPostDtoToQuestion(QuestionPostDto questionPostDto);
     public Question questionPatchDtoToQuestion(QuestionPatchDto questionPatchDto);
-    public QuestionResponseDto questionToQuestionResponseDto(Question question, List<Answer> answers, List<Comment> comments);
+    public QuestionResponseDto questionToQuestionResponseDto(Question question, List<QuestionTag> tagList, List<Answer> answers, List<Comment> comments);
     public List<QuestionResponseDto> questionToQuestionResponseDtos(List<Question> questions);
 }

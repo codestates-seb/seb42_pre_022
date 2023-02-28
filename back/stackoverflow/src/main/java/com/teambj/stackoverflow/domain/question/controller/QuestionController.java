@@ -11,9 +11,11 @@ import com.teambj.stackoverflow.domain.question.dto.QuestionResponseDto;
 import com.teambj.stackoverflow.domain.question.entity.Question;
 import com.teambj.stackoverflow.domain.question.entity.QuestionTag;
 import com.teambj.stackoverflow.domain.question.mapper.QuestionMapper;
+import com.teambj.stackoverflow.domain.question.repository.QuestionRepository;
 import com.teambj.stackoverflow.domain.question.repository.QuestionTagRepository;
 import com.teambj.stackoverflow.domain.question.service.QuestionService;
 import com.teambj.stackoverflow.domain.tag.entity.Tag;
+import com.teambj.stackoverflow.domain.tag.repository.TagRepository;
 import com.teambj.stackoverflow.domain.tag.service.TagService;
 import com.teambj.stackoverflow.domain.user.entity.User;
 import com.teambj.stackoverflow.domain.user.repository.UserRepository;
@@ -49,6 +51,8 @@ public class QuestionController {
     private final AnswerRepository answerRepository;
     private final CommentRepository commentRepository;
     private final QuestionTagRepository questionTagRepository;
+    private final TagRepository tagRepository;
+    private final QuestionRepository questionRepository;
 
     @PostMapping("/questions")
     @PreAuthorize("isAuthenticated()")
@@ -79,7 +83,7 @@ public class QuestionController {
     public ResponseEntity getQuestion(@PathVariable("questionId") @Positive Long questionId) {
     Question question = questionService.findQuestion(questionId);
     questionService.updateQuestionViewCount(question, question.getViewCount());
-    QuestionResponseDto response = mapper.questionToQuestionResponseDto(question, answerRepository.findAnswers(questionId), commentRepository.findQuestionComments(questionId));
+    QuestionResponseDto response = mapper.questionToQuestionResponseDto(question, questionTagRepository.tagList(questionId), answerRepository.findAnswers(questionId), commentRepository.findQuestionComments(questionId));
 
     return ResponseEntity.ok().body(ApiResponse.ok("data", response));
     }
