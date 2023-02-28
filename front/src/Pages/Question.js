@@ -131,6 +131,11 @@ function Question() {
   }
   const recentModifiedDate = recentModified()
 
+  const wirteAnswer = (p) => {
+    if (!login) alert("답변을 등록하려면 로그인 상태여야 합니다")
+    else setCreateAnswer(p)
+  }
+
   useEffect(() => {
     dispatch(editPostActions.changeNowQ(question))
   }, [question])
@@ -173,7 +178,7 @@ function Question() {
               </div>
               <div>
                 <h2>Your Answer</h2>
-                <WriteBoard postBody={createAnswer} inputHandler={(p) => setCreateAnswer(p)} />
+                <WriteBoard postBody={createAnswer} inputHandler={wirteAnswer} />
                 {login ? null : <LoginWith />}
                 <div className="postanswer">
                   <BasicBlueButton onClick={postAnswer} to={`/questions/${question_id}`}>Post your Answer</BasicBlueButton>

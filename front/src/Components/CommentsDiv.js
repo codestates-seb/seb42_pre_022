@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import CommentLi from "./CommentLi";
 import { CommentTextarea } from "../Styles/Divs";
@@ -28,6 +29,7 @@ const CmtDiv = styled.div`
 `
 
 function CommentsDiv({ comments, answerId, questionId }) {
+  const { login } = useSelector(state => state.loginInfoReducer);
   const [writeMode, setWriteMode] = useState(false)
   const [writeComment, setWriteComment] = useState('')
   const textarea = useRef();
@@ -50,9 +52,9 @@ function CommentsDiv({ comments, answerId, questionId }) {
         .then(() => setWriteMode(false))
         .then(() => window.location.reload())
       }
-    } else {
-      setWriteMode(true)
-    }
+    } else if (!login) alert("코멘트를 등록하려면 로그인해야 합니다") 
+    else setWriteMode(true)
+
   }
   const handleComment = (e) => {
     if (e.key === "Enter") {
