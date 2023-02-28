@@ -100,15 +100,22 @@ public class QuestionService {
 
         for (Question question : questions) {
             List<Comment> questionComments = commentService.findQuestionComments(question.getQuestionId());
-
+            List<QuestionTag> tagList = findQuestionTagList(questionId);
             for (Comment comment : questionComments) {
                 comment.addQuestion(question);
+            }
+            for (QuestionTag questionTag : tagList) {
+                questionTag.addQuestion(question);
             }
         }
 
         questionRepository.save(findQuestion);
 
         return findQuestion;
+    }
+
+    public List<QuestionTag> findQuestionTagList(Long questionId) {
+        return questionTagRepository.tagList(questionId);
     }
 
     public Page<Question> getAllQuestions(int page) {

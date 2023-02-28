@@ -1,7 +1,10 @@
 package com.teambj.stackoverflow.domain.tag.service;
 
+import com.teambj.stackoverflow.domain.question.entity.QuestionTag;
 import com.teambj.stackoverflow.domain.tag.entity.Tag;
 import com.teambj.stackoverflow.domain.tag.repository.TagRepository;
+import com.teambj.stackoverflow.exception.BusinessLogicException;
+import com.teambj.stackoverflow.exception.ExceptionCode;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,6 +36,17 @@ public class TagService {
 
     public List<Tag> getAllTags() {
         return tagRepository.findAll();
+    }
+
+    public List<Tag> findTags(List<QuestionTag> questionTagList){
+
+        return questionTagList.stream()
+                .map(questionTag -> {
+                    Optional<Tag> findTag = tagRepository.findById(questionTag.getTag().getTagId());
+                    return findTag.orElseThrow(() ->
+                            new BusinessLogicException(ExceptionCode.QUESTION_NOT_FOUND));
+                })
+                .collect(Collectors.toList());
     }
 
     private Tag verifyTag(Tag tag) {
