@@ -16,6 +16,10 @@ export const Tag = styled.a`
   border-style: solid;
   border-radius: 3px;
   cursor: pointer;
+  :hover {
+    color: var(--powder-800);
+    background-color: var(--powder-200);
+  }
 `
 export const CommentTextarea = styled.textarea`
   width: 100%;
