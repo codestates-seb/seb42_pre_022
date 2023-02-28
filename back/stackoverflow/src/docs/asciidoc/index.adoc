@@ -70,3 +70,16 @@ operation::answer-controller-test/patch-answer-test[snippets='curl-request,http-
 
 === 답변 수정
 operation::answer-controller-test/delete-answer-test[snippets='curl-request,http-request,path-parameters,http-response']
+
+== Comment
+=== 댓글 생성 (:질문 식별자 기준)
+operation::comment-controller-test/post-comment-test-with-question[snippets='curl-request,custom-request-fields,http-request,http-response,response-body']
+
+=== 댓글 생성 (:답변 식별자 기준)
+operation::comment-controller-test/post-comment-test-with-answer[snippets='curl-request,custom-request-fields,http-request,http-response,response-body']
+
+=== 댓글 수정
+operation::comment-controller-test/patch-comment-test[snippets='curl-request,custom-request-fields,http-request,http-response,response-body,response-fields-data']
+
+=== 댓글 삭제
+operation::comment-controller-test/delete-comment-test[snippets='curl-request,path-parameters,http-request,http-response']

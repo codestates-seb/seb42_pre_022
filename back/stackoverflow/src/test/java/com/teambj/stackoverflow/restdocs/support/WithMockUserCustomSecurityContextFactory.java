@@ -17,17 +17,7 @@ public class WithMockUserCustomSecurityContextFactory implements WithSecurityCon
 
     @Override
     public SecurityContext createSecurityContext(WithMockUserCustom annotation) {
-        User user = new User(
-            1L,
-            annotation.username(),
-            "test@test",
-            "password",
-            "",
-            new ArrayList<>(),
-            new Reputation(),
-            true,
-            ""
-        );
+        User user = new User(annotation.userId(), annotation.username(), "test@test.com", "password", "", List.of(annotation.role()), new Reputation(), true);
         PrincipalDetails principal = new PrincipalDetails(user);
 
         UsernamePasswordAuthenticationToken authentication =
