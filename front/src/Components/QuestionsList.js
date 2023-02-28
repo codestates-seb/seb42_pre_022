@@ -187,12 +187,12 @@ function QuestionsList({title, body, createdAt, viewCount, answerCount, tags}) {
       </PostSummaryStats>
       <PostSummaryContent>
         <h3 className="post-summary-title"><a>{title}</a></h3>
-        <div className="post-summary-content">{body}</div>
+        <div className="post-summary-content">{body.replace(/<\/?[^>]+(>|$)/g, '').slice(0,200)+"..."}</div>
         <div className="post-summary-meta">
           {/* <TagsDiv /> */}
           <TagsContainerDiv>
            <ul>
-            {tags.map((ele,idx) => {
+            {tags && tags.map((ele,idx) => {
                return <li key={idx}><Tag>{ele}</Tag></li>
              })}
             </ul>
