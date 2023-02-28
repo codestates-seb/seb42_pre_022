@@ -146,11 +146,11 @@ function LoginSignupForm() {
         .then(res => {
           const accessToken = res.accessToken;
           if (accessToken) {
-            sessionStorage.setItem("accessToken", JSON.stringify(accessToken));
+            localStorage.setItem("accessToken", JSON.stringify(accessToken));
             const data = "";
             dispatch(signupActions.changeLoginEmail({ data }));
             dispatch(signupActions.changeLoginPassword({ data }));
-            navigate("/");
+            navigate(-1);
           }
           else {
             alert("Log in error!");
