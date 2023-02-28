@@ -193,6 +193,7 @@ function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [menu, setMenu] = useState(false)
+  const [searchInputValue, setSearchInputValue] = useState('')
 
   let { pathname } = useLocation();
 
@@ -209,14 +210,26 @@ function Header() {
       navigate("/");
       window.location.reload();
     }
-
-
   }
   const openMenu = () => {
     setMenu(!menu)
   }
   const loginTabList = [(<><img src={login ? userInfo?.profileImage : null} alt="profile-icon" /><span>1</span></>), <InboxIcon />, <AchiveIcon />, <HelpIcon />, <ExchangeIcon />]
+  const isFollowGuide = (text) => {
+    
+  }
+  const searchbarInputHandler=(e)=>{
+    if(e.key==="Enter"){
+      
+      // dispatch(customfilter(customOption))
+      // dispatch(selectPage(1))
 
+    } else{
+      setSearchInputValue(e.target.value)
+    }
+
+
+  }
   return (
     <Containerheader>
       <div>
@@ -230,7 +243,7 @@ function Header() {
           <HeadTextTabLi>Products</HeadTextTabLi>
           <HeadTextTabLi>For Teams</HeadTextTabLi>
         </HeadTextTabUl>
-        <SearchBar placeholder="Search..." />
+        <SearchBar placeholder="Search..." inputHandler={setSearchInputValue}/>
         {/* <SearchGuide /> */}
         <IconButtonUl>
           <HeadIconTabLi><SearchIcon /></HeadIconTabLi>
