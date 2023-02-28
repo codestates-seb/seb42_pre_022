@@ -152,20 +152,20 @@ function LoginSignupForm() {
             dispatch(signupActions.changeLoginPassword({ data }));
             navigate(-1);
           }
-          else {
-            alert("Log in error!");
-            return;
-          }
-          //   else if (res.header.message === "등록되지 않은 이메일/비밀번호 입니다.") {
-          //   alert("Check your email and password.");
-          //   return;
-          // } else if (res.header.message === "이메일 인증이 되지 않았습니다.") {
-          //   alert("Check your registration email.");
-          //   return;
-          // } else {
+          // else {
           //   alert("Log in error!");
           //   return;
           // }
+          else if (res.header.message === "등록되지 않은 이메일/비밀번호 입니다.") {
+            alert("Check your email and password.");
+            return;
+          } else if (res.header.message === "이메일 인증이 되지 않았습니다.") {
+            alert("Check your registration email.");
+            return;
+          } else {
+            alert("Log in error!");
+            return;
+          }
         })
 
       // TODO: 응답에 따른 반응 설정

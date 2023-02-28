@@ -197,8 +197,9 @@ function Header() {
 
   const logoutHandler = () => {
     if (window.confirm("Are you sure you want to log out?")) {
-      // 로그아웃 버튼 -> accessToken, userInfo 비우기, login 상태 바꾸기
+      // 로그아웃 버튼 -> accessToken, userInfo 비우기, 작성하던 질문 상태 비우기, login 상태 바꾸기
       localStorage.removeItem("accessToken");
+      localStorage.removeItem("titleValue"); localStorage.removeItem("questionValue"); localStorage.removeItem("titleDone"); localStorage.removeItem("questionDone"); localStorage.removeItem("tagStart");
       const actions = {
         login: false,
         userInfo: null
