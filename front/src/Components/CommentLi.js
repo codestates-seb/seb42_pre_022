@@ -46,7 +46,7 @@ const EditCmtSpan = styled.span`
 `
 
 function CommentLi({ comment }) {
-  const { login } = useSelector(state => state.loginInfoReducer);
+  const { login, userInfo } = useSelector(state => state.loginInfoReducer);
   const { editPost } = useSelector(state => state.editPostReducer);
   const { nowQ } = editPost
   const [editMode, setEditMode] = useState(false)
@@ -92,7 +92,7 @@ function CommentLi({ comment }) {
       <span className={editMode ? "hidden" : ""}>{editComment}</span>
       –&nbsp;<WriterSpan className="linktext">{comment.user.displayName}</WriterSpan>
       <DateSpan>{comment.modifiedDate ? (<>{dateTimeFormat(comment.modifiedDate)}<EditCommentIcon /></>) : dateTimeFormat(comment.createdDate)}</DateSpan>
-      {login ?
+      {userInfo?.userId === comment.user.userId ?
         <>
           <EditCmtSpan onClick={handleEditButton}>{editMode ? "Save" : "Edit"}</EditCmtSpan>
           <EditCmtSpan onClick={deleteComment}>Delete</EditCmtSpan>
