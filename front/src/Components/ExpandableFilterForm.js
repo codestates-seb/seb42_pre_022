@@ -150,16 +150,12 @@ function ExpandableFilterform({isFilterOpen}) {
   const [tagsChecked, setTagsChecked] = useState(false)
   const setOptionHandler = (e) => {
     let key = e.target.value
-    let changedOption = customOption
+    let changedOption = customOption //마지막 default때문에 필요
     switch(key) {
       case "newest" :
-        // changedOption.highestscore=false;
-        // changedOption[key]=e.target.checked;
         setCustomOption({...customOption,highestscore: false, newest: e.target.checked})
       break;
       case "highestscore" :
-        // changedOption.newest=false;
-        // changedOption[key]=e.target.checked; 
         setCustomOption({...customOption,highestscore: e.target.checked, newest: false})      
       break;
       case "tags" :
@@ -173,6 +169,7 @@ function ExpandableFilterform({isFilterOpen}) {
     }
   }
   const applyFilterHandler = () => {
+    setCustomOption({...customOption,tags: tags}) //checkedtagsHandler 때문에 필요
     dispatch(customfilter(customOption))
     dispatch(selectPage(1))
   }
@@ -204,7 +201,7 @@ function ExpandableFilterform({isFilterOpen}) {
                   <legend>Tagged with</legend>
                   <div><Checkbox><div><input type="checkbox" name="tags" id="thefollowingtags" value="tags" onChange={checktagsHandler} checked={tagsChecked}/></div><label htmlFor="thefollowingtags">The following tags</label></Checkbox></div>
                 </fieldset>
-                <TagEditor tags={tags} setTags={setTags} setTagsChecked={setTagsChecked} customOption={customOption} setCustomOption={setCustomOption}/>
+                <TagEditor tags={tags} setTags={setTags} setTagsChecked={setTagsChecked}/>
               </div>
             </Forms>
           </div>

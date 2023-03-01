@@ -1,4 +1,9 @@
+import { useSelector } from "react-redux";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import getUserInfo from "../util/getUserInfo";
+import { DataControllerBtn } from "./Questions";
+import patchData from "../util/patchData";
 
 const MypageContainer = styled.div`
   width: 100%;
@@ -39,17 +44,20 @@ const SVGBox = styled.div`
 `
 const UserDisplayName = styled.div`
   max-width: calc(97.2307692rem / 12 * 4);
-  display: flex;
+  display: inline-block;
   align-items: center;
   flex-wrap: wrap;
   margin: -4px;
-  >div{
+  >span{
     margin: 4px;
     margin-bottom: 12px;
     line-height: 1;
     font-size: 2.61538461rem;
   }
-
+  >input{
+    display: inline-block;
+    font-size: 2.61538461rem;
+  }
 `
 const UserDetails = styled.ul`
   display: flex;
@@ -168,21 +176,100 @@ const GridItem = styled.div`
       justify-content: space-between;
     }
   `
-
+  const EditDisplayName = styled.div`
+    position: absolute;
+    display: flex;
+    right: 0;
+    top: 0;
+    >a{
+      border-radius: 3px;
+      margin: 3px;
+    }
+    >a:hover{
+      background-color: var(--black-025);
+      color: var(--black-600);
+    }
+    svg{
+      vertical-align: baseline;
+      margin-top: -0.1em;
+      margin-bottom: -0.3em;
+      transition: opacity 200ms cubic-bezier(.165, .84, .44, 1);
+      width: 18px;
+      height: 18px;
+      color: var(--black-500);
+    }
+    path{
+      fill: currentColor;
+    }
+  `
 
 function Mypage() {
-  let user = {
-    displayName: "whoisshe",
+  const user ={displayName: 
+    "JOA",
+    email
+    : 
+    "blueseablueskyblueme@gmail.com",
+    profileImage
+    : 
+    "https://source.boringavatars.com/beam/120/1?colors=66FFFF,8CBFE6,B380CC,D940B3,FF0099",
+    reputation
+    : 
+    1,
+    userId
+    : 
+    1}
+  const [isEditMode, setEditMode] = useState(false)
+  const [inputNewName, setInputNewName] = useState(user.displayName)
+  // const user = useSelector((state)=> state.loginInfoReducer.userInfo)
+  const inputEl =useRef(null);
+  const setEditModeHandler = () => {
+    setEditMode(true)
   }
+  const inputNewNameHandler = (e)=> {
+    setInputNewName(e.target.value)
+  }
+  const setNewNameHandler = (e) => {
+    //TODO patch 수정하기
+    patchData("/users",inputNewName)
+      .then(getUserInfo())
+      .then((data)=>{})
+    setInputNewName('')
+    setEditMode(false)
+  }
+  const blurHandler = (e) => {
+    //TODO patch 수정하기
+    patchData("/users",inputNewName)
+    setEditMode(false)
+  }
+  useEffect(()=>{
+    if(isEditMode){
+      inputEl.current.focus();
+    }
+  },[isEditMode])
   return (
     <div className="content">
       <MypageContainer>
         <MypageHeader>
           <a>
-           <img src="https://www.gravatar.com/avatar/4809af7fca6e64f604badf6dfaf01ae9?s=256&d=identicon&r=PG"></img> 
+           <img src={user.profileImage} alt="user-profile"></img> 
           </a>
           <div>
-            <UserDisplayName><div>{user.displayName}</div></UserDisplayName>
+            <UserDisplayName>
+              {isEditMode 
+              ?<input 
+                type="text" 
+                value={inputNewName} 
+                onChange={inputNewNameHandler} 
+                ref={inputEl}
+                onKeyDown={(e)=>{
+                 if(e.key ==="Enter"){
+                  setNewNameHandler(e)
+                 }
+                }} 
+                onBlur={blurHandler}
+                />
+              :<span>{user.displayName}</span>}
+            </UserDisplayName>
             <UserDetails>
               <li>
                 <SVGBox><svg viewBox="0 0 18 18"><path d="M9 4.5a1.5 1.5 0 0 0 1.28-2.27L9 0 7.72 2.23c-.14.22-.22.48-.22.77 0 .83.68 1.5 1.5 1.5Zm3.45 7.5-.8-.81-.81.8c-.98.98-2.69.98-3.67 0l-.8-.8-.82.8c-.49.49-1.14.76-1.83.76-.55 0-1.3-.17-1.72-.46V15c0 1.1.9 2 2 2h10a2 2 0 0 0 2-2v-2.7c-.42.28-1.17.45-1.72.45-.69 0-1.34-.27-1.83-.76Zm1.3-5H10V5H8v2H4.25C3 7 2 8 2 9.25v.9c0 .81.91 1.47 1.72 1.47.39 0 .77-.14 1.03-.42l1.61-1.6 1.6 1.6a1.5 1.5 0 0 0 2.08 0l1.6-1.6 1.6 1.6c.28.28.64.43 1.03.43.81 0 1.73-.67 1.73-1.48v-.9C16 8.01 15 7 13.75 7Z" /></svg></SVGBox>
@@ -197,6 +284,11 @@ function Mypage() {
                 <div> Visited 6 days, 2 consecutive</div>
               </li>
             </UserDetails>
+            <EditDisplayName onClick={setEditModeHandler}>
+              <DataControllerBtn>
+                <svg viewbox="0 0 18 18"><path d="m13.68 2.15 2.17 2.17c.2.2.2.51 0 .71L14.5 6.39l-2.88-2.88 1.35-1.36c.2-.2.51-.2.71 0ZM2 13.13l8.5-8.5 2.88 2.88-8.5 8.5H2v-2.88Z"/></svg>Edit profile
+              </DataControllerBtn>
+            </EditDisplayName>
           </div>
         </MypageHeader>
         <MypageMenuBar>
@@ -212,7 +304,7 @@ function Mypage() {
                 <div className="grid-title">Stats</div>
                 <div className="grid-cards">
                   <StatsGrid>
-                    <div className="gridcard"><div>1</div>reputation</div>
+                    <div className="gridcard"><div>{1}</div>reputation</div>
                     <div className="gridcard"><div>0</div>reached</div>
                     <div className="gridcard"><div>0</div>answers</div>
                     <div className="gridcard"><div>0</div>questions</div>                  

@@ -5,6 +5,8 @@ let initialState = {
   highestscore: false,
   unanswered: false,
   tags: [],
+  user: '',
+  answerCount: null,
 }
 
 const filterSlice = createSlice({
@@ -22,9 +24,17 @@ const filterSlice = createSlice({
       state.highestscore = action.payload.highestscore
       state.unanswered = action.payload.unanswered
       state.tags = action.payload.tags
-    }
-  }
-})
+    },
+    searchBarfilter: (state,action) => {
+      if(action.payload.tags){
+        state.tags = [action.payload.tags]
+      } else if(action.payload.user){
+        state.user = action.payload.user
+      } else {
+        state.answerCount = Number(action.payload.answerCount)
+      }
+    },
+}})
 
-export const { filteringBy, customfilter } = filterSlice.actions
+export const { filteringBy, customfilter, searchBarfilter } = filterSlice.actions
 export default filterSlice.reducer
