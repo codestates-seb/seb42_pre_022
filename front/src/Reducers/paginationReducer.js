@@ -4,7 +4,7 @@ let initialState = {
   currentpage : 1,
   pagesize : 3,
   totalpage : 30,
-  totalposts: 1,
+  totalposts: 0,
 }
 
 
