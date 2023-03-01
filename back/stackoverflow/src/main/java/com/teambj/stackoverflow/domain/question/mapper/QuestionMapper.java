@@ -17,6 +17,6 @@ import java.util.List;
 public interface QuestionMapper {
     public Question questionPostDtoToQuestion(QuestionPostDto questionPostDto);
     public Question questionPatchDtoToQuestion(QuestionPatchDto questionPatchDto);
-    public QuestionResponseDto questionToQuestionResponseDto(Question question, List<QuestionTag> tagList, List<Answer> answers, List<Comment> comments);
+    public QuestionResponseDto questionToQuestionResponseDto(Question question, List<Tag> tagList, List<Answer> answers, List<Comment> comments);
     public List<QuestionResponseDto> questionToQuestionResponseDtos(List<Question> questions);
 }
