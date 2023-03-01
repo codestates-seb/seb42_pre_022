@@ -1,4 +1,7 @@
 import styled from "styled-components";
+import TagsDiv from "./TagsDiv";
+import { format } from "timeago.js";
+import { Tag } from "../Styles/Divs";
 
 const QLiContainer = styled.div`
   background-color: transparent;
@@ -84,83 +87,123 @@ const PostSummaryContent = styled.div`
     flex-wrap: wrap;
     justify-content: space-between;
     row-gap: 8px;
-    >div:nth-child(1){
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      line-height: 18px;
-      float: left;
-    }
-    ul{
-      display: inline;
-      list-style: none;
-      margin-bottom: 1em;
-    }
-    li{
-      display: inline;
-      margin-right: 4px;
-    }
   }
-`
-const Tag = styled.a`
-  font-size: 12px;
-  color: var(--powder-700);
-  background-color: var(--powder-100);
-  border-color: transparent;
-  display: inline-block;
-  padding: 0.4em 0.5em;
-  margin: 2px 2px 2px 0;
-  line-height: 1;
-  white-space: nowrap;
-  text-decoration: none;
-  text-align: center;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 3px;
-  cursor: pointer;
 `
 const UsercardMinimal = styled.div`
   flex-wrap: wrap;
   justify-content: flex-end;
   margin-left: auto;
+  align-items: center;
+  display: flex;
+  gap: 4px;
+  line-height: 1;
+  time{
+    color: var(--black-500);
+    white-space: nowrap;
+    font-size: 12px;
+  }
+`
+const UsercardAvartar = styled.a`
+  background-color: hsl(0,0%,100%);
+  border-radius: 3px;
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+  position: relative;
+  vertical-align: bottom;
+  cursor: pointer;
+  img{
+    border-radius: 3px;
+    display: block;
+    height: 16px;
+    width: 16px;
+    margin: 0 auto;
+    vertical-align: baseline;
+  }
+`
+const UsercardInfo = styled.div`
+  align-items: center;
+  flex-direction: row;
+  display: flex;
+  gap: 4px;
+  font-size: 12px;
+  .uc-username{
+    margin: 2px;
+    color: var(--blue-600);
+  }
+  .uc-reputation{
+    display: flex;
+    color: var(--black-600);
+    gap: 6px;
+    font-weight: 700;
+  }
+`
+const TagsContainerDiv = styled.div`
+  align-items: center;
+  column-gap: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  row-gap: 8px;
+  >div:nth-child(1){
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    line-height: 18px;
+    float: left;
+  }
+  ul{
+    display: inline;
+    list-style: none;
+    margin-bottom: 1em;
+  }
+  li{
+    display: inline;
+    margin-right: 4px;
+  }
 `
 
-function QuestionsList() {
-  let question = {
-    title : "Extracting output from Postman using Python",
-    body : "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
-    answer_count : 1
-  }
-  let tag = [
-    {
-      title: 'javascript'
-    },
-    {
-      title: 'angular'
-    }
-  ]
+
+
+function QuestionsList({title, body, createdAt, viewCount, answerCount, user, tags}) {
+
+  const date = new Date(createdAt)
+  const now = new Date()
+  const changeDateFormat = new Intl.DateTimeFormat('en-US',{month: "short", day: "numeric", year:"numeric", timeZone:"Asia/Seoul"}).format(date)
+  const isAM = new Intl.DateTimeFormat('en-US',{ hour:"numeric",hour12:false,timeZone:"Asia/Seoul"}).format(date)<12
+  const changeTimeFormat = new Intl.DateTimeFormat('en-US',{ hour:"numeric", hour12: isAM, minute:"numeric",timeZone:"Asia/Seoul"}).format(date)
+  const slicedTime = isAM
+   ? changeTimeFormat.slice(0,5)
+   : changeTimeFormat
+  const timeago = format(now-(now-date))
+  const isWrittenin24 = (now-date) <= (24 * 1000 * 60 * 60)
 
   return (
     <QLiContainer>
       <PostSummaryStats>
         <div><span>0</span><span>votes</span></div>
-        <div className={`${question.answer_count}`!== "0" ?"has-answer" :"null"}><span>{question.answer_count}</span><span>answer</span></div>
-        <div><span>2</span><span>views</span></div>
+        <div className={answerCount !== 0 ?"has-answer" :"null"}><span>{answerCount}</span><span>answer</span></div>
+        <div><span>{viewCount}</span><span>views</span></div>
       </PostSummaryStats>
       <PostSummaryContent>
-        <h3 className="post-summary-title"><a>{question.title}</a></h3>
-        <div className="post-summary-content">{question.body}</div>
+        <h3 className="post-summary-title"><a>{title}</a></h3>
+        <div className="post-summary-content">{body.replace(/<\/?[^>]+(>|$)/g, '').slice(0,200)+"..."}</div>
         <div className="post-summary-meta">
-          <div>
-            <ul>
-              {tag.map((ele)=>{
-                return <li><Tag>{ele.title}</Tag></li>
-              })}
+          {/* <TagsDiv /> */}
+          <TagsContainerDiv>
+           <ul>
+            {tags && tags.map((ele,idx) => {
+               return <li key={idx}><Tag>{ele}</Tag></li>
+             })}
             </ul>
-          </div>
+          </TagsContainerDiv>
           <UsercardMinimal>
-            <div>KUSHA B K 1,409 asked Apr 21, 2017 at 4:59</div>
-            <div></div>
+            <UsercardAvartar><div><img src={user.profileImage} alt="user-profile-img"></img></div></UsercardAvartar>
+            <UsercardInfo><div className="uc-username">{user.displayName}</div><div className="uc-reputation">{user.reputation}</div></UsercardInfo>
+            {isWrittenin24
+              ? <time>asked {timeago}</time> 
+              : <time>asked {changeDateFormat} at {slicedTime}</time>
+            }
           </UsercardMinimal>
         </div>
       </PostSummaryContent>

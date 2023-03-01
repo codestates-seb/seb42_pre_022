@@ -1,12 +1,18 @@
 import styled from "styled-components";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { editPostActions } from "../Reducers/editPostReducer";
 import { BasicBlueButton } from "../Styles/Buttons";
 import Aside from "../Components/Aside";
-import QandADiv from "../Components/QandADiv";
+import QandAPost from "../Components/QandAPost";
 import TagsDiv from "../Components/TagsDiv";
-import { Link } from "react-router-dom";
 import WriteBoard from "../Components/WriteBoard";
-import { useSelector } from "react-redux";
 import LoginWith from "../Components/LoginWith";
+import HelmetTitle from "../Components/HelmetTitle";
+import useGET from "../util/useGET";
+import postData from "../util/postData";
+import dateTimeFormat from "../util/dateTimeFormat";
 
 const QuestionContainerMain = styled.main`
   display: table;
@@ -19,11 +25,11 @@ const QuestionContainerMain = styled.main`
     > a {
       color: var(--black-700);
       text-decoration: none;
+      cursor: pointer;
     }
   }
   > div {
     display: flex;
-    align-items: baseline;
   }
   > div:nth-child(2) {
     border-bottom: 1px solid var(--black-075);
@@ -32,15 +38,16 @@ const QuestionContainerMain = styled.main`
   }
   > div:nth-child(4) {
     float: right;
+    margin-top: 15px;
   }
 
   @media only screen and (max-width: 980px) {
-    div {
+    > div {
       float: none !important;
     }
     > div:nth-child(4) {
       width: 100%;
-      margin: 0;
+      margin: 5px 0;
     }
   }
 `
@@ -95,48 +102,95 @@ const QuestionDiv = styled.div`
   }
 `
 function Question() {
-  const state = useSelector(state => state.loginReducer);
-  // TODO 날짜 계산기 만들기 today, yesterday, 2 days ago~ 한달, 3 months ago ... */
-  const calculateDate = (date) => {
-    return date
+  const { question_id } = useParams()
+  const [question, Qerror] = useGET(`/questions/${question_id}`)
+  const answerUrl = question.answerCount ? `/answers?questionId=${question_id}` : null
+  const [answers, Aerror] = useGET(answerUrl)
+  const { login } = useSelector(state => state.loginInfoReducer);
+  const [createAnswer, setCreateAnswer] = useState('')
+  const dispatch = useDispatch()
+  const postAnswer = () => {
+    if (createAnswer.length === 0) alert("답변 내용을 입력하세요")
+    else if (window.confirm("답변을 등록합니다") === true) {
+      postData(`/answers`, { questionId: question_id, body: createAnswer })
+        .then(() => {
+          window.location.reload()
+        })
+    }
   }
+  const recentModified = () => {
+    if (!question.createdDate) return;
+    let recentDate = question.createAnswer !== question.modifiedDate ? new Date(question.modifiedDate) : new Date(question.createdDate)
+    if (answers) {
+      recentDate = answers.reduce((acc, answer) => {
+        const recentAnswerDate = answer.createAnswer !== answer.modifiedDate ? new Date(answer.modifiedDate) : new Date(answer.createdDate)
+        return recentAnswerDate > acc ? recentAnswerDate : acc
+      }, recentDate)
+    }
+    return recentDate
+  }
+  const recentModifiedDate = recentModified()
+
+  const wirteAnswer = (p) => {
+    if (!login) alert("답변을 등록하려면 로그인해야 합니다")
+    else setCreateAnswer(p)
+  }
+
+  useEffect(() => {
+    dispatch(editPostActions.changeNowQ(question))
+  }, [question])
 
   return (
     <div className="content">
-      <QuestionContainerMain >
-        <div>
-          <h1><a href="www.naver.com">(제목)Cursor Resize on scroll bar of div</a></h1>
-          <BasicBlueButton to="/askquestion">Ask Question</BasicBlueButton>
-        </div>
-        <div>
-          <QuestionDetailDiv><span>Asked</span><span>{calculateDate("today")}</span></QuestionDetailDiv>
-          {/* TODO 가장 최근에 달린 답변의 날짜 */}
-          <QuestionDetailDiv><span>Modified</span><span>{calculateDate("today")}</span></QuestionDetailDiv>
-          <QuestionDetailDiv><span>Viewed</span><span>{"7"} times</span></QuestionDetailDiv>
-        </div>
-        <QuestionDiv>
+      <HelmetTitle title={`태그1 - ${question.title}`} />
+      {Qerror && <h1 className="error">Question ERROR</h1>}
+      {question &&
+        <QuestionContainerMain >
           <div>
-            <QandADiv />
+            <h1><a onClick={() => window.location.reload()}>{question.title}</a></h1>
+            <BasicBlueButton to={login ? "/askquestion": "/users/login"}>Ask Question</BasicBlueButton>
           </div>
-          <div className="answerpart">
+          <div>
+            <QuestionDetailDiv>
+              <span>Asked</span>
+              <span>{dateTimeFormat(question.createdDate, true)}</span>
+            </QuestionDetailDiv>
+            <QuestionDetailDiv>
+              <span>Modified</span>
+              <span>{dateTimeFormat(recentModifiedDate, true)}</span>
+            </QuestionDetailDiv>
+            <QuestionDetailDiv><span>Viewed</span><span>{question.viewCount} times</span></QuestionDetailDiv>
+          </div>
+          <QuestionDiv>
             <div>
-              <h2>{6} Answers</h2>
-              <QandADiv type="answer">답변 map함수</QandADiv>
+              <QandAPost question={question} qwriter={question.user.userId} />
             </div>
-            <div>
-              <h2>Your Answer</h2>
-              <WriteBoard />
-              {state.login ? null : <LoginWith />}
-              <div className="postanswer">
-                <BasicBlueButton to="/questions/detail">Post your Answer</BasicBlueButton>
-                {state.login ? null : <em>By clicking "Post Your Answer", you agree to our <span className="linktext">terms of service</span>, <span className="linktext">privacy policy</span> and <span className="linktext">cookie policy</span></em>}
+            <div className="answerpart">
+              <div>
+                {answerUrl ?
+                  Aerror ?
+                    <h1 className="error">Answer ERROR</h1>
+                    : (<>
+                      <h2>{answers.length} Answers</h2>
+                      {answers.map(answer => <QandAPost key={answer.answerId} answer={answer} qwriter={question.user.userId} />)}
+                    </>)
+                  : null}
               </div>
+              <div>
+                <h2>Your Answer</h2>
+                <WriteBoard postBody={createAnswer} inputHandler={wirteAnswer} />
+                {login ? null : <LoginWith />}
+                <div className="postanswer">
+                  <BasicBlueButton onClick={postAnswer} to={`/questions/${question_id}`}>Post your Answer</BasicBlueButton>
+                  {login ? null : <em>By clicking "Post Your Answer", you agree to our <span className="linktext">terms of service</span>, <span className="linktext">privacy policy</span> and <span className="linktext">cookie policy</span></em>}
+                </div>
+              </div>
+              <h2>{login ? "Not the answer you're looking for? " : null}Browse other questions tagged <TagsDiv /> or <Link className="linktext" to="/askquestion">ask your own question.</Link></h2>
             </div>
-            <h2>{state.login ? "Not the answer you're looking for? " : null}Browse other questions tagged <TagsDiv /> or <Link className="linktext" to="/askquestion">ask your own question.</Link></h2>
-          </div>
-        </QuestionDiv>
-        <Aside />
-      </QuestionContainerMain>
+          </QuestionDiv>
+          <Aside />
+        </QuestionContainerMain>
+      }
     </div>
   );
 }
