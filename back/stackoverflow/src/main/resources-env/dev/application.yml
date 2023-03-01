@@ -7,9 +7,9 @@ spring:
     include: common
     active: dev
   datasource:
-#    url:
-#    username:
-#    password:
+    url: ${spring.datasource.url}
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database: mysql
@@ -21,8 +21,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-#    username: ${gmail_username}
-#    password: ${gmail_password}
+    username: ${gmail_username}
+    password: ${gmail_password}
     properties:
       mail:
         smtp:
@@ -38,8 +38,8 @@ spring:
       client:
         registration:
           google:
-#            clientId: ${google_client_id}
-#            clientSecret: ${google_client_secret}
+            clientId: ${google_client_id}
+            clientSecret: ${google_client_secret}
             scope:
               - email
               - profile
@@ -55,7 +55,7 @@ logging:
     org.hibernate.SQL: trace
 
 jwt:
-#  secret: ${secret_key}
+  secret: ${secret_key}
   access-token-expiration-minutes: 1800000
   refresh-token-expiration-minutes: 604800000
 
