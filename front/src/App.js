@@ -31,18 +31,22 @@ function App() {
     if (accessToken && !login) {
       getUserInfo()
       .then(userInfo => {
+        const actions = {}
         if (userInfo.userId) {
-          const actions = {
-            login: true,
-            userInfo
-          }
-          dispatch(loginInfoActions.changeLoginInfo(actions))
+          actions.login = true
+          actions.userInfo = userInfo
+        } else {
+          actions.login = false
+          actions.userInfo = null
+          localStorage.removeItem("accessToken");
+          alert("장기간 접속하지 않아 로그아웃 처리됩니다")
         }
+      dispatch(loginInfoActions.changeLoginInfo(actions))
       })
     }
-    window.scrollTo(0,0)
+    window.scrollTo(0, 0)
   }, [pathname])
-  
+
   return (
     <div className="app-wrap">
       <GlobalStyle />
