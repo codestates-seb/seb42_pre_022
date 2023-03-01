@@ -7,9 +7,9 @@ spring:
     include: common
     active: dev
   datasource:
-    url: ${spring.datasource.url}
-    username: ${spring.datasource.username}
-    password: ${spring.datasource.password}
+    url: ${datasource_url}
+    username: ${datasource_username}
+    password: ${datasource_password}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database: mysql
