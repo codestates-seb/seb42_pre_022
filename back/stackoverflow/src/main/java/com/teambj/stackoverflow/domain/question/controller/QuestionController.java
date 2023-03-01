@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -83,7 +84,11 @@ public class QuestionController {
     public ResponseEntity getQuestion(@PathVariable("questionId") @Positive Long questionId) {
     Question question = questionService.findQuestion(questionId);
     questionService.updateQuestionViewCount(question, question.getViewCount());
-    QuestionResponseDto response = mapper.questionToQuestionResponseDto(question, questionTagRepository.tagList(questionId), answerRepository.findAnswers(questionId), commentRepository.findQuestionComments(questionId));
+
+    List<QuestionTag> questionTags = question.getQuestionTags();
+    List<Tag> tags = tagService.findTags(questionTags);
+
+    QuestionResponseDto response = mapper.questionToQuestionResponseDto(question, tags, answerRepository.findAnswers(questionId), commentRepository.findQuestionComments(questionId));
 
     return ResponseEntity.ok().body(ApiResponse.ok("data", response));
     }
