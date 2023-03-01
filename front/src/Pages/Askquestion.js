@@ -181,6 +181,7 @@ function Askquestion() {
   const state = useSelector(state => state.askquestionReducer);
   const loginState = useSelector(state => state.loginInfoReducer);
   const navigate = useNavigate();
+
   // 작성 가능 상태를 제어하는 상태는 useState 활용
   const [titleDone, setTitleDone] = useState(() => {
     const titleDoneData = localStorage.getItem("titleDone");
@@ -224,7 +225,6 @@ function Askquestion() {
       } else {
         setTitleValid(true);
       };
-
       if (state.questionValue === null || state.questionValue.replaceAll(/<[^>]*>/g, '').length < 20) {
         setQuestionValid(false);
       } else {
@@ -289,9 +289,6 @@ function Askquestion() {
     }
   }
 
-  // 상태 잘 저장되는지 확인
-  console.log(state);
-
   return (
     <>
       <HelmetTitle title="Ask a public question - Stack Overflow" />
@@ -311,7 +308,6 @@ function Askquestion() {
                 <li>Describe your problem in more detail.</li>
                 <li>Describe what you tried and what you expected to happen.</li>
                 <li>Add “tags” which help surface your question to members of the community.</li>
-                <li>Review your question and post it to the site.</li>
               </ul>
             </NoticeDiv>
           </FlexCenter>
@@ -350,7 +346,7 @@ function Askquestion() {
         <FormDiv className={(titleDone && tagStart) ? "" : "disabled"}>
           <div>
             <label htmlFor="tagList" className="form-title">Tags</label>
-            <div>Add up to 5 tags to describe what your question is about. Start typing to see suggestions.</div>
+            <div>Add up to 5 tags to describe what your question is about.</div>
           </div>
           <TagInput>
             <ul>

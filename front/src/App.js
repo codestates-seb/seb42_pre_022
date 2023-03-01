@@ -70,7 +70,6 @@ function App() {
             <Route path="/*" element={<ErrorPage />} />
           </Routes>
         </div>
-        {/*배포 이후 배포한 주소 길이에 맞게 slice 변경*/}
         {(pathname === "/users/login" || pathname === "/users/signup") ? null : <Footer />}
       </div>
     </div>
