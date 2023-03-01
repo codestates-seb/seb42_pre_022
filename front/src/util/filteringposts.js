@@ -132,13 +132,13 @@ export function filteringposts (posts,filter) {
     if(!!filter.tags.length){
       filtering = false
       for(let i of filter.tags){
-        if(filtering===false){filtering = post.tagList.includes(i)}
+        if(filtering===false){filtering = post.tagList && post.tagList.includes(i)}
+        //! tag구현 안됐을 시에는 includes 검증 안되게
       }
     }
     if(!!filter.user.length){
       filtering = post.user.displayName === filter.user
     }
-    console.log(typeof filter.answerCount)
     if(filter.answerCount !== null){
       console.log(filter.answerCount)
       filtering = post.answerCount === filter.answerCount
