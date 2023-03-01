@@ -83,8 +83,7 @@ public class QuestionController {
     @GetMapping("/questions/{questionId}")
     public ResponseEntity getQuestion(@PathVariable("questionId") @Positive Long questionId) {
     Question question = questionService.findQuestion(questionId);
-    questionService.updateQuestionViewCount(question, question.getViewCount());
-
+    question.setViewCount(question.getViewCount() + 1);
     List<QuestionTag> questionTags = question.getQuestionTags();
     List<Tag> tags = tagService.findTags(questionTags);
 
