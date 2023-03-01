@@ -1,7 +1,6 @@
 package com.teambj.stackoverflow.domain.question.controller;
 
 import com.teambj.stackoverflow.auth.PrincipalDetails;
-import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
 import com.teambj.stackoverflow.domain.answer.repository.AnswerRepository;
 import com.teambj.stackoverflow.domain.answer.service.AnswerService;
 import com.teambj.stackoverflow.domain.comment.repository.CommentRepository;
@@ -18,13 +17,10 @@ import com.teambj.stackoverflow.domain.tag.entity.Tag;
 import com.teambj.stackoverflow.domain.tag.repository.TagRepository;
 import com.teambj.stackoverflow.domain.tag.service.TagService;
 import com.teambj.stackoverflow.domain.user.entity.User;
-import com.teambj.stackoverflow.domain.user.repository.UserRepository;
 import com.teambj.stackoverflow.domain.user.service.UserService;
 import com.teambj.stackoverflow.response.ApiResponse;
-import com.teambj.stackoverflow.response.ApiResponseHeader;
 import com.teambj.stackoverflow.utils.UriUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,7 +31,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -47,13 +42,9 @@ public class QuestionController {
     private final QuestionService questionService;
     private final QuestionMapper mapper;
     private final UserService userService;
-    private final AnswerService answerService;
     private final TagService tagService;
     private final AnswerRepository answerRepository;
     private final CommentRepository commentRepository;
-    private final QuestionTagRepository questionTagRepository;
-    private final TagRepository tagRepository;
-    private final QuestionRepository questionRepository;
 
     @PostMapping("/questions")
     @PreAuthorize("isAuthenticated()")
@@ -83,7 +74,6 @@ public class QuestionController {
     @GetMapping("/questions/{questionId}")
     public ResponseEntity getQuestion(@PathVariable("questionId") @Positive Long questionId) {
     Question question = questionService.findQuestion(questionId);
-    question.setViewCount(question.getViewCount() + 1);
     List<QuestionTag> questionTags = question.getQuestionTags();
     List<Tag> tags = tagService.findTags(questionTags);
 
