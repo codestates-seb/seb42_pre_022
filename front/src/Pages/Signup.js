@@ -73,14 +73,13 @@ const SignupFormNotice = styled(FormNoticeDiv)`
 function Signup() {
   const navigate = useNavigate();
   const { login } = useSelector(state => state.loginInfoReducer);
-  const accessToken = localStorage.getItem("accessToken");
 
   // 로그인 되어있으면 메인 페이지로 강제 이동시키기
   useEffect(() => {
-    if (accessToken && !login) {
+    if (login) {
       navigate("/");
     }
-  },[]);
+  }, [login]);
 
   return (
     <>
