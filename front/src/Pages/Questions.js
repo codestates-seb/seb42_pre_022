@@ -190,9 +190,8 @@ function Questions() {
   const [filterNsortedposts, setFilterNsortedposts] = useState([]);
   const getData = async () => {
     try {
-      // const response = await axios.get(`${process.env.REACT_APP_API_URL}/questions`)
-      // let filtered = filteringposts(response.data.body.data,filter)
-      let filtered = filteringposts(allquestions,filter)
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/questions`)
+      let filtered = filteringposts(response.data.body.data,filter) ||  filteringposts(allquestions,filter)
       // console.log(filtered)
       let sorted = sortingposts(filtered,filter)
       // console.log(sorted)
@@ -203,6 +202,11 @@ function Questions() {
 
     } catch (err) {
       console.log(err)
+      let filtered = filteringposts(allquestions,filter)
+      let sorted = sortingposts(filtered,filter)
+      setFilterNsortedposts(sorted)
+      dispatch(setTotalposts(filtered.length))
+      setFilterOpen(false)
     }
   }
   useEffect(() => {
