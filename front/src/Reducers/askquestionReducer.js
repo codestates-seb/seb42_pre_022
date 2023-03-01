@@ -20,12 +20,15 @@ const askquestionSlice = createSlice({
     },
     addTag: (state, action) => {
       const tagValue = action.payload.data;
-      if(tagValue !== "" && !state.tagList.includes(tagValue)) {
+      if(tagValue !== "" && !state.tagList.includes(tagValue) && state.tagList.length < 5) {
         state.tagList.push(tagValue);
       }
     },
     removeTag: (state, action) => {
       state.tagList = state.tagList.filter((el, idx) => idx !== action.payload.indexToRemove)
+    },
+    changeTag: (state, action) => {
+      state.tagList = action.payload.tagData;
     }
   }
 })
