@@ -14,8 +14,14 @@ const filterSlice = createSlice({
   initialState,
   reducers: {
     filteringBy: (state, action) => {
-      state.newest=false
-      state.unanswered=false
+      // state=initialState
+      // 가 작동안하는 이유는 순수함수만 가능해서 ?
+      state.newest= false
+      state.highestscore= false
+      state.unanswered= false
+      state.tags= []
+      state.user= ''
+      state.answerCount= null
       state[action.payload]= true
     },
     customfilter: (state, action) => {
