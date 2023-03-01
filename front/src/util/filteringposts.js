@@ -14,7 +14,7 @@ export const allquestions= [
     "closedAt": null,
     "tagList": ["javascript","angular"],
     "user" : {
-      "displayName": "gacow82488",
+      "displayName": "addd",
       "email": "gacow82488@wwgoc.com",
       "profileImage": "https://source.boringavatars.com/beam/120/6?colors=66FFFF,8CBFE6,B380CC,D940B3,FF0099",
       "reputation": 1,
@@ -34,7 +34,7 @@ export const allquestions= [
     "closedAt": null,
     "tagList": ["angular"],
     "user" : {
-      "displayName": "gacow82488",
+      "displayName": "joa",
       "email": "gacow82488@wwgoc.com",
       "profileImage": "https://source.boringavatars.com/beam/120/6?colors=66FFFF,8CBFE6,B380CC,D940B3,FF0099",
       "reputation": 1,
@@ -42,7 +42,7 @@ export const allquestions= [
     }
   },
 {
-  "questionId": 323321,
+  "questionId": 32311321,
   "userId": null,
   "title": "Extracting output from Postman using Python",
   "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
@@ -82,7 +82,7 @@ export const allquestions= [
   }
 },
 {
-  "questionId": 14343,
+  "questionId": 1454343,
   "userId": null,
   "title": "Extracting output from Postman using Python",
   "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
@@ -102,7 +102,7 @@ export const allquestions= [
   }
 },
 {
-"questionId": 323321,
+"questionId": 3233234231,
 "userId": null,
 "title": "Extracting output from Postman using Python",
 "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
@@ -132,10 +132,17 @@ export function filteringposts (posts,filter) {
     if(!!filter.tags.length){
       filtering = false
       for(let i of filter.tags){
-        console.log(i)
         if(filtering===false){filtering = post.tagList.includes(i)}
       }
     }
+    if(!!filter.user.length){
+      filtering = post.user.displayName === filter.user
+    }
+    console.log(typeof filter.answerCount)
+    if(filter.answerCount !== null){
+      console.log(filter.answerCount)
+      filtering = post.answerCount === filter.answerCount
+    }    
     return filtering
   })
   return filteredposts

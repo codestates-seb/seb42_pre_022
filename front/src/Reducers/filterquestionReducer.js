@@ -6,7 +6,7 @@ let initialState = {
   unanswered: false,
   tags: [],
   user: '',
-  answerCount: 0,
+  answerCount: null,
 }
 
 const filterSlice = createSlice({
@@ -27,15 +27,14 @@ const filterSlice = createSlice({
     },
     searchBarfilter: (state,action) => {
       if(action.payload.tags){
-        state.tags = action.payload.tags
+        state.tags = [action.payload.tags]
       } else if(action.payload.user){
         state.user = action.payload.user
       } else {
-        state.user = action.payload.user
+        state.answerCount = Number(action.payload.answerCount)
       }
-      console.log(action.payload)
     },
 }})
 
-export const { filteringBy, customfilter } = filterSlice.actions
+export const { filteringBy, customfilter, searchBarfilter } = filterSlice.actions
 export default filterSlice.reducer

@@ -12,8 +12,9 @@ import { ReactComponent as AchiveIcon } from "../assets/achiveIcon.svg";
 import { ReactComponent as HelpIcon } from "../assets/helpIcon.svg";
 import { ReactComponent as ExchangeIcon } from "../assets/exchangeIcon.svg";
 import logo from "../assets/sprites.svg"
-import { customfilter } from "../Reducers/filterquestionReducer";
+import { searchBarfilter } from "../Reducers/filterquestionReducer";
 import { selectPage } from "../Reducers/paginationReducer";
+import SearchGuide from "./SearchGuide";
 
 
 const Containerheader = styled.header`
@@ -188,6 +189,41 @@ const IconButtonUl = styled.ul`
     margin-left: auto;
   } 
 `
+//!나중에 합쳐서 지우기
+export const SearchBoxDiv = styled.div`
+  flex-grow: 1;
+  position: relative;
+  margin: 0 8px;
+  > svg {
+    position: absolute;
+    top: 50%;
+    right: auto;
+    left: 0.7em;
+    fill: var(--black-400);
+    transform: translateY(-50%);
+    pointer-events: none;    
+  }
+`
+export const SearchInput = styled.input`
+  flex: 1;
+  display: block;
+  width: 100%;
+  padding: 0.6em 0.7em;
+  padding-left: 32px;
+  color: var(--black-700);
+  line-height: calc(15/13);
+  border: 1px solid var(--black-200);
+  border-radius: 3px;
+  font-size: 13px;
+  background-color: var(--white);
+  outline: 0;
+  :focus {
+    border-color: var(--blue-300);
+    box-shadow: 0 0 0 4px hsla(206, 100%, 40%, .15);
+  }
+`
+//!
+
 
 
 function Header() {
@@ -196,6 +232,7 @@ function Header() {
   const navigate = useNavigate();
   const [menu, setMenu] = useState(false)
   const [searchInputValue, setSearchInputValue] = useState('')
+  const[isFocus, setIsFocus] = useState(false)
 
   let { pathname } = useLocation();
 
@@ -218,20 +255,18 @@ function Header() {
   }
   const loginTabList = [(<><img src={login ? userInfo?.profileImage : null} alt="profile-icon" /><span>1</span></>), <InboxIcon />, <AchiveIcon />, <HelpIcon />, <ExchangeIcon />]
   const isFollowGuide = (text) => {
-    text.slice(0,6) === "[tag]" && dispatch(customfilter({tags: text.slice(6,text.length)}))
-    text.slice(0,6) === "user:" && dispatch(customfilter({user: text.slice(6,text.length)}))
-    text.slice(0,8) === "answer:" && dispatch(customfilter({answerCount: text.slice(8,text.length)}))
+    text.slice(0,5) === "[tag]" && dispatch(searchBarfilter({tags: text.slice(5,text.length)}))
+    text.slice(0,5) === "user:" && dispatch(searchBarfilter({user: text.slice(5,text.length)}))
+    text.slice(0,7) === "answer:" && dispatch(searchBarfilter({answerCount: text.slice(7,text.length)}))
   }
   const searchbarInputHandler=(e)=>{
-    if(e.key==="Enter"){
-      isFollowGuide(e.target.value)
+      isFollowGuide(searchInputValue)
       dispatch(selectPage(1))
-
-    } else{
-      setSearchInputValue(e.target.value)
-    }
-
-
+      setSearchInputValue('')
+  }
+  const focusHandler = () =>{
+    setIsFocus(!isFocus)
+    console.log(!isFocus)
   }
   return (
     <Containerheader>
@@ -246,7 +281,26 @@ function Header() {
           <HeadTextTabLi>Products</HeadTextTabLi>
           <HeadTextTabLi>For Teams</HeadTextTabLi>
         </HeadTextTabUl>
-        <SearchBar placeholder="Search..." inputHandler={setSearchInputValue}/>
+        {/* 나중에 SearchBar다 되면 지우기 */}
+        {/* <SearchBar placeholder="Search..." setSearchInputValue={setSearchInputValue} inputHandler={searchbarInputHandler} searchInputValue={searchInputValue}/> */}
+        <SearchBoxDiv>
+          <SearchInput 
+            type="text" 
+            maxLength={240} 
+            value={searchInputValue} 
+            placeholder="Search..." 
+            onChange={(e)=>{setSearchInputValue(e.target.value)}}
+            onKeyDown={(e)=>{
+            if (e.key === "Enter") {
+            searchbarInputHandler(e)
+            }}}
+            onFocus={focusHandler}
+            onBlur={focusHandler}
+          />
+          {isFocus && <SearchGuide />}
+      <SearchIcon />
+    </SearchBoxDiv>
+        {/*  */}
         <IconButtonUl>
           <HeadIconTabLi><SearchIcon /></HeadIconTabLi>
           {login && loginTabList.map((el, i) => <HeadIconTabLi key={i}>{el}</HeadIconTabLi>)}
