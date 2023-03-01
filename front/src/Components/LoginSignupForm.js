@@ -6,9 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { signupActions } from "../Reducers/signupReducer";
 import { useState } from "react";
 import { ReactComponent as ErrorIcon } from "../assets/errorIcon.svg";
-import postData from "../util/postData";
 import axios from "axios";
-
 
 const LoginFormContainer = styled.div`
   margin-bottom: 16px;
@@ -84,8 +82,6 @@ function LoginSignupForm() {
   const emailTest = /^[a-zA-Z0-9]*[@]{1}[a-zA-Z0-9]+[a-zA-Z0-9]*[.]{1}[a-zA-Z]{1,3}$/;
   const passwordTest = /^[a-zA-Z]{1,}[0-9]{1,}|[0-9]{1,}[a-zA-Z]{1,}$/;
 
-  // TODO 1: Signup 버튼에 구현할 함수 만들기 -> 완료!
-
   // axios post 함수 -> response data와 error를 모두 활용 가능
   const postLoginForm = async (url, data) => {
     try {
@@ -105,7 +101,6 @@ function LoginSignupForm() {
       } else {
         setEmailValid(true);
       };
-
       if (!passwordTest.test(state.passwordValue)) {
         setPasswordValid(false);
       } else {
@@ -114,7 +109,6 @@ function LoginSignupForm() {
     } else {
       setEmailValid(true);
       setPasswordValid(true);
-      // body에 보낼 객체 설정
       const req = {
         "displayName": state.displaynameValue.length === 0 ? null : state.displaynameValue,
         "email": state.emailValue,
@@ -122,17 +116,16 @@ function LoginSignupForm() {
       }
       postLoginForm("/users", req)
         .then(res => {
-          console.log(res);
           if (res.header) {
             const email = req.email;
+            alert(`Registration email sent to ${email}. Open this email to finish signup.`)
             const data = "";
             dispatch(signupActions.changeDisplaynameValue({ data }));
             dispatch(signupActions.changeEmailValue({ data }));
             dispatch(signupActions.changePasswordValue({ data }));
-            alert(`Registration email sent to ${email}. Open this email to finish signup.`)
             navigate("/users/login");
           }
-          else if(res.response.data.status === 409) {
+          else if (res.response.data.status === 409) {
             alert("This email is already signed up.");
             return;
           }
@@ -152,7 +145,6 @@ function LoginSignupForm() {
       } else {
         setEmailValid(true);
       };
-
       if (!passwordTest.test(state.loginPassword)) {
         setPasswordValid(false);
       } else {
@@ -177,7 +169,7 @@ function LoginSignupForm() {
             alert("Check your email and password.");
             return;
           } else if (res.response.data.message === "이메일 인증이 되지 않았습니다.") {
-            alert("Check your registration email.");
+            alert("This email is not registered. Check your registration email.");
             return;
           } else {
             alert("Log in error!");

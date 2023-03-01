@@ -1,12 +1,6 @@
 import styled from "styled-components";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { ReactComponent as GoogleIcon } from "../assets/googleicon.svg";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import postData from "../util/postData";
-import axios from "axios";
-import { loginInfoActions } from "../Reducers/loginInfoReducer";
+import { useLocation } from "react-router-dom";
 
 const LoginWithContainer = styled.div`
   margin-bottom: 16px;
@@ -41,10 +35,8 @@ const LoginWithButton = styled.button`
 
 function LoginWith() {
   const { pathname } = useLocation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  // 구글 로그인 -> POST 요청
+  // 구글 로그인 -> 서버의 구글 로그인 담당하는 주소로 이동시킴
   const googleHandler = (e) => {
     e.preventDefault();
     return window.location.assign(
@@ -58,10 +50,6 @@ function LoginWith() {
         <GoogleIcon className="logo-icon" />
         {pathname === "/users/login" ? "Log in" : "Sign up"} with Google
       </LoginWithButton>
-      {/* <LoginWithButton color="--black-750" hover="--black-800">
-        <FontAwesomeIcon icon={faGithub} className="logo-icon" />
-        {pathname === "/users/login" ? "Log in" : "Sign up"} with Github
-      </LoginWithButton> */}
     </LoginWithContainer>
   )
 }
