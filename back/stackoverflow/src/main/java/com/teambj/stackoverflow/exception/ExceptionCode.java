@@ -15,6 +15,7 @@ public enum ExceptionCode {
     404 NOT_FOUND : Resource 를 찾을 수 없음.
      */
     QUESTION_NOT_FOUND(404, "Question not found"),
+    TAG_NOT_FOUND(404, "Tag not found"),
 
 
 

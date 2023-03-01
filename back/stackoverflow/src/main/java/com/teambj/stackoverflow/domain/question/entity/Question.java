@@ -5,17 +5,9 @@ import com.teambj.stackoverflow.domain.answer.entity.Answer;
 import com.teambj.stackoverflow.domain.comment.entity.Comment;
 import com.teambj.stackoverflow.domain.user.entity.User;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import java.math.BigInteger;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,9 +57,5 @@ public class Question extends Auditable {
 
     public void setAnswerCount(int answerCount) {
         this.answerCount = answers.size();
-    }
-
-    public void setViewCount(int viewCount) {
-        this.viewCount = viewCount;
     }
 }

@@ -1,11 +1,8 @@
 package com.teambj.stackoverflow.domain.question.dto;
 
-import com.teambj.stackoverflow.domain.answer.dto.AnswerDto;
 import com.teambj.stackoverflow.domain.comment.dto.CommentDto;
-import com.teambj.stackoverflow.domain.question.entity.QuestionTag;
 import com.teambj.stackoverflow.domain.tag.dto.TagResponseDto;
 import com.teambj.stackoverflow.domain.user.dto.UserDto;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
