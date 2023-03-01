@@ -103,14 +103,21 @@ const HeadIconTabLi = styled(HeadTabLi)`
     fill:var(--black-800);
     }
   }
-  > img {
+  img {
     height: 24px;
     width: 24px;
   }
   @media only screen and (max-width: 640px) {
-    > span {
+    span {
       display: none;
     }
+  }
+  a{
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+    gap:4px;
+    text-decoration: none;
   }
 `
 const MenubarLi = styled(HeadIconTabLi)`
@@ -253,7 +260,7 @@ function Header() {
   const openMenu = () => {
     setMenu(!menu)
   }
-  const loginTabList = [(<><img src={login ? userInfo?.profileImage : null} alt="profile-icon" /><span>1</span></>), <InboxIcon />, <AchiveIcon />, <HelpIcon />, <ExchangeIcon />]
+  const loginTabList = [(<><Link to="/users/mypage"><img src={login ? userInfo?.profileImage : null} alt="profile-icon" /><span>1</span></Link></>), <InboxIcon />, <AchiveIcon />, <HelpIcon />, <ExchangeIcon />]
   const isFollowGuide = (text) => {
     dispatch(searchBarfilter(text))
  }
