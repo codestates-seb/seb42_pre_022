@@ -99,7 +99,6 @@ const MainMenu = styled.ol`
 
 function Nav() {
   let {pathname} = useLocation();
-  console.log(pathname.slice(0,6))
 
   return (
     <NavContainer>
