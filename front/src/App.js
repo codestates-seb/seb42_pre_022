@@ -24,24 +24,21 @@ import Tags from "./Pages/Tags";
 function App() {
   const { pathname } = useLocation();
   const dispatch = useDispatch()
-  const { login } = useSelector(state => state.loginInfoReducer);
+  const { userInfo } = useSelector(state => state.loginInfoReducer);
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
-    if (accessToken && !login) {
+    if (accessToken && !userInfo?.userId) {
       getUserInfo()
       .then(userInfo => {
         const actions = {}
-        if (userInfo.userId) {
+        if (userInfo) {
           actions.login = true
           actions.userInfo = userInfo
+          dispatch(loginInfoActions.changeLoginInfo(actions))
         } else {
-          actions.login = false
-          actions.userInfo = null
           localStorage.removeItem("accessToken");
-          alert("장기간 접속하지 않아 로그아웃 처리됩니다")
         }
-      dispatch(loginInfoActions.changeLoginInfo(actions))
       })
     }
     window.scrollTo(0, 0)

@@ -4,8 +4,9 @@ import sprites from "../assets/sprites.svg";
 import LoginWith from "../Components/LoginWith";
 import LoginSignupForm from "../Components/LoginSignupForm";
 import HelmetTitle from "../Components/HelmetTitle";
-
-//TODO: Footer에 있는 LogoDiv Styles로 옮기고 경로 수정하기
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const LoginContainer = styled.div`
   width: 100%;
@@ -22,6 +23,14 @@ const LoginContainer = styled.div`
 `
 
 function Login() {
+  const navigate = useNavigate();
+  const { login } = useSelector(state => state.loginInfoReducer);
+
+  useEffect(() => {
+    if (login) {
+      navigate("/");
+    }
+  },[login]);
 
   return (
     <>
