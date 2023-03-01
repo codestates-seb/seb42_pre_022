@@ -38,7 +38,6 @@ const filterSlice = createSlice({
     searchBarfilter: (state,action) => {
       state.isSearched=true
       let text = action.payload
-      console.log(text)
       if(text.slice(0,5) === "[tag]"){
         state.tags = [text.slice(5,text.length)]
         state.searchedBy = [text.slice(5,text.length)]
@@ -48,6 +47,8 @@ const filterSlice = createSlice({
       } else if(text.slice(0,8) === "answers:"){
         state.answerCount = Number(text.slice(8,text.length))
         state.searchedBy = "answers>="+Number(text.slice(8,text.length))
+      } else {
+        state.searchedBy = text
       }
     },
 }})

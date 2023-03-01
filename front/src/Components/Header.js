@@ -189,7 +189,7 @@ const IconButtonUl = styled.ul`
     margin-left: auto;
   } 
 `
-//!나중에 합쳐서 지우기
+//TODO 나중에 합쳐서 지우기
 export const SearchBoxDiv = styled.div`
   flex-grow: 1;
   position: relative;
@@ -222,7 +222,7 @@ export const SearchInput = styled.input`
     box-shadow: 0 0 0 4px hsla(206, 100%, 40%, .15);
   }
 `
-//!
+//TODO
 
 
 
@@ -259,6 +259,8 @@ function Header() {
  }
   const searchbarHandler=(e)=>{
       isFollowGuide(searchInputValue)
+      console.log("이벤트")
+      console.log(searchInputValue)
       dispatch(selectPage(1))
       setSearchInputValue('')
   }
@@ -287,8 +289,11 @@ function Header() {
             value={searchInputValue} 
             placeholder="Search..." 
             onChange={(e)=>{setSearchInputValue(e.target.value)}}
-            onKeyDown={(e)=>{
+            //! 여러분 그거 아세요? 한글에서 엔터를 누르면 onKeyDown이 두번 발생된다는 사실
+            //! 알고싶지 않았습니다.
+            onKeyPress={(e)=>{
             if (e.key === "Enter") {
+            console.log("엔터")
             searchbarHandler(e)
             }}}
             onFocus={focusHandler}
