@@ -137,11 +137,13 @@ export function filteringposts (posts,filter) {
       }
     }
     if(!!filter.user.length){
-      console.log('user필터링중')
       filtering = post.user.displayName === filter.user
     }
     if(filter.answerCount !== null){
       filtering = post.answerCount >= filter.answerCount
+    }
+    if(!!filter.searchedBy){
+      filtering = post.body.split(' ').includes(filter.searchedBy)
     }    
     return filtering
   })

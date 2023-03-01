@@ -82,6 +82,9 @@ color: var(--fc-medium);
   flex-basis: 50%;
   color: var(--fc-medium);
 }
+@media (max-width: 640px){
+    flex-direction: column;
+}
 `
 const Hintele = styled.div`
 margin-bottom: ${(props) => props.end ? "0" : "12px"};
@@ -92,58 +95,6 @@ font-family: ui-monospace,"Cascadia Mono","Segoe UI Mono","Liberation Mono",Menl
   margin-left: 3px;
 }
 `
-
-// @font-face {
-//   font-family: "Segoe UI Adjusted";
-//   src: local(Segoe UI);
-//   ascent-override:95%}
-
-// @font-face {
-//   font-family: "Segoe UI Adjusted";
-//   src: local(Segoe UI Italic);
-//   ascent-override:95%;font-style: italic
-// }
-
-// @font-face {
-//   font-family: "Segoe UI Adjusted";
-//   src: local(Segoe UI Semibold);
-//   ascent-override:95%;font-weight: 600
-// }
-
-// @font-face {
-//   font-family: "Segoe UI Adjusted";
-//   src: local(Segoe UI Semibold Italic);
-//   ascent-override:95%;font-style: italic;
-//   font-weight: 600
-// }
-
-// @font-face {
-//   font-family: "Segoe UI Adjusted";
-//   src: local(Segoe UI Bold);
-//   ascent-override:90%;font-weight: 700
-// }
-
-// @font-face {
-//   font-family: "Segoe UI Adjusted";
-//   src: local(Segoe UI Bold Italic);
-//   ascent-override:95%;font-style: italic;
-//   font-weight: 700
-// }
-
-// @font-face {
-//   font-family: "Segoe UI Adjusted";
-//   src: local(Segoe UI Black);
-//   ascent-override:95%;font-weight: 800
-// }
-
-// @font-face {
-//   font-family: "Segoe UI Adjusted";
-//   src: local(Segoe UI Black Italic);
-//   ascent-override:95%;font-style: italic;
-//   font-weight: 800
-// }
-
-
 
 function SearchGuide() {
 
