@@ -83,35 +83,30 @@ public class QuestionService {
                 .ifPresent(foundQuestion::setTitle);
         Optional.ofNullable(question.getBody())
                 .ifPresent(foundQuestion::setBody);
+        if (Optional.ofNullable(tagList).isPresent()) {
+            for (int i = 0; i < foundQuestion.getQuestionTags().size(); i++) {
+                QuestionTag questionTag = foundQuestion.getQuestionTags().get(i);
+                foundQuestion.getQuestionTags().remove(questionTag);
+                questionTag.getTag().getQuestionTags().remove(questionTag);
+                questionTagRepository.delete(questionTag);
+                i--;
+            }
 
-        List<QuestionTag> questionTags = foundQuestion.getQuestionTags()
-                .stream()
-                .collect(Collectors.toList());
-
-        if (tagList.isEmpty()) {
-            foundQuestion.getQuestionTags();
-        } else if  (!tagList.isEmpty()) {
-            List<Tag> tagByString = tagService.createByTagName(tagList);
-            List<QuestionTag> addTags = tagByString.stream()
-                    .map(tag -> new QuestionTag(foundQuestion, tag))
-                    .collect(Collectors.toList());
-            foundQuestion.setQuestionTags(addTags);
+            for (String tag : tagList) {
+                if (tagRepository.findByTagName(tag).isEmpty()) {
+                    Tag newTag = new Tag();
+                    newTag.setTagName(tag);
+                    tagRepository.save(newTag);
+                }
+                Tag foundTag = tagRepository.findByTagName(tag).get();
+                QuestionTag questionTag = new QuestionTag();
+                questionTag.setTag(foundTag);
+                questionTag.setQuestion(question);
+                foundQuestion.getQuestionTags().add(questionTag);
+                foundTag.getQuestionTags().add(questionTag);
+                questionTagRepository.save(questionTag);
+            }
         }
-
-        questionTagRepository.deleteAll(questionTags);
-
-
-//        if(Optional.ofNullable(question.getQuestionTags())
-//                .isPresent()){
-//            for (QuestionTag questionTag : foundQuestion.getQuestionTags()) {
-//                Tag tag = tagRepository.findByTagName(questionTag.getTag().getTagName()).orElseThrow();
-//            }
-//            questionTagRepository.deleteAll(foundQuestion.getQuestionTags());
-//            foundQuestion.setQuestionTags(question.getQuestionTags());
-//            for (QuestionTag questionTag : foundQuestion.getQuestionTags()) {
-//                Tag tag = tagRepository.findByTagName(questionTag.getTag().getTagName()).orElseThrow();
-//            }
-//        }
 
         return foundQuestion;
     }
