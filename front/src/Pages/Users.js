@@ -5,8 +5,9 @@ import UserCard from "../Components/UserCard";
 import HelmetTitle from "../Components/HelmetTitle";
 import Pagination from "../Components/Pagination";
 import { useState, useEffect } from "react";
+import { DataControllerBtn } from "./Questions";
 
-const UsersContainer = styled.div`
+export const UsersContainer = styled.div`
   width: calc(100%);
   float: left;
   @media screen and (max-width: 980px){
@@ -14,7 +15,7 @@ const UsersContainer = styled.div`
   float: none;
   }
 `
-const UsersH1 = styled.h1`
+export const UsersH1 = styled.h1`
   font-size: 2.07692308rem;
   font-weight: 400;
   margin-right: 12px;
@@ -24,7 +25,7 @@ const UsersH1 = styled.h1`
   flex: 1 auto;
   display: block;
 `
-const SearchFilterDiv = styled.div`
+export const SearchFilterDiv = styled.div`
   display: flex;
   align-items: stretch;
   margin-bottom: 30px;
@@ -41,36 +42,18 @@ const SearchFilterDiv = styled.div`
     display: block !important;
   }
 `
-const DataController = styled.div`
+export const DataController = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin-left: auto !important;
+  > a {
+    padding: 0.8em !important;
+    :nth-child(3):after {
+      display: none;
+    }
+  }
 `
-const DataControllerBtn = styled.a`
-  border: 1px solid transparent;
-  border-radius: ${(props) => props.middle ? "0" : "3px"};
-  border-top-left-radius: ${(props) => props.end ? "0" : null};
-  border-top-right-radius: ${(props) => props.start ? "0" : null};
-  border-bottom-right-radius: ${(props) => props.start ? "0" : null};
-  border-bottom-left-radius: ${(props) => props.end ? "0" : null};
-  margin-right: ${(props) => props.end ? "0" : "-1px"};
-  z-index: 25;
-  box-shadow: none;
-  border-color: var(--black-400);
-  background-color: ${(props) => props.selected ? "var(--black-075)" : "transparent"};
-  color: ${(props) => props.selected ? "var(--black-700)" : "var(--black-500)"};
-  white-space: nowrap;
-  font-size: 12px;
-  padding: 0.8em;
-  cursor: pointer;
-  line-height: 15/13;
-  position: relative;
-  outline: none;
-  text-align: center;
-  text-decoration: none;
-  user-select: none;
-`
-const UserCardsDiv = styled.div`
+export const UserCardsDiv = styled.div`
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   > div {
@@ -87,7 +70,7 @@ const UserCardsDiv = styled.div`
     grid-template-columns: repeat(1, minmax(0, 1fr));
   }
 `
-const Bottomdiv = styled.div`
+export const Bottomdiv = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -144,7 +127,10 @@ function Users() {
             <SearchBar placeholder="Filter by user" inputHandler={inputHandler}/>
             <DataController>
               <DataControllerBtn start={1} selected={1}><div>Reputation</div></DataControllerBtn>
-              <DataControllerBtn end={1} ><div>New users</div></DataControllerBtn>
+              <DataControllerBtn middle="true"><div>New users</div></DataControllerBtn>
+              <DataControllerBtn middle="true"><div>Voters</div></DataControllerBtn>
+              <DataControllerBtn middle="true"><div>Editors</div></DataControllerBtn>
+              <DataControllerBtn end={1} ><div>Moderators</div></DataControllerBtn>
             </DataController>
           </SearchFilterDiv>
           <UserCardsDiv>

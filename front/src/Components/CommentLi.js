@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { ReactComponent as EditCommentIcon } from "../assets/editCommentIcon.svg"
-import { CommentTextarea } from "../Styles/Divs";
 import deleteData from "../util/deleteData";
 import patchData from "../util/patchData";
 import dateTimeFormat from "../util/dateTimeFormat";
+import CommentTextarea from "./CommentTextarea";
 
 const CmtLi = styled.li`
   padding: 6px;
@@ -13,9 +13,6 @@ const CmtLi = styled.li`
   color: var(--black-800);
   > span {
     margin-right: 4px;
-  }
-  .hidden {
-    display:none;
   }
 `
 const WriterSpan = styled.span`
@@ -51,33 +48,25 @@ function CommentLi({ comment }) {
   const { nowQ } = editPost
   const [editMode, setEditMode] = useState(false)
   const [editComment, setEditComment] = useState(comment.body)
-  const textareaRef = useRef();
 
-  const handleResizeHeight = () => {
-    textareaRef.current.style.height = 'auto';
-    textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px'
-  }
   const handleEditButton = () => {
     if (editMode) {
-      const data = {
-        commentId: comment.commentId,
-        body: editComment
+      if (comment.body === editComment) alert("변경된 내용이 없습니다")
+      else if (editComment.length > 100) alert("코멘트는 100자 이하여야 합니다")
+      else if (window.confirm("코멘트를 등록합니다") === true) {
+        const data = {
+          commentId: comment.commentId,
+          body: editComment
+        }
+        patchData("/comments", data)
+          .then(() => setEditMode(false))
+          .then(() => window.location.reload())
       }
-      patchData("/comments", data)
-        .then(() => setEditMode(false))
-        .then(() => window.location.reload())
     } else {
       setEditMode(true)
     }
   }
-  const handleComment = (e) => {
-    if (e.key === "Enter") {
-      handleEditButton()
-    } else {
-      setEditComment(e.target.value);
-      handleResizeHeight();
-    }
-  }
+
   const deleteComment = () => {
     if (window.confirm("정말 삭제하시겠습니까?") === true) {
       deleteData(`/comments/${comment.commentId}`)
@@ -85,16 +74,13 @@ function CommentLi({ comment }) {
         .then(() => window.location.reload())
     }
   }
-  useEffect(()=>{
-    if(editMode){
-      textareaRef.current.focus();
-    }
-  },[editMode])
 
   return (
-    <CmtLi writer={nowQ.userId === comment.user.userId ? 1 : null}>
-      <CommentTextarea className={editMode ? "textarea" : "hidden"} ref={textareaRef} defaultValue={editComment} onClick={handleResizeHeight} onKeyUp={handleComment} />
-      <span className={editMode ? "hidden" : ""}>{editComment}</span>
+    <CmtLi writer={nowQ.userId === comment.user.userId && 1}>
+      {editMode ?
+        <CommentTextarea setComment={setEditComment} writeMode={editMode} writeComment={editComment} />
+        : <span>{editComment}</span>}
+
       –&nbsp;<WriterSpan className="linktext">{comment.user.displayName}</WriterSpan>
       <DateSpan>{comment.createdDate !== comment.modifiedDate ? (<>{dateTimeFormat(comment.modifiedDate)}<EditCommentIcon /></>) : dateTimeFormat(comment.createdDate)}</DateSpan>
       {userInfo?.userId === comment.user.userId ?
