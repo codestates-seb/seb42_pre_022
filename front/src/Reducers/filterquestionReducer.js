@@ -36,6 +36,7 @@ const filterSlice = createSlice({
       state.tags = action.payload.tags
     },
     searchBarfilter: (state,action) => {
+      console.log("searchfilter작동중")
       state.isSearched=true
       let text = action.payload
       if(text.slice(0,5) === "[tag]"){
