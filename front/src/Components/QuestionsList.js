@@ -4,6 +4,7 @@ import { format } from "timeago.js";
 import { Tag } from "../Styles/Divs";
 import { Link } from "react-router-dom";
 import useGET from "../util/useGET";
+import dateTimeFormat from "../util/dateTimeFormat";
 
 
 
@@ -210,7 +211,7 @@ function QuestionsList({ele}) {
             <UsercardInfo><Link to={`/users/${ele.user.userId}`}><div className="uc-username">{ele.user.displayName}</div></Link><div className="uc-reputation">{ele.user.reputation}</div></UsercardInfo>
             {isWrittenin24
               ? <time>asked {timeago}</time> 
-              : <time>asked {changeDateFormat} at {slicedTime}</time>
+              : <time>asked {dateTimeFormat(ele.createdDate, true)}</time>
             }
           </UsercardMinimal>
         </div>
