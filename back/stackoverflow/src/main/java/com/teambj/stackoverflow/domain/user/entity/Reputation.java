@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
+@Table(name ="REPUTATIONS")
 public class Reputation extends Auditable {
 
     @Id
