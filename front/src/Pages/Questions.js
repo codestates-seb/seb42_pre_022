@@ -243,7 +243,7 @@ function Questions() {
           </div>
           <QuestionsContent>
             {!!onepage && onepage.map(ele=>{
-              return <QuestionsList key={ele.questionId} title={ele.title} body={ele.body} user={ele.user} tags={ele.tagList} createdAt={ele.createdDate} viewCount={ele.viewCount} answerCount={ele.answerCount}/>
+              return <QuestionsList key={ele.questionId} ele={ele}/>
             })}
           </QuestionsContent>
           <PaginationLeft />
