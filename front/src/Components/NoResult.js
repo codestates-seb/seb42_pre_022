@@ -48,4 +48,4 @@ function NoResult() {
   )
 }
 
-export default  NoResult;
+export default NoResult;
