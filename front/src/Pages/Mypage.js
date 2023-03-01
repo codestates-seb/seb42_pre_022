@@ -1,9 +1,10 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import getUserInfo from "../util/getUserInfo";
 import { DataControllerBtn } from "./Questions";
 import patchData from "../util/patchData";
+import { loginInfoActions } from "../Reducers/loginInfoReducer";
 
 const MypageContainer = styled.div`
   width: 100%;
@@ -204,23 +205,11 @@ const GridItem = styled.div`
   `
 
 function Mypage() {
-  const user ={displayName: 
-    "JOA",
-    email
-    : 
-    "blueseablueskyblueme@gmail.com",
-    profileImage
-    : 
-    "https://source.boringavatars.com/beam/120/1?colors=66FFFF,8CBFE6,B380CC,D940B3,FF0099",
-    reputation
-    : 
-    1,
-    userId
-    : 
-    1}
+  const dispatch = useDispatch();
+  const storedInfo = useSelector((state)=> state.loginInfoReducer)
+  const user = storedInfo?.userInfo
   const [isEditMode, setEditMode] = useState(false)
-  const [inputNewName, setInputNewName] = useState(user.displayName)
-  // const user = useSelector((state)=> state.loginInfoReducer.userInfo)
+  const [inputNewName, setInputNewName] = useState(user?.displayName)
   const inputEl =useRef(null);
   const setEditModeHandler = () => {
     setEditMode(true)
@@ -229,16 +218,17 @@ function Mypage() {
     setInputNewName(e.target.value)
   }
   const setNewNameHandler = (e) => {
-    //TODO patch 수정하기
-    patchData("/users",inputNewName)
-      .then(getUserInfo())
-      .then((data)=>{})
-    setInputNewName('')
+    patchData("/users",{"displayName":inputNewName})
+      .then((data)=>{
+        getUserInfo().then(
+          (data)=>{
+            dispatch(loginInfoActions.changeLoginInfo({...user,userInfo:data}))
+            setInputNewName(data.displayName)
+          })})
     setEditMode(false)
   }
   const blurHandler = (e) => {
-    //TODO patch 수정하기
-    patchData("/users",inputNewName)
+    setNewNameHandler()
     setEditMode(false)
   }
   useEffect(()=>{
@@ -251,7 +241,7 @@ function Mypage() {
       <MypageContainer>
         <MypageHeader>
           <a>
-           <img src={user.profileImage} alt="user-profile"></img> 
+           <img src={user?.profileImage} alt="user-profile"></img> 
           </a>
           <div>
             <UserDisplayName>
@@ -268,7 +258,7 @@ function Mypage() {
                 }} 
                 onBlur={blurHandler}
                 />
-              :<span>{user.displayName}</span>}
+              :<span>{user?.displayName}</span>}
             </UserDisplayName>
             <UserDetails>
               <li>
@@ -286,7 +276,7 @@ function Mypage() {
             </UserDetails>
             <EditDisplayName onClick={setEditModeHandler}>
               <DataControllerBtn>
-                <svg viewbox="0 0 18 18"><path d="m13.68 2.15 2.17 2.17c.2.2.2.51 0 .71L14.5 6.39l-2.88-2.88 1.35-1.36c.2-.2.51-.2.71 0ZM2 13.13l8.5-8.5 2.88 2.88-8.5 8.5H2v-2.88Z"/></svg>Edit profile
+                <svg viewBox="0 0 18 18"><path d="m13.68 2.15 2.17 2.17c.2.2.2.51 0 .71L14.5 6.39l-2.88-2.88 1.35-1.36c.2-.2.51-.2.71 0ZM2 13.13l8.5-8.5 2.88 2.88-8.5 8.5H2v-2.88Z"/></svg>Edit profile
               </DataControllerBtn>
             </EditDisplayName>
           </div>
