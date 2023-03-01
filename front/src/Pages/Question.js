@@ -148,7 +148,8 @@ function Question() {
 
   return (
     <div className="content">
-      <HelmetTitle title={`${question.tagList[0].tagName} - ${question.title}`} />
+      {/* question.tagList[0].tagName */}
+      <HelmetTitle title={`${"태그1"} - ${question.title}`} />
       {Qerror && <h1 className="error">Question ERROR</h1>}
       {question &&
         <QuestionContainerMain >

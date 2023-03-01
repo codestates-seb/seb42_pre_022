@@ -49,28 +49,26 @@ function CommentsDiv({ comments, answerId, questionId }) {
           data.questionId = questionId
         }
         postData("/comments", data)
-        .then(() => setWriteMode(false))
-        .then(() => window.location.reload())
+          .then(() => setWriteMode(false))
+          .then(() => window.location.reload())
       }
-    } else if (!login) alert("코멘트를 등록하려면 로그인해야 합니다") 
+    } else if (!login) alert("코멘트를 등록하려면 로그인해야 합니다")
     else setWriteMode(true)
 
   }
   const handleComment = (e) => {
-    if (e.key === "Enter") {
-      handleWriteButton()
-    } else {
+    if (writeComment.length < 100) {
       setWriteComment(e.target.value);
       handleResizeHeight();
     }
   }
 
-  useEffect(()=>{
-    if(writeMode){
+  useEffect(() => {
+    if (writeMode) {
       textareaRef.current.focus();
     }
-  },[writeMode])
-
+  }, [writeMode])
+  console.log(writeComment)
   return (
     <CmtDiv>
       {comments.length !== 0 &&
@@ -78,9 +76,10 @@ function CommentsDiv({ comments, answerId, questionId }) {
           {comments.map(comment => <CommentLi key={comment.commentId} comment={comment} />)}
         </ul>
       }
-      {writeMode ?
-        <CommentTextarea ref={textareaRef} onClick={handleResizeHeight} onKeyUp={handleComment} />
-        : null}
+      {writeMode && <>
+        <CommentTextarea ref={textareaRef} value={writeComment} onChange={handleComment} onKeyUp={e => e.key === "Enter" && handleWriteButton()} />
+        {writeComment.length >= 100 && <p className="error">코멘트는 100자까지 입력할 수 있습니다</p>}
+      </>}
       <span className={writeMode ? "addCmt" : ""} onClick={handleWriteButton}>Add a comment</span>
     </CmtDiv>
   )
