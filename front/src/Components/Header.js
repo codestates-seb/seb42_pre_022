@@ -255,18 +255,15 @@ function Header() {
   }
   const loginTabList = [(<><img src={login ? userInfo?.profileImage : null} alt="profile-icon" /><span>1</span></>), <InboxIcon />, <AchiveIcon />, <HelpIcon />, <ExchangeIcon />]
   const isFollowGuide = (text) => {
-    text.slice(0,5) === "[tag]" && dispatch(searchBarfilter({tags: text.slice(5,text.length)}))
-    text.slice(0,5) === "user:" && dispatch(searchBarfilter({user: text.slice(5,text.length)}))
-    text.slice(0,7) === "answer:" && dispatch(searchBarfilter({answerCount: text.slice(7,text.length)}))
-  }
-  const searchbarInputHandler=(e)=>{
+    dispatch(searchBarfilter(text))
+ }
+  const searchbarHandler=(e)=>{
       isFollowGuide(searchInputValue)
       dispatch(selectPage(1))
       setSearchInputValue('')
   }
   const focusHandler = () =>{
     setIsFocus(!isFocus)
-    console.log(!isFocus)
   }
   return (
     <Containerheader>
@@ -292,7 +289,7 @@ function Header() {
             onChange={(e)=>{setSearchInputValue(e.target.value)}}
             onKeyDown={(e)=>{
             if (e.key === "Enter") {
-            searchbarInputHandler(e)
+            searchbarHandler(e)
             }}}
             onFocus={focusHandler}
             onBlur={focusHandler}

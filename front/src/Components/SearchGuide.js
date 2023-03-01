@@ -156,7 +156,7 @@ function SearchGuide() {
       <div></div>
       <SearchHint>
         <div>
-          <Hintele><span>answer:0</span><span>unanswered questions</span></Hintele>
+          <Hintele><span>answers:0</span><span>unanswered questions</span></Hintele>
           <Hintele end={1}><span>user:1234</span><span>search by author</span></Hintele>
         </div>
         <div>

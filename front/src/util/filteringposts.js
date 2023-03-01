@@ -2,7 +2,7 @@
 
 export const allquestions= [
   {
-    "questionId": 54343,
+    "questionId": 544343,
     "userId": null,
     "title": "Extracting output from Postman using Python",
     "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
@@ -22,7 +22,7 @@ export const allquestions= [
     }
   },
   {
-    "questionId": 14343,
+    "questionId": 1434333333,
     "userId": null,
     "title": "Extracting output from Postman using Python",
     "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
@@ -132,16 +132,16 @@ export function filteringposts (posts,filter) {
     if(!!filter.tags.length){
       filtering = false
       for(let i of filter.tags){
-        if(filtering===false){filtering = post.tagList.includes(i)}
+        if(filtering===false){filtering = post.tagList && post.tagList.includes(i)}
+        //! tag구현 안됐을 시에는 includes 검증 안되게
       }
     }
     if(!!filter.user.length){
+      console.log('user필터링중')
       filtering = post.user.displayName === filter.user
     }
-    console.log(typeof filter.answerCount)
     if(filter.answerCount !== null){
-      console.log(filter.answerCount)
-      filtering = post.answerCount === filter.answerCount
+      filtering = post.answerCount >= filter.answerCount
     }    
     return filtering
   })
