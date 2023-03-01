@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { Link, useParams, useBeforeUnload } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { editPostActions } from "../Reducers/editPostReducer";
 import { BasicBlueButton } from "../Styles/Buttons";
@@ -13,6 +13,7 @@ import HelmetTitle from "../Components/HelmetTitle";
 import useGET from "../util/useGET";
 import postData from "../util/postData";
 import dateTimeFormat from "../util/dateTimeFormat";
+import preventClose from "../util/preventClose";
 
 const QuestionContainerMain = styled.main`
   display: table;
@@ -110,13 +111,23 @@ function Question() {
   const [answerUrl, setAnswerUrl] = useState(null)
   const [answers, Aerror] = useGET(answerUrl)
   const { login } = useSelector(state => state.loginInfoReducer);
-  const [createAnswer, setCreateAnswer] = useState('')
+  const [createAnswer, setCreateAnswer] = useState("")
   const dispatch = useDispatch()
+
+  const checkAnswerBlankToPreventClose = useCallback((e) => {
+    if (createAnswer.replaceAll(/<[^>]*>/g, '').length !== 0) {
+      preventClose(e)
+    }
+  },[createAnswer])
+
+  useBeforeUnload(checkAnswerBlankToPreventClose)
+
   const postAnswer = () => {
-    if (createAnswer.length === 0) alert("답변 내용을 입력하세요")
+    window.removeEventListener("beforeunload", checkAnswerBlankToPreventClose)
+    if (createAnswer.replaceAll(/<[^>]*>/g, '').length === 0) alert("답변 내용을 입력하세요")
     else if (window.confirm("답변을 등록합니다") === true) {
       postData(`/answers`, { questionId: question_id, body: createAnswer })
-        .then(() => {
+      .then(() => {
           window.location.reload()
         })
     }
@@ -148,8 +159,7 @@ function Question() {
 
   return (
     <div className="content">
-      {/* question.tagList[0].tagName */}
-      <HelmetTitle title={`${"태그1"} - ${question.title}`} />
+      <HelmetTitle title={`${question && question.tagList[0]?.tagName} - ${question.title}`} />
       {Qerror && <h1 className="error">Question ERROR</h1>}
       {question &&
         <QuestionContainerMain >
@@ -179,7 +189,7 @@ function Question() {
                     <h1 className="error">Answer ERROR</h1>
                     : (<>
                       <h2>{answers?.length} Answers</h2>
-                      {answers.length && answers?.map(answer => <QandAPost key={answer.answerId} answer={answer} qwriter={question.user.userId} />)}
+                      {answers.length !== 0 && answers?.map(answer => <QandAPost key={answer.answerId} answer={answer} qwriter={question.user.userId} />)}
                     </>))
                   }
               </div>

@@ -102,13 +102,16 @@ const WriterCardDiv = styled.div`
   border-radius: ${props => props.iswriter ? "3px" : null};
   background-color: var(${props => props.iswriter ? "--powder" : null});
 `
-const QAbodydiv = styled.div`
+export const QAbodydiv = styled.div`
   padding-top: 12px;
   font-size: 15px;
   line-height: 1.5;
   overflow-wrap: break-word;
   > p {
     margin-bottom: 1.1em;;
+  }
+  li {
+    margin-left: 1.5em;
   }
   a {
     color: var(--blue) !important;
