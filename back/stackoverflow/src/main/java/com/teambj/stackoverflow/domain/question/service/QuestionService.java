@@ -4,6 +4,7 @@ import com.teambj.stackoverflow.auth.PrincipalDetails;
 import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
 import com.teambj.stackoverflow.domain.answer.entity.Answer;
 import com.teambj.stackoverflow.domain.answer.repository.AnswerRepository;
+import com.teambj.stackoverflow.domain.answer.service.AnswerService;
 import com.teambj.stackoverflow.domain.comment.entity.Comment;
 import com.teambj.stackoverflow.domain.comment.repository.CommentRepository;
 import com.teambj.stackoverflow.domain.comment.service.CommentService;
@@ -12,6 +13,7 @@ import com.teambj.stackoverflow.domain.question.entity.QuestionTag;
 import com.teambj.stackoverflow.domain.question.repository.QuestionRepository;
 import com.teambj.stackoverflow.domain.question.repository.QuestionTagRepository;
 import com.teambj.stackoverflow.domain.tag.entity.Tag;
+import com.teambj.stackoverflow.domain.tag.repository.TagRepository;
 import com.teambj.stackoverflow.domain.tag.service.TagService;
 import com.teambj.stackoverflow.domain.user.service.UserService;
 import com.teambj.stackoverflow.exception.BusinessLogicException;
@@ -24,6 +26,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,10 +42,13 @@ public class QuestionService {
     private final CommentService commentService;
     private final QuestionTagRepository questionTagRepository;
     private final AnswerRepository answerRepository;
+    private final AnswerService answerService;
+    private final TagRepository tagRepository;
 
     public QuestionService(QuestionRepository questionRepository, UserService userService, CustomBeanUtil beanUtil, TagService tagService, CommentRepository commentRepository, CommentService commentService,
                            QuestionTagRepository questionTagRepository,
-                           AnswerRepository answerRepository) {
+                           AnswerRepository answerRepository, AnswerService answerService,
+                           TagRepository tagRepository) {
         this.questionRepository = questionRepository;
         this.userService = userService;
         this.beanUtil = beanUtil;
@@ -51,6 +57,8 @@ public class QuestionService {
         this.commentService = commentService;
         this.questionTagRepository = questionTagRepository;
         this.answerRepository = answerRepository;
+        this.answerService = answerService;
+        this.tagRepository = tagRepository;
     }
 
     public Question createQuestion(Question question, List<String> tagName,
@@ -67,7 +75,7 @@ public class QuestionService {
         return saveQuestion;
     }
 
-    public Question updateQuestion(Question question, List<String> tagName, @AuthenticationPrincipal PrincipalDetails userDetails) {
+    public Question updateQuestion(Question question, List<String> tagList, @AuthenticationPrincipal PrincipalDetails userDetails) {
         Question foundQuestion = findQuestion(question.getQuestionId());
         userService.verifyUser(findVerifiedQuestionById(question.getQuestionId()).getUser().getUserId());
 
@@ -75,40 +83,55 @@ public class QuestionService {
                 .ifPresent(foundQuestion::setTitle);
         Optional.ofNullable(question.getBody())
                 .ifPresent(foundQuestion::setBody);
-        List<QuestionTag> questionTags = foundQuestion.getQuestionTags()
-                .stream()
-                .collect(Collectors.toList());
+        if (Optional.ofNullable(tagList).isPresent()) {
+            for (int i = 0; i < foundQuestion.getQuestionTags().size(); i++) {
+                QuestionTag questionTag = foundQuestion.getQuestionTags().get(i);
+                foundQuestion.getQuestionTags().remove(questionTag);
+                questionTag.getTag().getQuestionTags().remove(questionTag);
+                questionTagRepository.delete(questionTag);
+                i--;
+            }
 
-/* 요청으로 인해 주석 처리 */
-//        if (!tagName.isEmpty()) {
-//            List<Tag> tagByString = tagService.createByTagName(tagName);
-//            List<QuestionTag> addTags = tagByString.stream()
-//                    .map(tag -> new QuestionTag(foundQuestion, tag))
-//                    .collect(Collectors.toList());
-//            foundQuestion.setQuestionTags(addTags);
-//        }
-//
-//        questionTagRepository.deleteAll(questionTags);
+            for (String tag : tagList) {
+                if (tagRepository.findByTagName(tag).isEmpty()) {
+                    Tag newTag = new Tag();
+                    newTag.setTagName(tag);
+                    tagRepository.save(newTag);
+                }
+                Tag foundTag = tagRepository.findByTagName(tag).get();
+                QuestionTag questionTag = new QuestionTag();
+                questionTag.setTag(foundTag);
+                questionTag.setQuestion(question);
+                foundQuestion.getQuestionTags().add(questionTag);
+                foundTag.getQuestionTags().add(questionTag);
+                questionTagRepository.save(questionTag);
+            }
+        }
 
         return foundQuestion;
     }
 
     @Transactional(readOnly = true)
     public Question findQuestion(Long questionId) {
-        Question findQuestion = findVerifiedQuestionById(questionId);
+        Question foundQuestion = findVerifiedQuestionById(questionId);
         List<Question> questions = questionRepository.findQuestions(questionId);
 
         for (Question question : questions) {
             List<Comment> questionComments = commentService.findQuestionComments(question.getQuestionId());
-
             for (Comment comment : questionComments) {
                 comment.addQuestion(question);
             }
         }
 
-        questionRepository.save(findQuestion);
+        foundQuestion.setAnswerCount(answerService.findAnswers(questionId).size());
 
-        return findQuestion;
+        questionRepository.save(foundQuestion);
+
+        return foundQuestion;
+    }
+
+    public List<QuestionTag> findQuestionTagList(Long questionId) {
+        return questionTagRepository.tagList(questionId);
     }
 
     public Page<Question> getAllQuestions(int page) {
@@ -125,7 +148,7 @@ public class QuestionService {
 
     public void updateQuestionViewCount(Question question, int viewCount) {
         question.setViewCount(viewCount + 1);
-        questionRepository.save(question);
+//        questionRepository.save(question);
     }
 
     public void deleteQuestion(Long questionId) {
