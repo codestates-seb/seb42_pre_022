@@ -7,18 +7,17 @@ spring:
     include: common
     active: dev
   datasource:
-    url: jdbc:mysql://seb42-pre-022.cmiamwndbq6x.ap-northeast-2.rds.amazonaws.com:3306/bootex?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
-#    username: ${spring.datasource.name}
-#    password: ${spring.datasource.password}
+#    url:
+#    username:
+#    password:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database: mysql
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: update
-    properties:
-      hibernate:
-        format_sql: true
+    show-sql: true
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -62,4 +61,4 @@ jwt:
 
 mail:
   address:
-#    admin: ${admin_mail}
+    admin: ${admin_mail}
