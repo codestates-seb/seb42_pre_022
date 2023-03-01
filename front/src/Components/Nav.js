@@ -99,6 +99,7 @@ const MainMenu = styled.ol`
 
 function Nav() {
   let {pathname} = useLocation();
+  console.log(pathname.slice(0,6))
 
   return (
     <NavContainer>
@@ -112,7 +113,7 @@ function Nav() {
         </Link>
         </li>
         <li className={pathname === "/tags" ? "youarehere" :null}><Link to="/tags"><div>Tags</div></Link></li>
-        <li className={pathname.slice(0,7) === "/users" ? "youarehere" :null}><Link to="users"><div>Users</div></Link></li>
+        <li className={pathname.slice(0,6) === "/users" ? "youarehere" :null}><Link to="users"><div>Users</div></Link></li>
         </MainMenu>
       </div>
     </NavContainer>
