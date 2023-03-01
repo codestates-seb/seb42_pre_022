@@ -14,6 +14,7 @@ import com.teambj.stackoverflow.domain.question.repository.QuestionRepository;
 import com.teambj.stackoverflow.domain.question.repository.QuestionTagRepository;
 import com.teambj.stackoverflow.domain.question.service.QuestionService;
 import com.teambj.stackoverflow.domain.tag.entity.Tag;
+import com.teambj.stackoverflow.domain.tag.mapper.TagMapper;
 import com.teambj.stackoverflow.domain.tag.repository.TagRepository;
 import com.teambj.stackoverflow.domain.tag.service.TagService;
 import com.teambj.stackoverflow.domain.user.entity.User;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -43,6 +45,7 @@ public class QuestionController {
     private final QuestionMapper mapper;
     private final UserService userService;
     private final TagService tagService;
+    private final TagMapper tagMapper;
     private final AnswerRepository answerRepository;
     private final CommentRepository commentRepository;
 
@@ -86,6 +89,20 @@ public class QuestionController {
     public ResponseEntity getAllQuestions() {
         List<Question> allQuestions = questionService.getAllQuestion();
         List<QuestionResponseDto> response = mapper.questionToQuestionResponseDtos(allQuestions);
+        for (Question q : allQuestions) {
+            List<Tag> tags = new ArrayList<>();
+            List<QuestionTag> questionTags = q.getQuestionTags();
+            for (QuestionTag qt : questionTags) {
+                tags.add(qt.getTag());
+            }
+
+            for (QuestionResponseDto questionResponse : response) {
+                if (questionResponse.getQuestionId() == q.getQuestionId()) {
+                    questionResponse.setTagList(tagMapper.tagsToTagResponseDtos(tags));
+                    break;
+                }
+            }
+        }
 
         return ResponseEntity.ok().body(ApiResponse.ok("data", response));
     }
