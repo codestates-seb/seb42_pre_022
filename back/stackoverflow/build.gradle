@@ -29,18 +29,19 @@ repositories {
 }
 
 ext {
+	set('springCloudVersion', "2021.0.5")
 	set('snippetsDir', file("build/generated-snippets"))
 	set('profile', (!project.hasProperty('profile') || !profile) ? 'local' : profile)
 }
 
 dependencyManagement {
 	imports {
-		mavenBom "io.awspring.cloud:spring-cloud-aws-dependencies:2.4.4"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
 }
 
 dependencies {
-	implementation 'io.awspring.cloud:spring-cloud-starter-aws-parameter-store-config'
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws-parameter-store-config:2.2.6.RELEASE'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -53,6 +54,7 @@ dependencies {
 	implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 	compileOnly 'org.projectlombok:lombok'
 
+	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5',
 			'io.jsonwebtoken:jjwt-jackson:0.11.5'
