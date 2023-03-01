@@ -13,6 +13,7 @@ import PaginationRight from "../Components/PaginationRight";
 import { allquestions, filteringposts, sortingposts } from "../util/filteringposts";
 import { selectPage, setTotalposts } from "../Reducers/paginationReducer";
 import { Link } from "react-router-dom";
+import NoResult from "../Components/NoResult";
 
 
 const QuestionsContainer = styled.div`
@@ -190,8 +191,7 @@ function Questions() {
   const getData = async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/questions`)
-      let filtered = filteringposts(response.data.body.data,filter)
-      // let filtered = filteringposts(allquestions,filter)
+      let filtered = filteringposts(response.data.body.data,filter) ||  filteringposts(allquestions,filter)
       // console.log(filtered)
       let sorted = sortingposts(filtered,filter)
       // console.log(sorted)
@@ -202,28 +202,37 @@ function Questions() {
 
     } catch (err) {
       console.log(err)
+      let filtered = filteringposts(allquestions,filter)
+      let sorted = sortingposts(filtered,filter)
+      setFilterNsortedposts(sorted)
+      dispatch(setTotalposts(filtered.length))
+      setFilterOpen(false)
     }
   }
   useEffect(() => {
     getData()
-    console.log("렌더링중")
       },[filter])
   const start=(pages.currentpage-1)*pages.pagesize
   const end=start+pages.pagesize
   const onepage = filterNsortedposts.slice(start, end)
+  console.log(filter)
+  console.log(filterNsortedposts)
   return (
     <div className="content">
       <QuestionsContainer>
         <div>
           <PageHeader>
-            <h1>All Questions</h1>
+            {filter.isSearched
+            ? <h1>{"Search Results"}</h1>
+            : <h1>{!!filter.tags.length ?`Questions tagged [${filter.tags}]`:"All Questions"}</h1>
+            }
             <div>
               <BasicBlueButton to={isLogin ?"/askquestion" :"/users/login"}>Ask Questions</BasicBlueButton>
             </div>
           </PageHeader>
           <div>
             <QuestionsH2>
-              <div className="data">23,502,787 questions</div>
+              <div className="data">{pages.totalposts} {filter.isSearched ?"results" :"questions"} {filter.unanswered && "with no answers"}</div>
               <div>
                 <DataControllerBox>
                   <DataController>
@@ -242,8 +251,9 @@ function Questions() {
             <ExpandableFilterform isFilterOpen={isFilterOpen} filter={filter}/> 
           </div>
           <QuestionsContent>
-            {!!onepage && onepage.map(ele=>{
-              return <QuestionsList key={ele.questionId} title={ele.title} body={ele.body} user={ele.user} tags={ele.tagList} createdAt={ele.createdDate} viewCount={ele.viewCount} answerCount={ele.answerCount}/>
+            {filter.isSearched && pages.totalposts === 0 && <NoResult />}
+            {!!pages.totalposts && onepage.map(ele=>{
+              return <QuestionsList key={ele.questionId} ele={ele}/>
             })}
           </QuestionsContent>
           <PaginationLeft />
