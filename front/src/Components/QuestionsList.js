@@ -2,6 +2,8 @@ import styled from "styled-components";
 import TagsDiv from "./TagsDiv";
 import { format } from "timeago.js";
 import { Tag } from "../Styles/Divs";
+import { Link } from "react-router-dom";
+
 
 const QLiContainer = styled.div`
   background-color: transparent;
@@ -165,9 +167,9 @@ const TagsContainerDiv = styled.div`
 
 
 
-function QuestionsList({title, body, createdAt, viewCount, answerCount, user, tags}) {
+function QuestionsList({ele}) {
 
-  const date = new Date(createdAt)
+  const date = new Date(ele.createdDate)
   const now = new Date()
   const changeDateFormat = new Intl.DateTimeFormat('en-US',{month: "short", day: "numeric", year:"numeric", timeZone:"Asia/Seoul"}).format(date)
   const isAM = new Intl.DateTimeFormat('en-US',{ hour:"numeric",hour12:false,timeZone:"Asia/Seoul"}).format(date)<12
@@ -182,24 +184,24 @@ function QuestionsList({title, body, createdAt, viewCount, answerCount, user, ta
     <QLiContainer>
       <PostSummaryStats>
         <div><span>0</span><span>votes</span></div>
-        <div className={answerCount !== 0 ?"has-answer" :"null"}><span>{answerCount}</span><span>answer</span></div>
-        <div><span>{viewCount}</span><span>views</span></div>
+        <div className={ele.answerCount !== 0 ?"has-answer" :"null"}><span>{ele.answerCount}</span><span>answer</span></div>
+        <div><span>{ele.viewCount}</span><span>views</span></div>
       </PostSummaryStats>
       <PostSummaryContent>
-        <h3 className="post-summary-title"><a>{title}</a></h3>
-        <div className="post-summary-content">{body.replace(/<\/?[^>]+(>|$)/g, '').slice(0,200)+"..."}</div>
+        <h3 className="post-summary-title"><Link to={`/questions/${ele.questionId}`}>{ele.title}</Link></h3>
+        <div className="post-summary-content">{ele.body.replace(/<\/?[^>]+(>|$)/g, '').slice(0,200)+"..."}</div>
         <div className="post-summary-meta">
           {/* <TagsDiv /> */}
           <TagsContainerDiv>
            <ul>
-            {tags && tags.map((ele,idx) => {
+            {ele.tagList && ele.tagList.map((ele,idx) => {
                return <li key={idx}><Tag>{ele}</Tag></li>
              })}
             </ul>
           </TagsContainerDiv>
           <UsercardMinimal>
-            <UsercardAvartar><div><img src={user.profileImage} alt="user-profile-img"></img></div></UsercardAvartar>
-            <UsercardInfo><div className="uc-username">{user.displayName}</div><div className="uc-reputation">{user.reputation}</div></UsercardInfo>
+            <UsercardAvartar><div><img src={ele.user.profileImage} alt="user-profile-img"></img></div></UsercardAvartar>
+            <UsercardInfo><div className="uc-username">{ele.user.displayName}</div><div className="uc-reputation">{ele.user.reputation}</div></UsercardInfo>
             {isWrittenin24
               ? <time>asked {timeago}</time> 
               : <time>asked {changeDateFormat} at {slicedTime}</time>
