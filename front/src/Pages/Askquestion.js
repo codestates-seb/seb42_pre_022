@@ -121,6 +121,9 @@ export const TagInput = styled.div`
   .tag-box {
     display: flex;
   }
+  .tag-box-content {
+    min-width: 30px;
+  }
   :focus-within {
     border-color: var(--blue-300);
     box-shadow: 0 0 0 4px hsla(206, 100%, 40%, .15);
@@ -244,6 +247,11 @@ function Askquestion() {
           .then(res => {
             if (res.header.code === 201) {
               alert("Question posted successfully!");
+              const data = "";
+              const tagData = [];
+              dispatch(askquestionActions.changeQuestionValue({data}));
+              dispatch(askquestionActions.changeTitleValue({data}));
+              dispatch(askquestionActions.changeTag({tagData}));
               localStorage.removeItem("titleValue"); localStorage.removeItem("questionValue"); localStorage.removeItem("titleDone"); localStorage.removeItem("questionDone"); localStorage.removeItem("tagStart");
               navigate("/");
             } else {
@@ -353,7 +361,7 @@ function Askquestion() {
               {state.tagList.map((tag, index) => (
                 <li key={index}>
                   <span className="tag-box">
-                    <span>{tag}</span>
+                    <span className="tag-box-content">{tag}</span>
                     <button onClick={() => {
                       const indexToRemove = index;
                       dispatch(askquestionActions.removeTag({ indexToRemove }))
