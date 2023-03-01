@@ -3,7 +3,6 @@ package com.teambj.stackoverflow.domain.question.dto;
 import lombok.Builder;
 import lombok.Getter;
 
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Getter

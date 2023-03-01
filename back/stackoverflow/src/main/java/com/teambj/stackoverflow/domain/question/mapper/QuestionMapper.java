@@ -6,8 +6,6 @@ import com.teambj.stackoverflow.domain.question.dto.QuestionPatchDto;
 import com.teambj.stackoverflow.domain.question.dto.QuestionPostDto;
 import com.teambj.stackoverflow.domain.question.dto.QuestionResponseDto;
 import com.teambj.stackoverflow.domain.question.entity.Question;
-import com.teambj.stackoverflow.domain.question.entity.QuestionTag;
-import com.teambj.stackoverflow.domain.tag.dto.TagResponseDto;
 import com.teambj.stackoverflow.domain.tag.entity.Tag;
 import org.mapstruct.Mapper;
 

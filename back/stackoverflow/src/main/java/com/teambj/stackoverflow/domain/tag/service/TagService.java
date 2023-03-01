@@ -5,10 +5,6 @@ import com.teambj.stackoverflow.domain.tag.entity.Tag;
 import com.teambj.stackoverflow.domain.tag.repository.TagRepository;
 import com.teambj.stackoverflow.exception.BusinessLogicException;
 import com.teambj.stackoverflow.exception.ExceptionCode;
-import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +40,7 @@ public class TagService {
                 .map(questionTag -> {
                     Optional<Tag> findTag = tagRepository.findById(questionTag.getTag().getTagId());
                     return findTag.orElseThrow(() ->
-                            new BusinessLogicException(ExceptionCode.QUESTION_NOT_FOUND));
+                            new BusinessLogicException(ExceptionCode.TAG_NOT_FOUND));
                 })
                 .collect(Collectors.toList());
     }

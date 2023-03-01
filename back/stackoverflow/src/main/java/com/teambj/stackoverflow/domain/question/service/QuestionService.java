@@ -1,8 +1,6 @@
 package com.teambj.stackoverflow.domain.question.service;
 
 import com.teambj.stackoverflow.auth.PrincipalDetails;
-import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
-import com.teambj.stackoverflow.domain.answer.entity.Answer;
 import com.teambj.stackoverflow.domain.answer.repository.AnswerRepository;
 import com.teambj.stackoverflow.domain.answer.service.AnswerService;
 import com.teambj.stackoverflow.domain.comment.entity.Comment;
@@ -26,10 +24,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -115,6 +111,7 @@ public class QuestionService {
     public Question findQuestion(Long questionId) {
         Question foundQuestion = findVerifiedQuestionById(questionId);
         List<Question> questions = questionRepository.findQuestions(questionId);
+        questionRepository.updateViewCount(foundQuestion.getViewCount() + 1, foundQuestion.getQuestionId());
 
         for (Question question : questions) {
             List<Comment> questionComments = commentService.findQuestionComments(question.getQuestionId());
@@ -144,11 +141,6 @@ public class QuestionService {
 
     public List<Question> getAllQuestion() {
         return questionRepository.findAll();
-    }
-
-    public void updateQuestionViewCount(Question question, int viewCount) {
-        question.setViewCount(viewCount + 1);
-//        questionRepository.save(question);
     }
 
     public void deleteQuestion(Long questionId) {

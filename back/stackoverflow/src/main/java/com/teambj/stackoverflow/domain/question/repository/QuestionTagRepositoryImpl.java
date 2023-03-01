@@ -2,8 +2,6 @@ package com.teambj.stackoverflow.domain.question.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.teambj.stackoverflow.domain.question.entity.QQuestion;
-import com.teambj.stackoverflow.domain.question.entity.Question;
 import com.teambj.stackoverflow.domain.question.entity.QuestionTag;
 import com.teambj.stackoverflow.domain.question.repository.custom.QuestionTagRepositoryCustom;
 
