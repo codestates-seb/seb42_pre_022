@@ -1,7 +1,6 @@
 package com.teambj.stackoverflow.domain.user.entity;
 
 import com.teambj.stackoverflow.audit.Auditable;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

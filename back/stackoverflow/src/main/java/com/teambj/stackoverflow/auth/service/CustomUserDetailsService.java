@@ -1,6 +1,5 @@
 package com.teambj.stackoverflow.auth.service;
 
-import com.teambj.stackoverflow.auth.CustomAuthorityUtils;
 import com.teambj.stackoverflow.auth.PrincipalDetails;
 import com.teambj.stackoverflow.domain.user.entity.User;
 import com.teambj.stackoverflow.domain.user.repository.UserRepository;

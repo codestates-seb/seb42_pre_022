@@ -17,6 +17,7 @@ public enum ExceptionCode {
     404 NOT_FOUND : Resource 를 찾을 수 없음.
      */
     QUESTION_NOT_FOUND(404, "Question not found"),
+    TAG_NOT_FOUND(404, "Tag not found"),
 
     /*
     409 CONFLICT : Resource 의 현재 상태와 충돌.
@@ -28,10 +29,10 @@ public enum ExceptionCode {
     USERS_NOT_VALID(409, "등록되지 않은 사용자입니다.");
 
     @Getter
-    private int status;
+    private final int status;
 
     @Getter
-    private String message;
+    private final String message;
 
     ExceptionCode(int status, String message) {
         this.status = status;

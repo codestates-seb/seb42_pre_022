@@ -4,12 +4,9 @@ import com.teambj.stackoverflow.exception.BusinessLogicException;
 import com.teambj.stackoverflow.exception.ExceptionCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -32,7 +29,6 @@ public class ConfirmationTokenService {
      */
     public void createEmailConfirmationToken(Long userId, String receiverEmail) throws MessagingException {
 
-        log.info("domain : " + domain);
         ConfirmationToken confirmationToken = ConfirmationToken.createEmailConfirmationToken(userId);
         confirmationTokenRepository.save(confirmationToken);
 

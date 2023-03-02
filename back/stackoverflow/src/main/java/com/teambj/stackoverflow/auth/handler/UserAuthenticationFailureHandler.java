@@ -1,11 +1,8 @@
 package com.teambj.stackoverflow.auth.handler;
 
-import com.google.gson.Gson;
-import com.teambj.stackoverflow.exception.ErrorResponse;
 import com.teambj.stackoverflow.exception.ExceptionCode;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
@@ -42,7 +39,6 @@ public class UserAuthenticationFailureHandler implements AuthenticationFailureHa
     }
 
     private void sendErrorResponse(HttpServletResponse response) {
-
 
     }
 }
