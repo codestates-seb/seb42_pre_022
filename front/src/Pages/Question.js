@@ -113,7 +113,6 @@ function Question() {
   const { login } = useSelector(state => state.loginInfoReducer);
   const [createAnswer, setCreateAnswer] = useState("")
   const dispatch = useDispatch()
-
   const checkAnswerBlankToPreventClose = useCallback((e) => {
     if (createAnswer.replaceAll(/<[^>]*>/g, '').length !== 0) {
       preventClose(e)
@@ -149,12 +148,11 @@ function Question() {
     if (!login) alert("답변을 등록하려면 로그인해야 합니다")
     else setCreateAnswer(p)
   }
-
   useEffect(() => {
     dispatch(editPostActions.changeNowQ(question))
     if (question.answerCount) {
       setAnswerUrl(`/answers?questionId=${question_id}`)
-     }
+    }
   }, [question])
 
   return (

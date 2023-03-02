@@ -1,13 +1,7 @@
 import styled from "styled-components";
-import TagsDiv from "./TagsDiv";
-import { format } from "timeago.js";
 import { Tag } from "../Styles/Divs";
 import { Link } from "react-router-dom";
-import useGET from "../util/useGET";
 import dateTimeFormat from "../util/dateTimeFormat";
-
-
-
 
 const QLiContainer = styled.div`
   background-color: transparent;
@@ -174,49 +168,40 @@ const TagsContainerDiv = styled.div`
 
 
 
-function QuestionsList({ele}) {
+function QuestionsList({ ele }) {
 
-  const date = new Date(ele.createdDate)
-  const now = new Date()
-  const changeDateFormat = new Intl.DateTimeFormat('en-US',{month: "short", day: "numeric", year:"numeric", timeZone:"Asia/Seoul"}).format(date)
-  const isAM = new Intl.DateTimeFormat('en-US',{ hour:"numeric",hour12:false,timeZone:"Asia/Seoul"}).format(date)<12
-  const changeTimeFormat = new Intl.DateTimeFormat('en-US',{ hour:"numeric", hour12: isAM, minute:"numeric",timeZone:"Asia/Seoul"}).format(date)
-  const slicedTime = isAM
-   ? changeTimeFormat.slice(0,5)
-   : changeTimeFormat
-  const timeago = format(now-(now-date))
-  const isWrittenin24 = (now-date) <= (24 * 1000 * 60 * 60)
-  const [post, postError] = useGET(`/questions/${ele.questionId}`)
   return (
     <QLiContainer>
       <PostSummaryStats>
         <div><span>0</span><span>votes</span></div>
-        <div className={ele.answerCount !== 0 ?"has-answer" :"null"}><span>{ele.answerCount}</span><span>answer</span></div>
+        <div className={ele.answerCount !== 0 ? "has-answer" : "null"}><span>{ele.answerCount}</span><span>answer</span></div>
         <div><span>{ele.viewCount}</span><span>views</span></div>
       </PostSummaryStats>
       <PostSummaryContent>
         <h3 className="post-summary-title"><Link to={`/questions/${ele.questionId}`}>{ele.title}</Link></h3>
-        <div className="post-summary-content">{ele.body.replace(/<\/?[^>]+(>|$)/g, '').slice(0,200)+"..."}</div>
+        <div className="post-summary-content">{ele.body.replace(/<\/?[^>]+(>|$)/g, '').slice(0, 200) + "..."}</div>
         <div className="post-summary-meta">
           {/* <TagsDiv /> */}
           <TagsContainerDiv>
-           <ul>
-            {post.tagList && post.tagList.map((ele,idx) => {
-               return <li key={idx}><Tag>{ele.tagName}</Tag></li>
-             })}
+            <ul>
+              {ele.tagList && ele.tagList.map((ele, idx) => {
+                return <li key={idx}><Tag>{ele.tagName}</Tag></li>
+              })}
             </ul>
           </TagsContainerDiv>
           <UsercardMinimal>
             <UsercardAvartar><div><img src={ele.user.profileImage} alt="user-profile-img"></img></div></UsercardAvartar>
             <UsercardInfo><Link to={`/users/${ele.user.userId}`}><div className="uc-username">{ele.user.displayName}</div></Link><div className="uc-reputation">{ele.user.reputation}</div></UsercardInfo>
-            {isWrittenin24
-              ? <time>asked {timeago}</time> 
-              : <time>asked {dateTimeFormat(ele.createdDate, true)}</time>
-            }
+            <UsercardInfo><div className="uc-username">{ele.user.displayName}</div><div className="uc-reputation">{ele.user.reputation}</div></UsercardInfo>
+            <time>
+              {ele.createdDate === ele.modifiedDate
+                ? `asked ${dateTimeFormat(ele.createdDate)}`
+                : `modified ${dateTimeFormat(ele.modifiedDate)}`}
+            </time>
           </UsercardMinimal>
         </div>
       </PostSummaryContent>
-    </QLiContainer> 
+    </QLiContainer>
   );
 }
 
