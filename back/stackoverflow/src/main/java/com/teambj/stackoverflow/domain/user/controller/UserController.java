@@ -40,6 +40,9 @@ public class UserController {
         this.userService = userService;
     }
 
+    /*
+    폼 로그인 회원등록
+     */
     @PostMapping
     public ResponseEntity<?> postUser(@Valid @RequestBody UserDto.Post userPostDto) throws MessagingException {
 

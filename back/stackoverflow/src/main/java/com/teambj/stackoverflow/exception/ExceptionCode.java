@@ -29,10 +29,10 @@ public enum ExceptionCode {
     USERS_NOT_VALID(409, "등록되지 않은 사용자입니다.");
 
     @Getter
-    private int status;
+    private final int status;
 
     @Getter
-    private String message;
+    private final String message;
 
     ExceptionCode(int status, String message) {
         this.status = status;
