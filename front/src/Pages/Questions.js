@@ -224,7 +224,29 @@ function Questions() {
   const getData = async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/questions`)
-      let filtered = filteringposts(response.data.body.data,filter)
+      const tags = await response.data.body.data.map((ele)=>{
+        return {id:ele.questionId, tag: ele.tagName}
+      })
+      //TODO
+      // if(!!filter.tags.length){
+      //   await response.data.body.data.map((ele,idx)=>{
+      //     axios.get(`${process.env.REACT_APP_API_URL}/questions/${idx+1}`)
+      //       .then((response)=>{
+      //         console.log(tags.map((i)=>{
+      //           if(i.id === ele.questionId){
+      //             return {
+      //               ...i, tag:response.data.body.data.tagList.map((ele)=>{
+      //               return ele.tagName
+      //               })
+      //             }
+      //           } else return i
+      //         }) )
+      //       })
+      //     return ele
+      //   })
+      // }
+
+      let filtered = filteringposts(response.data.body.data,filter,tags)
       let sorted = sortingposts(filtered,filter)
       setFilterNsortedposts(sorted)
       dispatch(setTotalposts(filtered.length))
