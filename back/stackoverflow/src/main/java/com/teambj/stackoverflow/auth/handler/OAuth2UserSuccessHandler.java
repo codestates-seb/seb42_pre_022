@@ -73,7 +73,7 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         return UriComponentsBuilder
                 .newInstance()
                 .scheme("http")
-                .host("seb42-pre-022.s3-website.ap-northeast-2.amazonaws.com")
+                .host("pre-stackoverflow.site")
                 .path("/token")
                 .queryParam("Authorization", "Bearer_" + accessToken)
                 .build().toUri();
