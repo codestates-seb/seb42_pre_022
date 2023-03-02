@@ -30,12 +30,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final JwtTokenizer jwtTokenizer;
     private final AuthenticationManager authenticationManager;
-    private final CustomUserDetailsService userDetailsService;
 
-    public JwtAuthenticationFilter(JwtTokenizer jwtTokenizer, AuthenticationManager authenticationManager, CustomUserDetailsService userDetailsService) {
+    public JwtAuthenticationFilter(JwtTokenizer jwtTokenizer, AuthenticationManager authenticationManager) {
         this.jwtTokenizer = jwtTokenizer;
         this.authenticationManager = authenticationManager;
-        this.userDetailsService = userDetailsService;
     }
 
     @SneakyThrows
@@ -57,23 +55,22 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String accessToken = delegateAccessToken(user);
         String refreshToken = delegateRefreshToken(user);
 
-
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
 
-        ResponseCookie cookie = ResponseCookie
-                .from("Refresh", refreshToken)
-                .maxAge(jwtTokenizer.getRefreshTokenExpirationMinutes())
-                .path("/")
-                .secure(true)
-                .sameSite("None")
-                .httpOnly(true)
-                .build();
+//        ResponseCookie cookie = ResponseCookie
+//                .from("Refresh", refreshToken)
+//                .maxAge(jwtTokenizer.getRefreshTokenExpirationMinutes())
+//                .path("/")
+//                .secure(true)
+//                .sameSite("None")
+//                .httpOnly(true)
+//                .build();
 
         String result = "{\"accessToken\" : \""+accessToken+"\"}";
 
         response.setStatus(200);
-        response.setHeader("Set-Cookie", cookie.toString());
+//        response.setHeader("Set-Cookie", cookie.toString());
         response.getWriter().write(result);
 
 //        userDetailsService.updateRefreshToken(user.getEmail(), refreshToken);

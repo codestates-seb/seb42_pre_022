@@ -32,7 +32,6 @@ public class ConfirmationTokenService {
      */
     public void createEmailConfirmationToken(Long userId, String receiverEmail) throws MessagingException {
 
-        log.info("domain : " + domain);
         ConfirmationToken confirmationToken = ConfirmationToken.createEmailConfirmationToken(userId);
         confirmationTokenRepository.save(confirmationToken);
 

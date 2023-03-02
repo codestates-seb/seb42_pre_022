@@ -4,7 +4,7 @@ import lombok.Getter;
 
 public class BusinessLogicException extends RuntimeException{
     @Getter
-    private ExceptionCode exceptionCode;
+    private final ExceptionCode exceptionCode;
 
     public BusinessLogicException(ExceptionCode exceptionCode) {
         super(exceptionCode.getMessage());
