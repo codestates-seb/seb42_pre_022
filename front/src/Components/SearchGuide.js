@@ -111,6 +111,7 @@ function SearchGuide() {
           <Hintele end={1}><span>user:1234</span><span>search by author</span></Hintele>
         </div>
         <div>
+        <Hintele><span>abcd</span><span>search the body only</span></Hintele>
           <Hintele end={1}><span>[tag]</span><span>search within a tag</span></Hintele>
         </div>
       </SearchHint>

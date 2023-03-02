@@ -1,4 +1,4 @@
-export function filteringposts (posts,filter,tags) {
+export function filteringposts (posts,filter) {
   const filteredposts = posts.filter((post)=>{
     let filtering = true;
     if(filter.unanswered){
@@ -8,26 +8,27 @@ export function filteringposts (posts,filter,tags) {
       filtering = false
       for(let i of filter.tags){
         if(filtering===false){
-          // console.log(tags)
-          // const a = {...post}
-          // console.log(a)
-          filtering = post.tagList && post.tagList.filter((ele)=>
-          {
-            return ele.tagName === i
-          })
+          filtering = post.tagList && post.tagList.reduce((acc,cur)=>{
+            if(cur.tagName === i){
+              acc=true
+            }
+            return acc
+          },false)
+          console.log(filtering)
         }
-        //! tag구현 안됐을 시에는 includes 검증 안되게
-        //TODO
       }
     }
     if(!!filter.user.length){
       filtering = post.user.displayName === filter.user
     }
     if(filter.answerCount !== null){
+      // console.log(post.answerCount >= filter.answerCount)
       filtering = post.answerCount >= filter.answerCount
     }
-    if(!!filter.searchedBy){
-      filtering = post.body.split(' ').includes(filter.searchedBy)
+    if(!!filter.searchedBy && filter.answerCount === null && filter.user.length===0 && filter.tags.length===0){
+      
+      // console.log("서치중")
+      filtering = post.body.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().split(' ').includes(filter.searchedBy.toLowerCase())
     }    
     return filtering
   })
