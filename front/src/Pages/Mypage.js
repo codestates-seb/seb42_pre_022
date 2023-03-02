@@ -5,6 +5,9 @@ import getUserInfo from "../util/getUserInfo";
 import { DataControllerBtn } from "./Questions";
 import patchData from "../util/patchData";
 import { loginInfoActions } from "../Reducers/loginInfoReducer";
+import { useLocation } from "react-router-dom";
+import getAnotherUserInfo from "../util/getAnotherUser";
+import { saveUserInfo } from "../Reducers/otheruserReducer";
 
 const MypageContainer = styled.div`
   width: 100%;
@@ -205,9 +208,15 @@ const GridItem = styled.div`
   `
 
 function Mypage() {
+  let {pathname} = useLocation();
   const dispatch = useDispatch();
-  const storedInfo = useSelector((state)=> state.loginInfoReducer)
-  const user = storedInfo?.userInfo
+  const myInfo = useSelector((state)=> state.loginInfoReducer).userInfo
+  const otherUser = useSelector((state)=> state.otheruser)
+  pathname.slice(7) !== "/mypage" 
+    && getAnotherUserInfo(pathname.slice(7)).then((data)=>{
+      dispatch(saveUserInfo(data))
+  })
+  const user = pathname.slice(6) === "/mypage" ?myInfo :otherUser
   const [isEditMode, setEditMode] = useState(false)
   const [inputNewName, setInputNewName] = useState(user?.displayName)
   const inputEl =useRef(null);

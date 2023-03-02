@@ -63,6 +63,7 @@ function App() {
             <Route path="/tags" element={<Tags />} />
             <Route path="/users" element={<Users />} />
             <Route path="/users/mypage" element={<Mypage />} />
+            <Route path="/users/:userid" element={<Mypage />} />
             <Route path="/token" element={<Token />} />
             <Route path="/*" element={<ErrorPage />} />
           </Routes>

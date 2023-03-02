@@ -3,6 +3,10 @@ import TagsDiv from "./TagsDiv";
 import { format } from "timeago.js";
 import { Tag } from "../Styles/Divs";
 import { Link } from "react-router-dom";
+import useGET from "../util/useGET";
+import dateTimeFormat from "../util/dateTimeFormat";
+
+
 
 
 const QLiContainer = styled.div`
@@ -129,6 +133,9 @@ const UsercardInfo = styled.div`
   display: flex;
   gap: 4px;
   font-size: 12px;
+  a{
+    text-decoration: none;
+  }
   .uc-username{
     margin: 2px;
     color: var(--blue-600);
@@ -179,7 +186,7 @@ function QuestionsList({ele}) {
    : changeTimeFormat
   const timeago = format(now-(now-date))
   const isWrittenin24 = (now-date) <= (24 * 1000 * 60 * 60)
-
+  const [post, postError] = useGET(`/questions/${ele.questionId}`)
   return (
     <QLiContainer>
       <PostSummaryStats>
@@ -194,17 +201,17 @@ function QuestionsList({ele}) {
           {/* <TagsDiv /> */}
           <TagsContainerDiv>
            <ul>
-            {ele.tagList && ele.tagList.map((ele,idx) => {
-               return <li key={idx}><Tag>{ele}</Tag></li>
+            {post.tagList && post.tagList.map((ele,idx) => {
+               return <li key={idx}><Tag>{ele.tagName}</Tag></li>
              })}
             </ul>
           </TagsContainerDiv>
           <UsercardMinimal>
             <UsercardAvartar><div><img src={ele.user.profileImage} alt="user-profile-img"></img></div></UsercardAvartar>
-            <UsercardInfo><div className="uc-username">{ele.user.displayName}</div><div className="uc-reputation">{ele.user.reputation}</div></UsercardInfo>
+            <UsercardInfo><Link to={`/users/${ele.user.userId}`}><div className="uc-username">{ele.user.displayName}</div></Link><div className="uc-reputation">{ele.user.reputation}</div></UsercardInfo>
             {isWrittenin24
               ? <time>asked {timeago}</time> 
-              : <time>asked {changeDateFormat} at {slicedTime}</time>
+              : <time>asked {dateTimeFormat(ele.createdDate, true)}</time>
             }
           </UsercardMinimal>
         </div>
