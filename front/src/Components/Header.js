@@ -297,7 +297,6 @@ function Header() {
             //! 알고싶지 않았습니다.
             onKeyPress={(e)=>{
             if (e.key === "Enter") {
-            console.log("엔터")
             searchbarHandler(e)
             }}}
             onFocus={focusHandler}
