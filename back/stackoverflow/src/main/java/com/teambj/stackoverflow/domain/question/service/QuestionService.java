@@ -107,7 +107,7 @@ public class QuestionService {
         return foundQuestion;
     }
 
-    @Transactional(readOnly = true)
+//    @Transactional(readOnly = true)
     public Question findQuestion(Long questionId) {
         Question foundQuestion = findVerifiedQuestionById(questionId);
         List<Question> questions = questionRepository.findQuestions(questionId);
