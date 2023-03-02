@@ -91,6 +91,7 @@ export const Bottomdiv = styled.div`
 
 function Users() {
   const [users, setUsers] = useState([]);
+  const [usersSlice, setUsersSlice] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [curPage, setCurPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -100,6 +101,7 @@ function Users() {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/users?${url}=${page}`)
       setUsers(response.data.body.data)
+      setUsersSlice(response.data.body.data)
       setTotalPages(response.data.body.totalPages)
     } catch (err) {
       setError(err)
@@ -108,7 +110,9 @@ function Users() {
   const inputHandler = (e) => {
     if (e.key === "Enter") {
       // getUsers("word", searchKeyword)
-      console.log(searchKeyword, "검색 구현 중")
+      const keyword = searchKeyword.toLowerCase()
+      const filtered = keyword.length !== 0 ? users.filter(el => el.displayName.toLowerCase().includes(keyword)) : usersSlice
+      setUsers(filtered)
     } else {
       setSearchKeyword(e.target.value)
     }
