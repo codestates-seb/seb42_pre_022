@@ -59,7 +59,7 @@
 |**회원가입 페이지**|**로그인/구글 OAuth2 인증**|
 |<img width="360px" src="https://user-images.githubusercontent.com/116554914/222363467-ab39c758-b8a4-4e10-9b5b-456199eb678a.gif"/>|<img width="360px" src="https://user-images.githubusercontent.com/116554914/222357333-f18b4df0-3cc7-4e2f-bcb0-7a22f20eecfd.gif"/>|
 |**질문 Create**|**질문 RUD**|
-|<img width="360px" src="https://user-images.githubusercontent.com/116554914/222371763-4abe696a-9275-48b8-8c75-f7efaca0c97e.gif"/>|<img width="360px" src="https://user-images.githubusercontent.com/116554914/222372354-76232ac3-c9ad-4286-a5bf-e5b9fbd43480.gif"/>|
+|<img width="360px" src="https://user-images.githubusercontent.com/116554914/222371763-4abe696a-9275-48b8-8c75-f7efaca0c97e.gif"/>|<img width="360px" src="https://cdn.discordapp.com/attachments/1074548037113876535/1080758465594654760/CURD.gif"/>|
 |**답변 CRUD**|**코멘트 CRUD**|
 |<img width="360px" src="https://user-images.githubusercontent.com/116554914/222373142-c57ac1af-37b1-4820-94a0-c9d3947d9e94.gif"/>|<img width="360px" src="https://user-images.githubusercontent.com/116554914/222372354-76232ac3-c9ad-4286-a5bf-e5b9fbd43480.gif"/>|
 |**유저 마이페이지**|**USER & TAG 페이지**|
