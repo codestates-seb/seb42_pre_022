@@ -69,7 +69,11 @@ const filterSlice = createSlice({
         state.unanswered= false
         state.tags= []
         state.user= ''
-        state.answerCount = text.slice(0,8) === "answers:" ?Number(text.slice(8,text.length)) :Number(text.slice(7,text.length))
+        if(text.slice(0,8) === "answers:"){
+          state.answerCount = Number(text.slice(8,text.length))
+        } else (
+          state.answerCount = Number(text.slice(7,text.length))
+        )
         state.searchedBy = "answers>="+Number(text.slice(8,text.length))
       } else {
         state.isSearched=false
