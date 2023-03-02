@@ -70,12 +70,10 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
     private URI createURI(String accessToken) {
 
-
         return UriComponentsBuilder
                 .newInstance()
                 .scheme("http")
-                .host("localhost")
-                .port(3000)
+                .host("seb42-pre-022.s3-website.ap-northeast-2.amazonaws.com")
                 .path("/token")
                 .queryParam("Authorization", "Bearer_" + accessToken)
                 .build().toUri();
