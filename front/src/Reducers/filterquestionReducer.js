@@ -25,6 +25,7 @@ const filterSlice = createSlice({
       state.tags= []
       state.user= ''
       state.answerCount= null
+      state.searchedBy = ''
       state[action.payload]= true
     },
     customfilter: (state, action) => {
