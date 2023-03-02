@@ -221,7 +221,14 @@ function Askquestion() {
     if (window.confirm("Are you sure you want to discard this question?")) {
       localStorage.removeItem("titleValue"); localStorage.removeItem("questionValue"); localStorage.removeItem("titleDone"); localStorage.removeItem("questionDone"); localStorage.removeItem("tagStart");
       window.scrollTo(0, 0);
-      window.location.reload();
+      const data = "";
+      const tagData = [];
+      dispatch(askquestionActions.changeTitleValue({data}));
+      dispatch(askquestionActions.changeQuestionValue({data}));
+      dispatch(askquestionActions.changeTag({tagData}));
+      setTitleDone(false);
+      setQuestionDone(false);
+      setTagStart(false);
     }
   }
 
