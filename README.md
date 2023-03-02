@@ -21,7 +21,7 @@
 | [안병옥<br>(BE, 팀장)](https://github.com/boahn) | [강은서<br>(BE)](https://github.com/kdmstj) | [현지원<br>(BE)](https://github.com/Gr8G1) | [양예진<br>(FE)](https://github.com/yjyaang) | [김민지<br>(FE)](https://github.com/JOAAAAAAAAAAA) | [조윤희<br>(FE)](https://github.com/YUNH7) |
 | :---: | :---: | :---: | :---: | :---: | :---: |
 | <img alt="안병옥" src="https://avatars.githubusercontent.com/u/116166923?v=4" height="100" width="100"> | <img alt="강은서" src="https://avatars.githubusercontent.com/u/62414231?v=4" height="100" width="100"> | <img alt="현지원" src="https://avatars.githubusercontent.com/u/29472238?v=4" height="100" width="100"> | <img alt="양예진" src="https://avatars.githubusercontent.com/u/116554914?v=4" height="100" width="100"> | <img alt="김민지" src="https://avatars.githubusercontent.com/u/116185146?v=4" height="100" width="100"> | <img alt="조윤희" src="https://avatars.githubusercontent.com/u/113083398?v=4" height="100" width="100"> 
-|<p align="left">- 질문 CRUD 개발<br/>- 태그 CRU 개발 <br/></p> |<p align="left">- 로그인 인증 개발<br/>(JWT 발급, 인증)<br/>- OAuth2.0 로그인 인증 처리(구글)<br/>- Spring Security<br/>- User CRUD<br/>- 프로필 이미지 관리<br/>- 예외처리 로직 기능<br/></p>|<p align="left">- 답변 CRUD 개발<br/>- 댓글 CRUD 개발<br/>- RestDocs API 문서화 기능 구현<br/>- AWS 배포 환경 구축<br/></p>|<p align="left">- Login 페이지 구현<br/>(JWT 및 OAuth2.0)- Signup 페이지 구현<br/>- 질문 Create 구현</br>- Tags 페이지 구현<br/>- Footer 컴포넌트 구현<br/>- Aside(오른쪽 사이드바) 구현<br/></p>|<p align="left">- 메인페이지 구현<br/>(필터, 정렬,조회)<br/>- 마이페이지 구현</br>(조회, 닉네임 수정)<br/>- 유저페이지 구현</br>- 페이지네이션</br>- 질문 검색</br>(tag, body, user, answerCount)</br>- Nav(왼쪽 사이드바)</br></p>|<p align="left">- Header 구현</br>- Question 페이지 구현</br>- EditPost 페이지 구현</br>- Users 페이지 구현</br>- 질문 RUD</br>- 답변 CRUD</br>- 댓글 CRUD</br>- util 함수 작성</br></p>
+|<p align="left">- 질문 CRUD 개발<br/>- 태그 CRU 개발 <br/></p> |<p align="left">- 로그인 인증 개발<br/>(JWT 발급, 인증)<br/>- OAuth2.0 로그인<br/>인증 처리(구글)<br/>- Spring Security<br/>- User CRUD<br/>- 프로필 이미지 관리<br/>- 예외처리 로직 기능<br/></p>|<p align="left">- 답변 CRUD 개발<br/>- 댓글 CRUD 개발<br/>- RestDocs API<br/>문서화 기능 구현<br/>- AWS 배포 환경 구축<br/></p>|<p align="left">- Login 페이지<br/>(JWT/OAuth2.0)<br/>- Signup 페이지<br/>- 질문 Create</br>- Tags 페이지 <br/>- Footer 컴포넌트<br/>- Aside<br/>(오른쪽 사이드바)<br/></p>|<p align="left">-메인페이지 구현<br/>(필터,정렬,조회)<br/>-마이페이지 구현</br>(조회, 수정)<br/>-유저페이지 구현</br>-페이지네이션</br>-질문 검색</br>(tag, body,<br/>user,answerCount)</br>-Nav(lfet)</br></p>|<p align="left">- Header 구현</br>- Question 페이지 구현</br>- EditPost 페이지 구현</br>- Users 페이지 구현</br>- 질문 RUD</br>- 답변 CRUD</br>- 댓글 CRUD</br>- util 함수 작성</br></p>
 
 
 <br/>
@@ -54,13 +54,15 @@
 
 |||
 |:---:|:---:|
-|**메인 페이지(검색,정렬)**|**로그인 / 회원가입 페이지**|
+|**메인 페이지(검색,정렬)**|**질문 작성 유저 페이지**|
 |<img width="100%" src="https://user-images.githubusercontent.com/95069395/210195043-4d6756d4-3772-49f1-8042-af4ba6dbd903.gif"/>|<img width="100%" src="https://user-images.githubusercontent.com/95069395/210195071-038f0c24-e043-481e-9890-100713b01e02.gif"/>|
-|**구글 OAuth2 인증**|**프로필 관리**|
+|**회원가입 페이지**|**로그인/구글 OAuth2 인증**|
 |<img width="100%" src="https://user-images.githubusercontent.com/95069395/210197330-ff28ef1e-8563-440a-b2fa-b458f3ad9fcd.gif"/>|<img width="100%" src="https://user-images.githubusercontent.com/95069395/210202375-1f23a471-d59b-4b8e-ba29-dac42e2db98b.gif"/>|
-|**질문 게시글 작성**|**게시글 조회,답변**|
+|**질문 게시글 작성**|**질문 조회, 수정, 삭제 기능**|
 |<img width="100%" src="https://user-images.githubusercontent.com/95069395/210195309-3cfb00a5-5d2f-46f5-ae6f-ed535e3bb0bb.gif"/>|<img width="100%" src="https://user-images.githubusercontent.com/95069395/210197858-0a2820fc-4383-4898-abea-eb78b78403f4.gif"/>|
-|**게시글 답변 투표(추천)기능**|**USER & TAG 페이지**|
+|**답변 CRUD**|**코멘트 CRUD**|
+|<img width="100%" src="https://user-images.githubusercontent.com/95069395/210197983-f344229e-8c4b-4c2c-90d1-b394895b266b.gif"/>|<img width="100%" src="https://user-images.githubusercontent.com/95069395/210202204-af5d5cb3-2d42-4c78-ab18-23b7a0692971.gif"/>|
+|**유저 마이페이지**|**USER & TAG 페이지**|
 |<img width="100%" src="https://user-images.githubusercontent.com/95069395/210197983-f344229e-8c4b-4c2c-90d1-b394895b266b.gif"/>|<img width="100%" src="https://user-images.githubusercontent.com/95069395/210202204-af5d5cb3-2d42-4c78-ab18-23b7a0692971.gif"/>|
 
 
