@@ -274,9 +274,9 @@ function Header() {
     <Containerheader>
       <div>
         <MenuLogoUl>
-          <MenubarLi onClick={openMenu} isopen={menu ? 1 : null} nowparams={pathname && pathname.slice(-3) === "ask" ? 1 : null}><div><i /></div></MenubarLi>
-          {menu ? <li className="nav"><Nav /></li> : null}
-          <HeadIconTabLi><Link to="/"><HeadLogoI url={logo} /></Link></HeadIconTabLi>
+          <MenubarLi onClick={openMenu} isopen={menu && 1} nowparams={pathname.includes("ask") && 1}><div><i/></div></MenubarLi>
+          {menu && <li className="nav"><Nav /></li>}
+          <HeadIconTabLi><Link to="/" onClick={pathname === "/" && (()=> window.location.reload)}><HeadLogoI url={logo} /></Link></HeadIconTabLi>
         </MenuLogoUl>
         <HeadTextTabUl login={login ? 1 : null}>
           <HeadTextTabLi>About</HeadTextTabLi>
