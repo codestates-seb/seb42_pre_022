@@ -270,13 +270,14 @@ function Header() {
   const focusHandler = () =>{
     setIsFocus(!isFocus)
   }
+  
   return (
     <Containerheader>
       <div>
         <MenuLogoUl>
           <MenubarLi onClick={openMenu} isopen={menu && 1} nowparams={pathname.includes("ask") && 1}><div><i/></div></MenubarLi>
           {menu && <li className="nav"><Nav /></li>}
-          <HeadIconTabLi><Link to="/" onClick={pathname === "/" && (()=> window.location.reload)}><HeadLogoI url={logo} /></Link></HeadIconTabLi>
+          <HeadIconTabLi><Link to="/" onClick={pathname === "/" && (()=> window.location.reload())}><HeadLogoI url={logo} /></Link></HeadIconTabLi>
         </MenuLogoUl>
         <HeadTextTabUl login={login ? 1 : null}>
           <HeadTextTabLi>About</HeadTextTabLi>
