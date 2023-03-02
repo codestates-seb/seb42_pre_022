@@ -261,13 +261,9 @@ function Header() {
     setMenu(!menu)
   }
   const loginTabList = [(<><Link to="/users/mypage"><img src={login ? userInfo?.profileImage : null} alt="profile-icon" /><span>1</span></Link></>), <InboxIcon />, <AchiveIcon />, <HelpIcon />, <ExchangeIcon />]
-  const isFollowGuide = (text) => {
-    dispatch(searchBarfilter(text))
- }
+
   const searchbarHandler=(e)=>{
-      isFollowGuide(searchInputValue)
-      console.log("이벤트")
-      console.log(searchInputValue)
+      dispatch(searchBarfilter(searchInputValue))
       dispatch(selectPage(1))
       setSearchInputValue('')
   }
