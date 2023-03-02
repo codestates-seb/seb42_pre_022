@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { ReactComponent as EditCommentIcon } from "../assets/editCommentIcon.svg"
@@ -76,12 +76,12 @@ function CommentLi({ comment }) {
   }
 
   return (
-    <CmtLi writer={nowQ.userId === comment.user.userId && 1}>
+    <CmtLi>
       {editMode ?
         <CommentTextarea setComment={setEditComment} writeMode={editMode} writeComment={editComment} />
         : <span>{editComment}</span>}
 
-      –&nbsp;<WriterSpan className="linktext">{comment.user.displayName}</WriterSpan>
+      –&nbsp;<WriterSpan writer={nowQ?.user?.userId === comment.user.userId && 1} className="linktext">{comment.user.displayName}</WriterSpan>
       <DateSpan>{comment.createdDate !== comment.modifiedDate ? (<>{dateTimeFormat(comment.modifiedDate)}<EditCommentIcon /></>) : dateTimeFormat(comment.createdDate)}</DateSpan>
       {userInfo?.userId === comment.user.userId ?
         <>
