@@ -1,0 +1,7 @@
+server:
+  servlet:
+    encoding:
+      force-response: true
+  error:
+    include-exception: true
+    include-stacktrace: always

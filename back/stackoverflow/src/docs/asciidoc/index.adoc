@@ -1,0 +1,85 @@
+= REST Docs
+:toc: left
+:toclevels: 2
+:toc-title: APIs
+:doctype: book
+:icons: font
+:docinfo: shared-head
+:sectlinks:
+:source-highlighter: highlightjs
+
+[[introduction]]
+== 소개
+
+[[common]]
+== 공통 사항
+API에 관계없이 아래 사항을 지켜주셔야 합니다.
+
+=== Domain
+|===
+| 환경 | domain
+
+| 개발서버
+| `localhost:8080`
+
+| 운영서버
+| AWS
+|===
+
+=== HTTP State Code
+
+|===
+| Code | Description
+
+| `200 OK`
+| 요청을 성공적으로 처리함.
+
+| `201 Created`
+| 새 리소스를 성공적으로 생성함.
+응답의 `Location` 헤더에 해당 리소스의 URI가 담겨있다.
+
+| `204 No Content`
+| 기존 리소스를 성공적으로 수정함.
+
+| `400 Bad Request`
+| 잘못된 요청을 보낸 경우. 응답 본문에 더 오류에 대한 정보가 담겨있다.
+
+| `404 Not Found`
+| 요청한 리소스가 없음.
+
+| `401 Unauthorized`
+| 요청한 리소스를 처리 할 권한이 없음.
+|===
+
+[[APIs]]
+:operation-custom-request-fields-title: Request Fields
+:operation-response-fields-data-title: Response Fields
+
+== Answer
+=== 답변 생성 (:질문 식별자 기준)
+operation::answer-controller-test/post-answers-test[snippets='curl-request,http-request,custom-request-fields,http-response,response-body']
+
+=== 답변 전체 조회 (:질문 식별자 기준)
+operation::answer-controller-test/get-answers-test[snippets='curl-request,http-request,http-response,request-parameters,response-body,response-fields-data']
+
+=== 답변 개별 조회
+operation::answer-controller-test/get-answer-test[snippets='curl-request,http-request,path-parameters,http-response,response-body,response-fields-data']
+
+=== 답변 수정
+operation::answer-controller-test/patch-answer-test[snippets='curl-request,http-request,custom-request-fields,http-response,response-body,response-fields-data']
+
+=== 답변 수정
+operation::answer-controller-test/delete-answer-test[snippets='curl-request,http-request,path-parameters,http-response']
+
+== Comment
+=== 댓글 생성 (:질문 식별자 기준)
+operation::comment-controller-test/post-comment-test-with-question[snippets='curl-request,custom-request-fields,http-request,http-response,response-body']
+
+=== 댓글 생성 (:답변 식별자 기준)
+operation::comment-controller-test/post-comment-test-with-answer[snippets='curl-request,custom-request-fields,http-request,http-response,response-body']
+
+=== 댓글 수정
+operation::comment-controller-test/patch-comment-test[snippets='curl-request,custom-request-fields,http-request,http-response,response-body,response-fields-data']
+
+=== 댓글 삭제
+operation::comment-controller-test/delete-comment-test[snippets='curl-request,path-parameters,http-request,http-response']

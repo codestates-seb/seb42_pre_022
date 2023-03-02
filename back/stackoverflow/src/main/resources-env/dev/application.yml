@@ -1,0 +1,64 @@
+running: dev
+domain: http://ec2-15-164-213-223.ap-northeast-2.compute.amazonaws.com:8080
+S3domain: http://seb42-pre-022.s3-website.ap-northeast-2.amazonaws.com:80
+
+spring:
+  profiles:
+    include: common
+    active: dev
+  datasource:
+    url: ${datasource_url}
+    username: ${datasource_username}
+    password: ${datasource_password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${gmail_username}
+    password: ${gmail_password}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+            required: true
+          auth: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: ${google_client_id}
+            clientSecret: ${google_client_secret}
+            scope:
+              - email
+              - profile
+  thymeleaf:
+    prefix: classpath:/mail-templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    check-template-location: true
+
+logging:
+  level:
+    org.hibernate.SQL: trace
+
+jwt:
+  secret: ${secret_key}
+  access-token-expiration-minutes: 1800000
+  refresh-token-expiration-minutes: 604800000
+
+mail:
+  address:
+    admin: ${admin_mail}
