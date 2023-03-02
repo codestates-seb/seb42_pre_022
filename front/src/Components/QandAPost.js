@@ -24,10 +24,6 @@ const QAWrapDiv = styled.div`
   > div:nth-child(2) {
     padding-right: 16px;
     min-width: 0;
-    > div:nth-child(2) {
-      display: ${props => props.answer ? "none" : "block"};
-      margin: 24px 0 12px;
-    }
   }
 
   padding: ${props => props.answer ? "16px 0 !important" : null};
@@ -106,13 +102,23 @@ const WriterCardDiv = styled.div`
   border-radius: ${props => props.iswriter ? "3px" : null};
   background-color: var(${props => props.iswriter ? "--powder" : null});
 `
-const QAbodydiv = styled.div`
+export const QAbodydiv = styled.div`
   padding-top: 12px;
   font-size: 15px;
   line-height: 1.5;
   overflow-wrap: break-word;
   > p {
     margin-bottom: 1.1em;;
+  }
+  li {
+    margin-left: 1.5em;
+  }
+  a {
+    color: var(--blue) !important;
+    cursor: pointer;
+    :hover {
+    color: var(--blue-500) !important;
+    }
   }
 `
 
@@ -141,7 +147,6 @@ function QandAPost({ question, answer, qwriter }) {
       }
     }
   }
-
   return (
     <QAWrapDiv answer={answer ? 1 : null}>
       <div>
@@ -155,7 +160,7 @@ function QandAPost({ question, answer, qwriter }) {
       </div>
       <div>
         <QAbodydiv dangerouslySetInnerHTML={{ __html: sanitize(post.body) }} />
-        <TagsDiv />
+        {!answer && <TagsDiv tags={post?.tagList} />}
         <WriterRelatedDiv>
           <div className="qapost">
             <a>Share</a>
@@ -163,13 +168,12 @@ function QandAPost({ question, answer, qwriter }) {
             <a>Follow</a>
             {userInfo?.userId === post.user.userId ? <a onClick={deletePost}>Delete</a> : null}
           </div>
-          {post.modifiedDate ?
-            <WriterCardDiv >
-              <span className="linktext">
-                edited {dateTimeFormat(post.modifiedDate)}</span>
+          {post.createdDate !== post.modifiedDate &&
+            <WriterCardDiv>
+              <span className="linktext">edited {dateTimeFormat(post.modifiedDate)}</span>
             </WriterCardDiv>
-            : null}
-          <WriterCardDiv iswriter={qwriter === post.user.userId ? 1 : null}>
+          }
+          <WriterCardDiv iswriter={qwriter === post.user.userId && 1}>
             <div>asked {dateTimeFormat(post.createdDate)}</div>
             <UserCard username={post.user.displayName} reputation={post.user.reputation} userimg={post.user.profileImage} />
           </WriterCardDiv>

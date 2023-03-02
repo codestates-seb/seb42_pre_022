@@ -5,6 +5,8 @@ import filterquestionReducer from "../Reducers/filterquestionReducer";
 import signupReducer from "../Reducers/signupReducer";
 import editPostReducer from "../Reducers/editPostReducer";
 import paginationReducer from "../Reducers/paginationReducer";
+import otheruserReducer from "../Reducers/otheruserReducer";
+
 
 
 const store = configureStore({
@@ -15,7 +17,7 @@ const store = configureStore({
     signupReducer,
     editPostReducer,
     pages: paginationReducer,
-    
+    otheruser: otheruserReducer,
   }
 })
 

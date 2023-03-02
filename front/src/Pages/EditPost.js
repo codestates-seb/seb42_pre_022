@@ -1,17 +1,19 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import { useLocation, Link, useNavigate, useBeforeUnload } from "react-router-dom";
+import { sanitize } from 'dompurify'
 import styled from "styled-components";
 import Aside from "../Components/Aside";
-import TagsDiv from "../Components/TagsDiv";
 import CommentsDiv from "../Components/CommentsDiv";
 import WriteBoard from "../Components/WriteBoard";
+import TagEditor from "../Components/TagEditor";
 import HelmetTitle from "../Components/HelmetTitle";
 import { SearchInput } from "../Components/SearchBar";
 import { BasicBlueButton } from "../Styles/Buttons";
 import { editPostActions } from "../Reducers/editPostReducer";
-import { sanitize } from 'dompurify'
+import { QAbodydiv } from "../Components/QandAPost";
 import patchData from "../util/patchData";
+import preventClose from "../util/preventClose";
 
 const EditContainerMain = styled.main`
   width: 100%;
@@ -56,10 +58,6 @@ const EditPostDiv = styled.div`
   .hardQuestion {
     padding-bottom: 30px;
     border-bottom:1px solid var(--black-075);
-    > h2 {
-      margin-top: 0;
-      margin-bottom: 16px;
-    }
   }
   .submit {
     display: flex;
@@ -69,6 +67,15 @@ const EditPostDiv = styled.div`
     > a {
       padding: 8px 0.8em;
       margin-right: 8px;
+    }
+  }
+  .tags {
+    > div {
+      width: 100%;
+      margin: 0;
+      > input {
+        width: normal;
+      }
     }
   }
   @media only screen and (max-width: 980px) {
@@ -85,9 +92,34 @@ function EditPost() {
   const post = isAnswer ? answer : question
   const [editTitle, setEditTitle] = useState(post?.title)
   const [editBody, setEditBody] = useState(post?.body)
+  const [editTags, setEditTags] = useState(() => {
+    return question?.tagList ? question?.tagList.map(tag => tag.tagName) : []
+  })
+
+  const isChanged = () => {
+    const titleChanged = editTitle !== post.title
+    const bodyChanged = editBody.replaceAll(/<[^>]*>/g, '') !== post.body.replaceAll(/<[^>]*>/g, '')
+    const olderTag = question?.tagList.map(tag => tag.tagName).sort()
+    let tagChanged = olderTag.length !== editTags.length
+    if (!tagChanged) {
+      const nowTag = editTags.slice().sort()
+      tagChanged = olderTag.some((tag, i) => tag !== nowTag[i])
+    }
+    return titleChanged || bodyChanged || tagChanged
+  }
+
+  const checkChangingToPreventClose = useCallback((e) => {
+    const change = isChanged()
+    if (change) {
+      preventClose(e)
+    }
+  }, [editTitle, editBody, editTags])
+  useBeforeUnload(checkChangingToPreventClose)
 
   const patchPost = () => {
-    if (editBody === post.body && editTitle === post.title) alert("변경 사항이 없습니다")
+    window.removeEventListener("beforeunload", checkChangingToPreventClose)
+    const change = isChanged()
+    if (!change) alert("변경 사항이 없습니다")
     else if (window.confirm("질문/답변을 수정합니다") === true) {
       const url = isAnswer ? "/answers" : `/questions/${question.questionId}`
       const editData = {
@@ -97,12 +129,13 @@ function EditPost() {
         editData.userId = post.userId
         editData.questionId = post.questionId
         editData.title = editTitle
+        editData.tagList = editTags
       } else {
         editData.answerId = post.answerId
       }
       patchData(url, editData)
-      .then(() => {dispatch(editPostActions.deleteNowQA())})
-      .then(() => navigate(`/questions/${question.questionId}`)) 
+        .then(() => { dispatch(editPostActions.deleteNowQA()) })
+        .then(() => navigate(`/questions/${question.questionId}`))
     }
   }
 
@@ -116,28 +149,31 @@ function EditPost() {
             {isAnswer ?
               <div className="hardQuestion">
                 <h2><a onClick={() => navigate(-1)} className="linktext">{question.title}</a></h2>
-                <div dangerouslySetInnerHTML={{ __html: sanitize(question.body) }}></div>
+                <QAbodydiv dangerouslySetInnerHTML={{ __html: sanitize(question.body) }} />
               </div>
               : <div>
                 <label htmlFor="title">Title</label>
                 <SearchInput id="title" defaultValue={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
               </div>}
             <div>
-              <label htmlFor="body">Body</label>
+              <label htmlFor="body">{isAnswer ? "Answer" : "Body"}</label>
               <WriteBoard id="body" postBody={editBody} inputHandler={(p) => setEditBody(p)} />
-              <div dangerouslySetInnerHTML={{ __html: sanitize(editBody) }} />
+              <QAbodydiv dangerouslySetInnerHTML={{ __html: sanitize(editBody) }} />
             </div>
-            <div>
-              <label>Tags</label>
-              <TagsDiv />
+            <div className="tags">
+              {!isAnswer && <>
+                <label>Tags</label>
+                <TagEditor tags={editTags} setTags={setEditTags} />
+                {editTags?.length >= 5 && <span className="error">Please enter no more than 5 tags.</span>}
+              </>}
             </div>
             <div className="submit">
               <BasicBlueButton onClick={patchPost}>Save edits</BasicBlueButton>
               <Link className="linktext" onClick={() => navigate(-1)}>Cancel</Link>
             </div>
-            {post.comments?.length ?
-              <CommentsDiv comments={post.comments} questionId={isAnswer ? null : post.questionId} answerId={isAnswer ? post.answerId : null} />
-              : null}
+            {post.comments?.length !== 0 &&
+              <CommentsDiv comments={post.comments} questionId={!isAnswer && post.questionId} answerId={isAnswer && post.answerId} />
+            }
           </EditPostDiv>
           <Aside />
         </EditContainerMain>

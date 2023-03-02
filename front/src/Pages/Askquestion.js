@@ -6,7 +6,7 @@ import { SearchInput } from "../Components/SearchBar";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { askquestionActions } from "../Reducers/askquestionReducer";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ReactComponent as ErrorIcon } from "../assets/errorIcon.svg";
 import postData from "../util/postData";
 import HelmetTitle from "../Components/HelmetTitle";
@@ -105,7 +105,7 @@ export const TagInput = styled.div`
   flex: 1;
   display: flex;
   width: 100%;
-  padding: 0.6em 0.5em;
+  padding: 0.5em;
   color: var(--black-700);
   line-height: calc(15/13);
   border: 1px solid var(--black-200);
@@ -113,8 +113,16 @@ export const TagInput = styled.div`
   font-size: 13px;
   background-color: var(--white);
   input {
+    margin: 4px 0;
     border-style: none;
     outline: none;
+    width: 100%;
+  }
+  .tag-box {
+    display: flex;
+  }
+  .tag-box-content {
+    min-width: 30px;
   }
   :focus-within {
     border-color: var(--blue-300);
@@ -128,13 +136,13 @@ export const TagInput = styled.div`
   }
   li {
     margin: 0 4px;
-    padding: 4px;
+    /* padding: 4px; */
     background-color: var(--powder-100);
     border-radius: 3px;
     color: var(--powder-700);
   }
   span {
-    padding: 4px;
+    padding: 3px;
   }
   button {
     padding: 0 4px;
@@ -176,6 +184,13 @@ function Askquestion() {
   const state = useSelector(state => state.askquestionReducer);
   const loginState = useSelector(state => state.loginInfoReducer);
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (!loginState.login) {
+      navigate("/users/login");
+    }
+  },[loginState.login]);
+
   // 작성 가능 상태를 제어하는 상태는 useState 활용
   const [titleDone, setTitleDone] = useState(() => {
     const titleDoneData = localStorage.getItem("titleDone");
@@ -219,7 +234,6 @@ function Askquestion() {
       } else {
         setTitleValid(true);
       };
-
       if (state.questionValue === null || state.questionValue.replaceAll(/<[^>]*>/g, '').length < 20) {
         setQuestionValid(false);
       } else {
@@ -239,6 +253,11 @@ function Askquestion() {
           .then(res => {
             if (res.header.code === 201) {
               alert("Question posted successfully!");
+              const data = "";
+              const tagData = [];
+              dispatch(askquestionActions.changeQuestionValue({data}));
+              dispatch(askquestionActions.changeTitleValue({data}));
+              dispatch(askquestionActions.changeTag({tagData}));
               localStorage.removeItem("titleValue"); localStorage.removeItem("questionValue"); localStorage.removeItem("titleDone"); localStorage.removeItem("questionDone"); localStorage.removeItem("tagStart");
               navigate("/");
             } else {
@@ -284,9 +303,6 @@ function Askquestion() {
     }
   }
 
-  // 상태 잘 저장되는지 확인
-  console.log(state);
-
   return (
     <>
       <HelmetTitle title="Ask a public question - Stack Overflow" />
@@ -306,7 +322,6 @@ function Askquestion() {
                 <li>Describe your problem in more detail.</li>
                 <li>Describe what you tried and what you expected to happen.</li>
                 <li>Add “tags” which help surface your question to members of the community.</li>
-                <li>Review your question and post it to the site.</li>
               </ul>
             </NoticeDiv>
           </FlexCenter>
@@ -345,13 +360,14 @@ function Askquestion() {
         <FormDiv className={(titleDone && tagStart) ? "" : "disabled"}>
           <div>
             <label htmlFor="tagList" className="form-title">Tags</label>
-            <div>Add up to 5 tags to describe what your question is about. Start typing to see suggestions.</div>
+            <div>Add up to 5 tags to describe what your question is about.</div>
           </div>
           <TagInput>
             <ul>
               {state.tagList.map((tag, index) => (
                 <li key={index}>
-                  <span>{tag}
+                  <span className="tag-box">
+                    <span className="tag-box-content">{tag}</span>
                     <button onClick={() => {
                       const indexToRemove = index;
                       dispatch(askquestionActions.removeTag({ indexToRemove }))

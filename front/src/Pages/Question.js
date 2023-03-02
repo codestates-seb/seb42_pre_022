@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { Link, useParams, useBeforeUnload } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { editPostActions } from "../Reducers/editPostReducer";
 import { BasicBlueButton } from "../Styles/Buttons";
@@ -13,6 +13,7 @@ import HelmetTitle from "../Components/HelmetTitle";
 import useGET from "../util/useGET";
 import postData from "../util/postData";
 import dateTimeFormat from "../util/dateTimeFormat";
+import preventClose from "../util/preventClose";
 
 const QuestionContainerMain = styled.main`
   display: table;
@@ -30,6 +31,9 @@ const QuestionContainerMain = styled.main`
   }
   > div {
     display: flex;
+  }
+  .questionTitle {
+    align-items: flex-start;
   }
   > div:nth-child(2) {
     border-bottom: 1px solid var(--black-075);
@@ -104,16 +108,25 @@ const QuestionDiv = styled.div`
 function Question() {
   const { question_id } = useParams()
   const [question, Qerror] = useGET(`/questions/${question_id}`)
-  const answerUrl = question.answerCount ? `/answers?questionId=${question_id}` : null
+  const [answerUrl, setAnswerUrl] = useState(null)
   const [answers, Aerror] = useGET(answerUrl)
   const { login } = useSelector(state => state.loginInfoReducer);
-  const [createAnswer, setCreateAnswer] = useState('')
+  const [createAnswer, setCreateAnswer] = useState("")
   const dispatch = useDispatch()
+  const checkAnswerBlankToPreventClose = useCallback((e) => {
+    if (createAnswer.replaceAll(/<[^>]*>/g, '').length !== 0) {
+      preventClose(e)
+    }
+  },[createAnswer])
+
+  useBeforeUnload(checkAnswerBlankToPreventClose)
+
   const postAnswer = () => {
-    if (createAnswer.length === 0) alert("답변 내용을 입력하세요")
+    window.removeEventListener("beforeunload", checkAnswerBlankToPreventClose)
+    if (createAnswer.replaceAll(/<[^>]*>/g, '').length === 0) alert("답변 내용을 입력하세요")
     else if (window.confirm("답변을 등록합니다") === true) {
       postData(`/answers`, { questionId: question_id, body: createAnswer })
-        .then(() => {
+      .then(() => {
           window.location.reload()
         })
     }
@@ -135,18 +148,20 @@ function Question() {
     if (!login) alert("답변을 등록하려면 로그인해야 합니다")
     else setCreateAnswer(p)
   }
-
   useEffect(() => {
     dispatch(editPostActions.changeNowQ(question))
+    if (question.answerCount) {
+      setAnswerUrl(`/answers?questionId=${question_id}`)
+    }
   }, [question])
 
   return (
     <div className="content">
-      <HelmetTitle title={`태그1 - ${question.title}`} />
+      <HelmetTitle title={`${question && question.tagList[0]?.tagName} - ${question.title}`} />
       {Qerror && <h1 className="error">Question ERROR</h1>}
       {question &&
         <QuestionContainerMain >
-          <div>
+          <div className="questionTitle">
             <h1><a onClick={() => window.location.reload()}>{question.title}</a></h1>
             <BasicBlueButton to={login ? "/askquestion": "/users/login"}>Ask Question</BasicBlueButton>
           </div>
@@ -167,25 +182,25 @@ function Question() {
             </div>
             <div className="answerpart">
               <div>
-                {answerUrl ?
-                  Aerror ?
+                {question.answerCount !== 0 &&
+                  (Aerror ?
                     <h1 className="error">Answer ERROR</h1>
                     : (<>
-                      <h2>{answers.length} Answers</h2>
-                      {answers.map(answer => <QandAPost key={answer.answerId} answer={answer} qwriter={question.user.userId} />)}
-                    </>)
-                  : null}
+                      <h2>{answers?.length} Answers</h2>
+                      {answers.length !== 0 && answers?.map(answer => <QandAPost key={answer.answerId} answer={answer} qwriter={question.user.userId} />)}
+                    </>))
+                  }
               </div>
               <div>
                 <h2>Your Answer</h2>
                 <WriteBoard postBody={createAnswer} inputHandler={wirteAnswer} />
-                {login ? null : <LoginWith />}
+                {!login && <LoginWith />}
                 <div className="postanswer">
                   <BasicBlueButton onClick={postAnswer} to={`/questions/${question_id}`}>Post your Answer</BasicBlueButton>
-                  {login ? null : <em>By clicking "Post Your Answer", you agree to our <span className="linktext">terms of service</span>, <span className="linktext">privacy policy</span> and <span className="linktext">cookie policy</span></em>}
+                  {!login && <em>By clicking "Post Your Answer", you agree to our <span className="linktext">terms of service</span>, <span className="linktext">privacy policy</span> and <span className="linktext">cookie policy</span></em>}
                 </div>
               </div>
-              <h2>{login ? "Not the answer you're looking for? " : null}Browse other questions tagged <TagsDiv /> or <Link className="linktext" to="/askquestion">ask your own question.</Link></h2>
+              <h2>{login && "Not the answer you're looking for? "}Browse other questions tagged <TagsDiv tags={question.tagList}/> or <Link className="linktext" to="/askquestion">ask your own question.</Link></h2>
             </div>
           </QuestionDiv>
           <Aside />

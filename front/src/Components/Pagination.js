@@ -1,6 +1,6 @@
 import { Pager, PageBtn } from "./PaginationLeft";
 
-function PaginationLeft({ curPage, setCurPage, totalPages }) {
+function Pagination({ curPage, setCurPage, totalPages }) {
   const lastPage = totalPages ? totalPages : curPage
 
   const restPages = lastPage - curPage
@@ -37,4 +37,4 @@ function PaginationLeft({ curPage, setCurPage, totalPages }) {
   )
 }
 
-export default PaginationLeft
+export default Pagination
