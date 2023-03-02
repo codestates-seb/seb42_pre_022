@@ -1,5 +1,5 @@
 export function filteringposts (posts,filter) {
-  console.log(filter)
+  // console.log(filter)
   const filteredposts = posts.filter((post)=>{
     let filtering = true;
     if(filter.unanswered){
