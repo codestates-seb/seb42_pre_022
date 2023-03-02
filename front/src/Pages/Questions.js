@@ -227,6 +227,7 @@ function Questions() {
       const tags = await response.data.body.data.map((ele)=>{
         return {id:ele.questionId, tag: ele.tagName}
       })
+      //TODO
       // if(!!filter.tags.length){
       //   await response.data.body.data.map((ele,idx)=>{
       //     axios.get(`${process.env.REACT_APP_API_URL}/questions/${idx+1}`)

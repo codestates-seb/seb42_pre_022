@@ -17,6 +17,7 @@ export function filteringposts (posts,filter,tags) {
           })
         }
         //! tag구현 안됐을 시에는 includes 검증 안되게
+        //TODO
       }
     }
     if(!!filter.user.length){
