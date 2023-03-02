@@ -5,7 +5,7 @@ export const BasicBlueButton = styled(Link)`
   display:flex;
   align-items:center;
   cursor: pointer;
-  padding: 8px .8em;
+  padding: .8em;
   box-shadow: inset 0 1px 0 0 hsla(0,0%,100%,0.7);
   border: 1px solid transparent;
   border-radius: 3px;

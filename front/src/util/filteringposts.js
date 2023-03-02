@@ -1,87 +1,4 @@
-
-
-export const allquestions= [
-  {
-    "questionId": 54343,
-    "userId": null,
-    "title": "Extracting output from Postman using Python",
-    "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
-    "displayName": null,
-    "answerCount": 5,
-    "viewCount": 5,
-    "createdDate": "2023-01-03T09:48:00.000Z",
-    "modifiedAt": null,
-    "closedAt": null,
-    "tagList": ["javascript","angular"]
-  },
-  {
-      "questionId": 14343,
-      "userId": null,
-      "title": "Extracting output from Postman using Python",
-      "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
-      "displayName": null,
-      "answerCount": 0,
-      "viewCount": 0,
-      "createdDate": "2023-02-24T03:48:00.000Z",
-      "modifiedAt": null,
-      "closedAt": null,
-      "tagList": ["angular"]
-  },
-{
-  "questionId": 323321,
-  "userId": null,
-  "title": "Extracting output from Postman using Python",
-  "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
-  "displayName": null,
-  "answerCount": 2,
-  "viewCount": 2,
-  "createdDate": "2023-01-23T07:48:00.000Z",
-  "modifiedAt": null,
-  "closedAt": null,
-  "tagList": ["javascript"]
-},
-{
-  "questionId": 341453,
-  "userId": null,
-  "title": "Extracting output from Postman using Python",
-  "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
-  "displayName": null,
-  "answerCount": 3,
-  "viewCount": 3,
-  "createdAt": "2023-01-29T20:48:00.000Z",
-  "modifiedAt": null,
-  "closedAt": null,
-  "tagList": ["angular"]
-},
-{
-  "questionId": 243434,
-  "userId": null,
-  "title": "Extracting output from Postman using Python",
-  "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
-  "displayName": null,
-  "answerCount": 1,
-  "viewCount": 1,
-  "createdDate": "2023-01-24T18:48:00.000Z",
-  "modifiedAt": null,
-  "closedAt": null,
-  "tagList": ["javascript","angular"]
-},
-{
-  "questionId": 4324324,
-  "userId": null,
-  "title": "Extracting output from Postman using Python",
-  "body": "does anyone know how to extract output from postman using Python I can't find a way to convert 'var responseData = pm.response.json()['data']' this into python. enter image description here",
-  "displayName": null,
-  "answerCount": 4,
-  "viewCount": 4,
-  "createdDate": "2023-02-27T14:48:00.000Z",
-  "modifiedAt": null,
-  "closedAt": null,
-  "tagList": ["javascript"]
-},
-]
-
-export function filteringposts (posts,filter) {
+export function filteringposts (posts,filter,tags) {
   const filteredposts = posts.filter((post)=>{
     let filtering = true;
     if(filter.unanswered){
@@ -90,10 +7,28 @@ export function filteringposts (posts,filter) {
     if(!!filter.tags.length){
       filtering = false
       for(let i of filter.tags){
-        console.log(i)
-        if(filtering===false){filtering = post.tagList.includes(i)}
+        if(filtering===false){
+          // console.log(tags)
+          // const a = {...post}
+          // console.log(a)
+          filtering = post.tagList && post.tagList.filter((ele)=>
+          {
+            return ele.tagName === i
+          })
+        }
+        //! tag구현 안됐을 시에는 includes 검증 안되게
+        //TODO
       }
     }
+    if(!!filter.user.length){
+      filtering = post.user.displayName === filter.user
+    }
+    if(filter.answerCount !== null){
+      filtering = post.answerCount >= filter.answerCount
+    }
+    if(!!filter.searchedBy){
+      filtering = post.body.split(' ').includes(filter.searchedBy)
+    }    
     return filtering
   })
   return filteredposts

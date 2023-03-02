@@ -12,7 +12,10 @@ import { ReactComponent as AchiveIcon } from "../assets/achiveIcon.svg";
 import { ReactComponent as HelpIcon } from "../assets/helpIcon.svg";
 import { ReactComponent as ExchangeIcon } from "../assets/exchangeIcon.svg";
 import logo from "../assets/sprites.svg"
+import { searchBarfilter } from "../Reducers/filterquestionReducer";
+import { selectPage } from "../Reducers/paginationReducer";
 import SearchGuide from "./SearchGuide";
+
 
 const Containerheader = styled.header`
   display: flex;
@@ -100,14 +103,21 @@ const HeadIconTabLi = styled(HeadTabLi)`
     fill:var(--black-800);
     }
   }
-  > img {
+  img {
     height: 24px;
     width: 24px;
   }
   @media only screen and (max-width: 640px) {
-    > span {
+    span {
       display: none;
     }
+  }
+  a{
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+    gap:4px;
+    text-decoration: none;
   }
 `
 const MenubarLi = styled(HeadIconTabLi)`
@@ -186,6 +196,41 @@ const IconButtonUl = styled.ul`
     margin-left: auto;
   } 
 `
+//TODO 나중에 합쳐서 지우기
+export const SearchBoxDiv = styled.div`
+  flex-grow: 1;
+  position: relative;
+  margin: 0 8px;
+  > svg {
+    position: absolute;
+    top: 50%;
+    right: auto;
+    left: 0.7em;
+    fill: var(--black-400);
+    transform: translateY(-50%);
+    pointer-events: none;    
+  }
+`
+export const SearchInput = styled.input`
+  flex: 1;
+  display: block;
+  width: 100%;
+  padding: 0.6em 0.7em;
+  padding-left: 32px;
+  color: var(--black-700);
+  line-height: calc(15/13);
+  border: 1px solid var(--black-200);
+  border-radius: 3px;
+  font-size: 13px;
+  background-color: var(--white);
+  outline: 0;
+  :focus {
+    border-color: var(--blue-300);
+    box-shadow: 0 0 0 4px hsla(206, 100%, 40%, .15);
+  }
+`
+//TODO
+
 
 
 function Header() {
@@ -193,6 +238,8 @@ function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [menu, setMenu] = useState(false)
+  const [searchInputValue, setSearchInputValue] = useState('')
+  const[isFocus, setIsFocus] = useState(false)
 
   let { pathname } = useLocation();
 
@@ -209,14 +256,20 @@ function Header() {
       navigate("/");
       window.location.reload();
     }
-
-
   }
   const openMenu = () => {
     setMenu(!menu)
   }
-  const loginTabList = [(<><img src={login ? userInfo?.profileImage : null} alt="profile-icon" /><span>1</span></>), <InboxIcon />, <AchiveIcon />, <HelpIcon />, <ExchangeIcon />]
+  const loginTabList = [(<><Link to="/users/mypage"><img src={login ? userInfo?.profileImage : null} alt="profile-icon" /><span>1</span></Link></>), <InboxIcon />, <AchiveIcon />, <HelpIcon />, <ExchangeIcon />]
 
+  const searchbarHandler=(e)=>{
+      dispatch(searchBarfilter(searchInputValue))
+      dispatch(selectPage(1))
+      setSearchInputValue('')
+  }
+  const focusHandler = () =>{
+    setIsFocus(!isFocus)
+  }
   return (
     <Containerheader>
       <div>
@@ -230,8 +283,29 @@ function Header() {
           <HeadTextTabLi>Products</HeadTextTabLi>
           <HeadTextTabLi>For Teams</HeadTextTabLi>
         </HeadTextTabUl>
-        <SearchBar placeholder="Search..." />
-        {/* <SearchGuide /> */}
+        {/* 나중에 SearchBar다 되면 지우기 */}
+        {/* <SearchBar placeholder="Search..." setSearchInputValue={setSearchInputValue} inputHandler={searchbarInputHandler} searchInputValue={searchInputValue}/> */}
+        <SearchBoxDiv>
+          <SearchInput 
+            type="text" 
+            maxLength={240} 
+            value={searchInputValue} 
+            placeholder="Search..." 
+            onChange={(e)=>{setSearchInputValue(e.target.value)}}
+            //! 여러분 그거 아세요? 한글에서 엔터를 누르면 onKeyDown이 두번 발생된다는 사실
+            //! 알고싶지 않았습니다.
+            onKeyPress={(e)=>{
+            if (e.key === "Enter") {
+            console.log("엔터")
+            searchbarHandler(e)
+            }}}
+            onFocus={focusHandler}
+            onBlur={focusHandler}
+          />
+          {isFocus && <SearchGuide />}
+      <SearchIcon />
+    </SearchBoxDiv>
+        {/*  */}
         <IconButtonUl>
           <HeadIconTabLi><SearchIcon /></HeadIconTabLi>
           {login && loginTabList.map((el, i) => <HeadIconTabLi key={i}>{el}</HeadIconTabLi>)}

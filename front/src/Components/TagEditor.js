@@ -43,7 +43,7 @@ const TagEditorInputBox = styled.div`
   }
 `
 const TagsEditorInput = styled.input`
-  width:${(props) => props.width+"ch"};
+  width:${(props) => props.width+"ch"} !important;
   padding: 0;
   padding-left: calc(0.7em - 2px) ;
   height: 29px;
@@ -116,7 +116,7 @@ const TagsinEditor = styled.span`
 
 
 
-function TagEditor ({tags, setTags, setTagsChecked, customOption, setCustomOption}) {
+function TagEditor ({tags, setTags, setTagsChecked}) {
   const [inputValue, setInputValue] = useState('')
   const [isEditMode, setEditMode] = useState(false)
   const inputEl= useRef(null)
@@ -124,14 +124,16 @@ function TagEditor ({tags, setTags, setTagsChecked, customOption, setCustomOptio
   const removeTags = (indexToRemove) => {
     let removed = tags.filter((ele, index) => index !== indexToRemove)
     setTags(removed);
-    setCustomOption({...customOption,tags:removed})
   };
   const addTags = (e) => {
     const filtered = tags.filter((el) => el === inputValue);
     if (inputValue !== "" && filtered.length === 0) {
-      setTagsChecked(true)
-      setTags([...tags, inputValue]);
-      setCustomOption({...customOption,tags:[...tags, inputValue]})
+      if (!setTagsChecked && tags.length < 5) {
+        setTags([...tags, inputValue]);
+      } else {
+        setTagsChecked(true)
+        setTags([...tags, inputValue]);
+      }
     } 
     setInputValue('')
   };
