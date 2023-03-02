@@ -8,6 +8,7 @@ import { loginInfoActions } from "../Reducers/loginInfoReducer";
 import { useLocation } from "react-router-dom";
 import getAnotherUserInfo from "../util/getAnotherUser";
 import { saveUserInfo } from "../Reducers/otheruserReducer";
+import { useNavigate } from "react-router-dom";
 
 const MypageContainer = styled.div`
   width: 100%;
@@ -208,12 +209,14 @@ const GridItem = styled.div`
   `
 
 function Mypage() {
+  const navigate = useNavigate();
   let {pathname} = useLocation();
   const dispatch = useDispatch();
   const myInfo = useSelector((state)=> state.loginInfoReducer).userInfo
+  const login = useSelector((state)=> state.loginInfoReducer).login
   const otherUser = useSelector((state)=> state.otheruser)
-  pathname.slice(7) !== "/mypage" 
-    && getAnotherUserInfo(pathname.slice(7)).then((data)=>{
+  pathname.slice(6) !== "/mypage" 
+    && getAnotherUserInfo(pathname.slice(6)).then((data)=>{
       dispatch(saveUserInfo(data))
   })
   const user = pathname.slice(6) === "/mypage" ?myInfo :otherUser
@@ -244,7 +247,11 @@ function Mypage() {
     if(isEditMode){
       inputEl.current.focus();
     }
+    if (!login) {
+      navigate("/users/login");
+    }
   },[isEditMode])
+
   return (
     <div className="content">
       <MypageContainer>
@@ -285,7 +292,7 @@ function Mypage() {
             </UserDetails>
             <EditDisplayName onClick={setEditModeHandler}>
               {
-                pathname.slice(7) === "/mypage" &&
+                pathname.slice(6) === "/mypage" &&
                 <>
                  <DataControllerBtn>
                   <svg viewBox="0 0 18 18"><path d="m13.68 2.15 2.17 2.17c.2.2.2.51 0 .71L14.5 6.39l-2.88-2.88 1.35-1.36c.2-.2.51-.2.71 0ZM2 13.13l8.5-8.5 2.88 2.88-8.5 8.5H2v-2.88Z"/></svg>Edit profile
