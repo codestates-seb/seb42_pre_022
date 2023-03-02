@@ -6,17 +6,18 @@ public enum ExceptionCode {
     /*
     400 BAD REQUEST - 잘못된 요청
      */
+    BAD_REQUEST(400, "잘못된 요청입니다."),
 
     /*
     401 UNAUTHORIZED : 인증되지 않은 사용자
      */
+    UNAUTHORIZED(401, "권한이 없습니다."),
 
     /*
     404 NOT_FOUND : Resource 를 찾을 수 없음.
      */
     QUESTION_NOT_FOUND(404, "Question not found"),
-
-
+    TAG_NOT_FOUND(404, "Tag not found"),
 
     /*
     409 CONFLICT : Resource 의 현재 상태와 충돌.

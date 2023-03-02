@@ -7,6 +7,7 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,14 @@ public class CustomRequestFieldsSnippet extends AbstractFieldsSnippet {
         Map<String, Object> attributes,
         FieldDescriptor... descriptors
     ) {
+        return new CustomRequestFieldsSnippet(type, Arrays.asList(descriptors), attributes, true);
+    }
+
+    public static CustomRequestFieldsSnippet customRequestFields(
+        String type,
+        FieldDescriptor... descriptors
+    ) {
+        HashMap<String, Object> attributes = new HashMap<>();
         return new CustomRequestFieldsSnippet(type, Arrays.asList(descriptors), attributes, true);
     }
 }

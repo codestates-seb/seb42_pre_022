@@ -1,14 +1,13 @@
 package com.teambj.stackoverflow.domain.question.entity;
 
+import com.teambj.stackoverflow.audit.Auditable;
 import com.teambj.stackoverflow.domain.answer.entity.Answer;
+import com.teambj.stackoverflow.domain.comment.entity.Comment;
 import com.teambj.stackoverflow.domain.user.entity.User;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
-import java.math.BigInteger;
-import java.time.LocalDateTime;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Question {
+public class Question extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long questionId;
@@ -27,6 +25,7 @@ public class Question {
     private String title;
 
     @Column(nullable = false)
+    @Size(min = 20, max = 1000000)
     private String body;
 
     @Column(columnDefinition = "integer default 0")
@@ -35,29 +34,28 @@ public class Question {
     @Column(columnDefinition = "integer default 0")
     private int viewCount;
 
-    @Column(updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    private List<QuestionTag> questionTags = new ArrayList<>();
 
-    private LocalDateTime modifiedAt = LocalDateTime.now();
-
-    private LocalDateTime closedAt = LocalDateTime.now();
+    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
+    private List<Comment> comments = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "USER_ID")
     private User user;
 
-    @OneToMany(/*mappedBy = "", */cascade = CascadeType.REMOVE)
-    private List<Answer> answer = new ArrayList<>();
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
+    private List<Answer> answers = new ArrayList<>();
 
     public void addUser(User user) {
         this.user = user;
     }
 
-    public void setAnswerCount(int answerCount) {
-        this.answerCount = answerCount;
+    public void addQuestionTag(QuestionTag questionTag) {
+        questionTags.add(questionTag);
     }
 
-    public void setViewCount(int viewCount) {
-        this.viewCount = viewCount;
+    public void setAnswerCount(int answerCount) {
+        this.answerCount = answers.size();
     }
 }

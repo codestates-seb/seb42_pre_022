@@ -1,5 +1,9 @@
+import { useState, useRef } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import CommentLi from "./CommentLi";
+import { CommentTextarea } from "../Styles/Divs";
+import postData from "../util/postData";
 
 const CmtDiv = styled.div`
   font-size: 13px;
@@ -17,18 +21,61 @@ const CmtDiv = styled.div`
   }
   > span:hover {
     color: var(--blue-500);
-    opacity: .6;
+  }
+  .addCmt {
+    opacity: 1;
+    color: var(--blue);
   }
 `
 
-function CommentsDiv() {
+function CommentsDiv({ comments, answerId, questionId }) {
+  const { login } = useSelector(state => state.loginInfoReducer);
+  const [writeMode, setWriteMode] = useState(false)
+  const [writeComment, setWriteComment] = useState('')
+  const textarea = useRef();
+
+  const handleResizeHeight = () => {
+    textarea.current.style.height = 'auto';
+    textarea.current.style.height = textarea.current.scrollHeight + 'px'
+  }
+  const handleWriteButton = () => {
+    if (writeMode) {
+      if (writeComment.length === 0) alert("코멘트를 입력하세요")
+      else if (window.confirm("코멘트를 등록합니다") === true) {
+        const data = { body: writeComment }
+        if (answerId) {
+          data.answerId = answerId
+        } else {
+          data.questionId = questionId
+        }
+        postData("/comments", data)
+        .then(() => setWriteMode(false))
+        .then(() => window.location.reload())
+      }
+    } else if (!login) alert("코멘트를 등록하려면 로그인해야 합니다") 
+    else setWriteMode(true)
+
+  }
+  const handleComment = (e) => {
+    if (e.key === "Enter") {
+      handleWriteButton()
+    } else {
+      setWriteComment(e.target.value);
+      handleResizeHeight();
+    }
+  }
   return (
     <CmtDiv>
+      {comments.length !== 0 &&
         <ul>
-          <CommentLi />    
+          {comments.map(comment => <CommentLi key={comment.commentId} comment={comment} />)}
         </ul>
-        <span className="greycolor">Add a comment</span>
-      </CmtDiv>
+      }
+      {writeMode ?
+        <CommentTextarea ref={textarea} onClick={handleResizeHeight} onKeyUp={handleComment} />
+        : null}
+      <span className={writeMode ? "addCmt" : ""} onClick={handleWriteButton}>Add a comment</span>
+    </CmtDiv>
   )
 }
 

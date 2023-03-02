@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
-import { loginActions } from "../Reducers/loginReducer";
+import { loginInfoActions } from "../Reducers/loginInfoReducer";
 import { BasicBlueButton } from "../Styles/Buttons"
 import SearchBar from "./SearchBar";
 import Nav from "./Nav";
@@ -12,6 +12,7 @@ import { ReactComponent as AchiveIcon } from "../assets/achiveIcon.svg";
 import { ReactComponent as HelpIcon } from "../assets/helpIcon.svg";
 import { ReactComponent as ExchangeIcon } from "../assets/exchangeIcon.svg";
 import logo from "../assets/sprites.svg"
+import SearchGuide from "./SearchGuide";
 
 const Containerheader = styled.header`
   display: flex;
@@ -154,7 +155,7 @@ const MenubarLi = styled(HeadIconTabLi)`
 const HeadTextTabUl = styled.ul`
   padding: 2px 0;
   li:not(:nth-child(2)) {
-    display: ${props => props.login.login ? "none" : "block"};
+    display: ${props => props.login ? "none" : "block"};
     @media only screen and (max-width: 980px) {
       display: none;
     }
@@ -188,40 +189,54 @@ const IconButtonUl = styled.ul`
 
 
 function Header() {
-  const state = useSelector(state => state.loginReducer);
+  const { login, userInfo } = useSelector(state => state.loginInfoReducer);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [menu, setMenu] = useState(false)
 
   let { pathname } = useLocation();
 
-  const handleClick = () => {
-    dispatch(loginActions.changeLogin())
+  const logoutHandler = () => {
+    if (window.confirm("Are you sure you want to log out?")) {
+      // 로그아웃 버튼 -> accessToken, userInfo 비우기, 작성하던 질문 상태 비우기, login 상태 바꾸기
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("titleValue"); localStorage.removeItem("questionValue"); localStorage.removeItem("titleDone"); localStorage.removeItem("questionDone"); localStorage.removeItem("tagStart");
+      const actions = {
+        login: false,
+        userInfo: null
+      }
+      dispatch(loginInfoActions.changeLoginInfo(actions))
+      navigate("/");
+      window.location.reload();
+    }
+
+
   }
   const openMenu = () => {
     setMenu(!menu)
   }
-  const loginButton = state.login ? "Log out" : "Log in"
-  const loginTabList = [(<><img src={`${process.env.PUBLIC_URL}/images/profileIcon.png`} /><span>1</span></>), <InboxIcon />, <AchiveIcon />, <HelpIcon />, <ExchangeIcon />]
+  const loginTabList = [(<><img src={login ? userInfo?.profileImage : null} alt="profile-icon" /><span>1</span></>), <InboxIcon />, <AchiveIcon />, <HelpIcon />, <ExchangeIcon />]
 
   return (
     <Containerheader>
       <div>
         <MenuLogoUl>
-          <MenubarLi onClick={openMenu} isopen={menu ? 1 : null} nowparams={pathname && pathname.slice(-3) === "ask" ? 1 : null}><div><i/></div></MenubarLi>
-          {menu? <li className="nav"><Nav /></li> : null}
+          <MenubarLi onClick={openMenu} isopen={menu ? 1 : null} nowparams={pathname && pathname.slice(-3) === "ask" ? 1 : null}><div><i /></div></MenubarLi>
+          {menu ? <li className="nav"><Nav /></li> : null}
           <HeadIconTabLi><Link to="/"><HeadLogoI url={logo} /></Link></HeadIconTabLi>
         </MenuLogoUl>
-        <HeadTextTabUl login={state}>
+        <HeadTextTabUl login={login ? 1 : null}>
           <HeadTextTabLi>About</HeadTextTabLi>
           <HeadTextTabLi>Products</HeadTextTabLi>
           <HeadTextTabLi>For Teams</HeadTextTabLi>
         </HeadTextTabUl>
-        <SearchBar placeholder="Search..."/>
+        <SearchBar placeholder="Search..." />
+        {/* <SearchGuide /> */}
         <IconButtonUl>
           <HeadIconTabLi><SearchIcon /></HeadIconTabLi>
-          {state.login && loginTabList.map((el, i) => <HeadIconTabLi key={i}>{el}</HeadIconTabLi>)}
-          <li><BasicBlueButton skyblue={1} to={state.login ? "/" : "/users/login"} onClick={handleClick}>{loginButton}</BasicBlueButton></li>
-          {!state.login && <li><BasicBlueButton to="/users/signup">Sign up</BasicBlueButton></li>}
+          {login && loginTabList.map((el, i) => <HeadIconTabLi key={i}>{el}</HeadIconTabLi>)}
+          <li><BasicBlueButton skyblue={1} to={login ? "/" : "/users/login"} onClick={login ? logoutHandler : null}>{login ? "Log out" : "Log in"}</BasicBlueButton></li>
+          {!login && <li><BasicBlueButton to="/users/signup">Sign up</BasicBlueButton></li>}
         </IconButtonUl>
       </div>
     </Containerheader>

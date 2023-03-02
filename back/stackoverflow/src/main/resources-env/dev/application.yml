@@ -6,35 +6,18 @@ spring:
   profiles:
     include: common
     active: dev
-  h2:
-    console:
-      enabled: true
-      path: /h2
   datasource:
-#    url: jdbc:mysql://seb42-pre-022.cmiamwndbq6x.ap-northeast-2.rds.amazonaws.com:3306/bootex?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
-#    username: ${spring.datasource.name}
-#    password: ${spring.datasource.password}
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:h2:mem:testdb;NON_KEYWORDS=USER
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    url: ${datasource_url}
+    username: ${datasource_username}
+    password: ${datasource_password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-#    database: mysql
-#    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-#    hibernate:
-#      ddl-auto: update
-#    properties:
-#      hibernate:
-#        format_sql: true
-    database-platform: org.hibernate.dialect.H2Dialect
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        format_sql: true
-        highlight_sql: true
-        use_sql_comments: true
+      ddl-auto: update
+    show-sql: true
+
   mail:
     host: smtp.gmail.com
     port: 587
