@@ -3,7 +3,6 @@ package com.teambj.stackoverflow.auth.handler;
 import com.teambj.stackoverflow.auth.JwtTokenizer;
 import com.teambj.stackoverflow.auth.PrincipalDetails;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -39,7 +38,6 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
         String uri = createURI(accessToken).toString();
         getRedirectStrategy().sendRedirect(request, response, uri);
-
 
         response.setHeader("Authorization",  "Bearer " + accessToken);
     }

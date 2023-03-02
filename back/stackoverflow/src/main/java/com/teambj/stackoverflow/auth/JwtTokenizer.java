@@ -45,16 +45,16 @@ public class JwtTokenizer {
                 .compact();
     }
 
-    public String generateRefreshToken(String subject, Date expiration, String base64EncodedSecretKey){
-        Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
-
-        return Jwts.builder()
-                .setSubject(subject)
-                .setIssuedAt(Calendar.getInstance().getTime())
-                .setExpiration(expiration)
-                .signWith(key)
-                .compact();
-    }
+//    public String generateRefreshToken(String subject, Date expiration, String base64EncodedSecretKey){
+//        Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
+//
+//        return Jwts.builder()
+//                .setSubject(subject)
+//                .setIssuedAt(Calendar.getInstance().getTime())
+//                .setExpiration(expiration)
+//                .signWith(key)
+//                .compact();
+//    }
 
 
     public Date getTokenExpiration(int accessTokenExpirationMinutes) {

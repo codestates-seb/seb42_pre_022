@@ -4,7 +4,6 @@ import com.teambj.stackoverflow.auth.PrincipalDetails;
 import com.teambj.stackoverflow.domain.user.entity.Reputation;
 import com.teambj.stackoverflow.domain.user.entity.User;
 import com.teambj.stackoverflow.domain.user.repository.UserRepository;
-import com.teambj.stackoverflow.domain.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;

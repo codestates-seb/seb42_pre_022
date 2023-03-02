@@ -1,15 +1,11 @@
 package com.teambj.stackoverflow.auth.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.teambj.stackoverflow.auth.service.CustomUserDetailsService;
 import com.teambj.stackoverflow.auth.JwtTokenizer;
 import com.teambj.stackoverflow.domain.user.dto.LoginDto;
 import com.teambj.stackoverflow.domain.user.entity.User;
-import com.teambj.stackoverflow.response.ApiResponse;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,7 +16,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +48,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         User user = (User) authResult.getPrincipal();
 
         String accessToken = delegateAccessToken(user);
-        String refreshToken = delegateRefreshToken(user);
+//        String refreshToken = delegateRefreshToken(user);
 
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
@@ -91,12 +86,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         return "Bearer_" + jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
     }
 
-    private String delegateRefreshToken(User user) {
-
-        String subject = user.getEmail();
-        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
-        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
-
-        return "Bearer_" + jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
-    }
+//    private String delegateRefreshToken(User user) {
+//
+//        String subject = user.getEmail();
+//        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
+//        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
+//
+//        return "Bearer_" + jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
+//    }
 }
