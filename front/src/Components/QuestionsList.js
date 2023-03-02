@@ -192,7 +192,6 @@ function QuestionsList({ ele }) {
           <UsercardMinimal>
             <UsercardAvartar><div><img src={ele.user.profileImage} alt="user-profile-img"></img></div></UsercardAvartar>
             <UsercardInfo><Link to={`/users/${ele.user.userId}`}><div className="uc-username">{ele.user.displayName}</div></Link><div className="uc-reputation">{ele.user.reputation}</div></UsercardInfo>
-            <UsercardInfo><div className="uc-username">{ele.user.displayName}</div><div className="uc-reputation">{ele.user.reputation}</div></UsercardInfo>
             <time>
               {ele.createdDate === ele.modifiedDate
                 ? `asked ${dateTimeFormat(ele.createdDate)}`
