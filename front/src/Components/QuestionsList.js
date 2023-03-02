@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import TagsDiv from "./TagsDiv";
-import { format } from "timeago.js";
 import { Tag } from "../Styles/Divs";
+import { Link } from "react-router-dom";
+import dateTimeFormat from "../util/dateTimeFormat";
+import TagsDiv from "./TagsDiv";
 
 const QLiContainer = styled.div`
   background-color: transparent;
@@ -127,6 +128,9 @@ const UsercardInfo = styled.div`
   display: flex;
   gap: 4px;
   font-size: 12px;
+  a{
+    text-decoration: none;
+  }
   .uc-username{
     margin: 2px;
     color: var(--blue-600);
@@ -165,49 +169,32 @@ const TagsContainerDiv = styled.div`
 
 
 
-function QuestionsList({title, body, createdAt, viewCount, answerCount, user, tags}) {
-
-  const date = new Date(createdAt)
-  const now = new Date()
-  const changeDateFormat = new Intl.DateTimeFormat('en-US',{month: "short", day: "numeric", year:"numeric", timeZone:"Asia/Seoul"}).format(date)
-  const isAM = new Intl.DateTimeFormat('en-US',{ hour:"numeric",hour12:false,timeZone:"Asia/Seoul"}).format(date)<12
-  const changeTimeFormat = new Intl.DateTimeFormat('en-US',{ hour:"numeric", hour12: isAM, minute:"numeric",timeZone:"Asia/Seoul"}).format(date)
-  const slicedTime = isAM
-   ? changeTimeFormat.slice(0,5)
-   : changeTimeFormat
-  const timeago = format(now-(now-date))
-  const isWrittenin24 = (now-date) <= (24 * 1000 * 60 * 60)
+function QuestionsList({ ele }) {
 
   return (
     <QLiContainer>
       <PostSummaryStats>
         <div><span>0</span><span>votes</span></div>
-        <div className={answerCount !== 0 ?"has-answer" :"null"}><span>{answerCount}</span><span>answer</span></div>
-        <div><span>{viewCount}</span><span>views</span></div>
+        <div className={ele.answerCount !== 0 ? "has-answer" : "null"}><span>{ele.answerCount}</span><span>answer</span></div>
+        <div><span>{ele.viewCount}</span><span>views</span></div>
       </PostSummaryStats>
       <PostSummaryContent>
-        <h3 className="post-summary-title"><a>{title}</a></h3>
-        <div className="post-summary-content">{body.replace(/<\/?[^>]+(>|$)/g, '').slice(0,200)+"..."}</div>
+        <h3 className="post-summary-title"><Link to={`/questions/${ele.questionId}`}>{ele.title}</Link></h3>
+        <div className="post-summary-content">{ele.body.replace(/<\/?[^>]+(>|$)/g, '').slice(0, 200) + "..."}</div>
         <div className="post-summary-meta">
-          {/* <TagsDiv /> */}
-          <TagsContainerDiv>
-           <ul>
-            {tags && tags.map((ele,idx) => {
-               return <li key={idx}><Tag>{ele}</Tag></li>
-             })}
-            </ul>
-          </TagsContainerDiv>
+          <TagsDiv tags={ele.tagList && ele?.tagList}/>
           <UsercardMinimal>
-            <UsercardAvartar><div><img src={user.profileImage} alt="user-profile-img"></img></div></UsercardAvartar>
-            <UsercardInfo><div className="uc-username">{user.displayName}</div><div className="uc-reputation">{user.reputation}</div></UsercardInfo>
-            {isWrittenin24
-              ? <time>asked {timeago}</time> 
-              : <time>asked {changeDateFormat} at {slicedTime}</time>
-            }
+            <UsercardAvartar><div><img src={ele.user.profileImage} alt="user-profile-img"></img></div></UsercardAvartar>
+            <UsercardInfo><Link to={`/users/${ele.user.userId}`}><div className="uc-username">{ele.user.displayName}</div></Link><div className="uc-reputation">{ele.user.reputation}</div></UsercardInfo>
+            <time>
+              {ele.createdDate === ele.modifiedDate
+                ? `asked ${dateTimeFormat(ele.createdDate)}`
+                : `modified ${dateTimeFormat(ele.modifiedDate)}`}
+            </time>
           </UsercardMinimal>
         </div>
       </PostSummaryContent>
-    </QLiContainer> 
+    </QLiContainer>
   );
 }
 

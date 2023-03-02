@@ -18,26 +18,32 @@ import HelmetTitle from "./Components/HelmetTitle";
 import { useSelector } from "react-redux";
 import { loginInfoActions } from "./Reducers/loginInfoReducer";
 import getUserInfo from "./util/getUserInfo";
+import ErrorPage from "./Pages/ErrorPage";
+import Tags from "./Pages/Tags";
 
 function App() {
   const { pathname } = useLocation();
   const dispatch = useDispatch()
-  const { login } = useSelector(state => state.loginInfoReducer);
+  const { userInfo } = useSelector(state => state.loginInfoReducer);
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
-    if (accessToken && !login) {
+    if (accessToken && !userInfo?.userId) {
       getUserInfo()
       .then(userInfo => {
-        const actions = {
-          login: true,
-          userInfo
+        const actions = {}
+        if (userInfo) {
+          actions.login = true
+          actions.userInfo = userInfo
+          dispatch(loginInfoActions.changeLoginInfo(actions))
+        } else {
+          localStorage.removeItem("accessToken");
         }
-        dispatch(loginInfoActions.changeLoginInfo(actions))
       })
     }
+    window.scrollTo(0, 0)
   }, [pathname])
-  
+
   return (
     <div className="app-wrap">
       <GlobalStyle />
@@ -54,12 +60,14 @@ function App() {
             <Route path="/askquestion" element={<Askquestion />} />
             <Route path="/users/login" element={<Login />} />
             <Route path="/users/signup" element={<Signup />} />
+            <Route path="/tags" element={<Tags />} />
             <Route path="/users" element={<Users />} />
             <Route path="/users/mypage" element={<Mypage />} />
+            <Route path="/users/:userid" element={<Mypage />} />
             <Route path="/token" element={<Token />} />
+            <Route path="/*" element={<ErrorPage />} />
           </Routes>
         </div>
-        {/*배포 이후 배포한 주소 길이에 맞게 slice 변경*/}
         {(pathname === "/users/login" || pathname === "/users/signup") ? null : <Footer />}
       </div>
     </div>

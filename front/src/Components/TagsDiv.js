@@ -26,13 +26,13 @@ const TagsContainerDiv = styled.div`
   }
 `
 
-function TagsDiv() {
-  let tag = [{title: 'javascript'}, {title: 'angular'}]
+function TagsDiv({ tags }) {
+
   return (
     <TagsContainerDiv>
       <ul>
-        {tag.map((ele) => {
-          return <li><Tag>{ele.title}</Tag></li>
+        {tags.map((tag) => {
+          return <li key={tag.tagId}><Tag>{tag.tagName}</Tag></li>
         })}
       </ul>
     </TagsContainerDiv>

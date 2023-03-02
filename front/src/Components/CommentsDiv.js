@@ -1,9 +1,9 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import CommentLi from "./CommentLi";
-import { CommentTextarea } from "../Styles/Divs";
 import postData from "../util/postData";
+import CommentTextarea from "./CommentTextarea";
 
 const CmtDiv = styled.div`
   font-size: 13px;
@@ -32,15 +32,11 @@ function CommentsDiv({ comments, answerId, questionId }) {
   const { login } = useSelector(state => state.loginInfoReducer);
   const [writeMode, setWriteMode] = useState(false)
   const [writeComment, setWriteComment] = useState('')
-  const textarea = useRef();
 
-  const handleResizeHeight = () => {
-    textarea.current.style.height = 'auto';
-    textarea.current.style.height = textarea.current.scrollHeight + 'px'
-  }
   const handleWriteButton = () => {
     if (writeMode) {
-      if (writeComment.length === 0) alert("코멘트를 입력하세요")
+      if (writeComment.length === 0) setWriteMode(false)
+      else if (writeComment.length > 100) alert("코멘트는 100자 이하여야 합니다")
       else if (window.confirm("코멘트를 등록합니다") === true) {
         const data = { body: writeComment }
         if (answerId) {
@@ -49,21 +45,13 @@ function CommentsDiv({ comments, answerId, questionId }) {
           data.questionId = questionId
         }
         postData("/comments", data)
-        .then(() => setWriteMode(false))
-        .then(() => window.location.reload())
+          .then(() => setWriteMode(false))
+          .then(() => window.location.reload())
       }
-    } else if (!login) alert("코멘트를 등록하려면 로그인해야 합니다") 
+    } else if (!login) alert("코멘트를 등록하려면 로그인해야 합니다")
     else setWriteMode(true)
+  }
 
-  }
-  const handleComment = (e) => {
-    if (e.key === "Enter") {
-      handleWriteButton()
-    } else {
-      setWriteComment(e.target.value);
-      handleResizeHeight();
-    }
-  }
   return (
     <CmtDiv>
       {comments.length !== 0 &&
@@ -71,9 +59,7 @@ function CommentsDiv({ comments, answerId, questionId }) {
           {comments.map(comment => <CommentLi key={comment.commentId} comment={comment} />)}
         </ul>
       }
-      {writeMode ?
-        <CommentTextarea ref={textarea} onClick={handleResizeHeight} onKeyUp={handleComment} />
-        : null}
+      {writeMode && <CommentTextarea setComment={setWriteComment} writeMode={writeMode} writeComment={writeComment} />}
       <span className={writeMode ? "addCmt" : ""} onClick={handleWriteButton}>Add a comment</span>
     </CmtDiv>
   )
