@@ -174,7 +174,7 @@ function Question() {
               <span>Modified</span>
               <span>{dateTimeFormat(recentModifiedDate, true)}</span>
             </QuestionDetailDiv>
-            <QuestionDetailDiv><span>Viewed</span><span>{question.viewCount} times</span></QuestionDetailDiv>
+            <QuestionDetailDiv><span>Viewed</span><span>{question.viewCount + 1} times</span></QuestionDetailDiv>
           </div>
           <QuestionDiv>
             <div>

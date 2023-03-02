@@ -215,10 +215,11 @@ function Mypage() {
   const myInfo = useSelector((state)=> state.loginInfoReducer).userInfo
   const login = useSelector((state)=> state.loginInfoReducer).login
   const otherUser = useSelector((state)=> state.otheruser)
-  pathname.slice(6) !== "/mypage" 
-    && getAnotherUserInfo(pathname.slice(6)).then((data)=>{
-      dispatch(saveUserInfo(data))
-  })
+  if(!pathname.includes("/mypage")){
+    getAnotherUserInfo(pathname.slice(7)).then((data)=>{
+      data && dispatch(saveUserInfo(data))
+    })
+  }
   const user = pathname.slice(6) === "/mypage" ?myInfo :otherUser
   const [isEditMode, setEditMode] = useState(false)
   const [inputNewName, setInputNewName] = useState(user?.displayName)
@@ -247,7 +248,7 @@ function Mypage() {
     if(isEditMode){
       inputEl.current.focus();
     }
-    if (!login) {
+    if (!login && pathname.includes("/mypage")) {
       navigate("/users/login");
     }
   },[isEditMode])
