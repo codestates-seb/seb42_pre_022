@@ -6,7 +6,7 @@ import { SearchInput } from "../Components/SearchBar";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { askquestionActions } from "../Reducers/askquestionReducer";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ReactComponent as ErrorIcon } from "../assets/errorIcon.svg";
 import postData from "../util/postData";
 import HelmetTitle from "../Components/HelmetTitle";
@@ -184,6 +184,12 @@ function Askquestion() {
   const state = useSelector(state => state.askquestionReducer);
   const loginState = useSelector(state => state.loginInfoReducer);
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (!loginState.login) {
+      navigate("/users/login");
+    }
+  },[loginState.login]);
 
   // 작성 가능 상태를 제어하는 상태는 useState 활용
   const [titleDone, setTitleDone] = useState(() => {

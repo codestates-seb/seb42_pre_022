@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Tag } from "../Styles/Divs";
 import { Link } from "react-router-dom";
 import dateTimeFormat from "../util/dateTimeFormat";
+import TagsDiv from "./TagsDiv";
 
 const QLiContainer = styled.div`
   background-color: transparent;
@@ -181,14 +182,7 @@ function QuestionsList({ ele }) {
         <h3 className="post-summary-title"><Link to={`/questions/${ele.questionId}`}>{ele.title}</Link></h3>
         <div className="post-summary-content">{ele.body.replace(/<\/?[^>]+(>|$)/g, '').slice(0, 200) + "..."}</div>
         <div className="post-summary-meta">
-          {/* <TagsDiv /> */}
-          <TagsContainerDiv>
-            <ul>
-              {ele.tagList && ele.tagList.map((ele, idx) => {
-                return <li key={idx}><Tag>{ele.tagName}</Tag></li>
-              })}
-            </ul>
-          </TagsContainerDiv>
+          <TagsDiv tags={ele.tagList && ele?.tagList}/>
           <UsercardMinimal>
             <UsercardAvartar><div><img src={ele.user.profileImage} alt="user-profile-img"></img></div></UsercardAvartar>
             <UsercardInfo><Link to={`/users/${ele.user.userId}`}><div className="uc-username">{ele.user.displayName}</div></Link><div className="uc-reputation">{ele.user.reputation}</div></UsercardInfo>
