@@ -25,6 +25,7 @@ const filterSlice = createSlice({
       state.tags= []
       state.user= ''
       state.answerCount= null
+      state.searchedBy = ''
       state[action.payload]= true
     },
     customfilter: (state, action) => {
@@ -38,16 +39,50 @@ const filterSlice = createSlice({
     searchBarfilter: (state,action) => {
       state.isSearched=true
       let text = action.payload
+      // console.log(text)
+      // console.log(text.slice(0,))
       if(text.slice(0,5) === "[tag]"){
+        // console.log([text.slice(5,text.length)])
+        state.isSearched=false
+        state.newest= false
+        state.highestscore= false
+        state.unanswered= false
+        state.user= ''
+        state.answerCount= null
         state.tags = [text.slice(5,text.length)]
         state.searchedBy = [text.slice(5,text.length)]
       } else if(text.slice(0,5) === "user:"){
-        state.user = text.slice(5,text.length)
+        // console.log(text.slice(5,text.length))
+        state.isSearched=false
+        state.newest= false
+        state.highestscore= false
+        state.unanswered= false
+        state.tags= []
+        state.answerCount= null
+        state.user = text.slice(5,text.length).replace(" ", "")
         state.searchedBy = text
-      } else if(text.slice(0,8) === "answers:"){
-        state.answerCount = Number(text.slice(8,text.length))
+      } else if(text.slice(0,8) === "answers:" || text.slice(0,7) === "answer:"){
+        // console.log(Number(text.slice(8,text.length)))
+        state.isSearched=false
+        state.newest= false
+        state.highestscore= false
+        state.unanswered= false
+        state.tags= []
+        state.user= ''
+        if(text.slice(0,8) === "answers:"){
+          state.answerCount = Number(text.slice(8,text.length))
+        } else (
+          state.answerCount = Number(text.slice(7,text.length))
+        )
         state.searchedBy = "answers>="+Number(text.slice(8,text.length))
       } else {
+        state.isSearched=false
+        state.newest= false
+        state.highestscore= false
+        state.unanswered= false
+        state.tags= []
+        state.user= ''
+        state.answerCount= null
         state.searchedBy = text
       }
     },
